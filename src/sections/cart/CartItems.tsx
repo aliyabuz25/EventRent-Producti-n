@@ -222,25 +222,17 @@ export default function CartItems({ items, onUpdateQuantity, onRemoveItem, techn
                 </div>
               </div>
 
-              {/* Spec input panel */}
-              {isExpanded && specKeys.length > 0 && (
+              {/* Spec answers summary — readonly, filled answers only */}
+              {isExpanded && specKeys.length > 0 && Object.keys(answers).filter(k => answers[k] && k !== 'quantity').length > 0 && (
                 <div className="border-t border-white/10 px-6 pb-6 pt-4">
                   <p className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-4">Sifariş detalları</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {specKeys.map(key => {
-                      const tmpl = getTemplate(key);
-                      const ft = tmpl?.field_type || 'text';
-                      const isFullWidth = ['dimensions', 'multiselect', 'boolean'].includes(ft);
-                      return (
-                        <div key={key} className={isFullWidth ? 'sm:col-span-2' : ''}>
-                          <label className="flex items-center gap-1.5 text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">
-                            {key}
-                            {tmpl?.unit && <span className="text-white/20 normal-case font-normal">({tmpl.unit})</span>}
-                          </label>
-                          {renderInput(pid, key, answers[key] || '')}
-                        </div>
-                      );
-                    })}
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(answers).filter(([k, v]) => v && k !== 'quantity').map(([k, v]) => (
+                      <div key={k} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                        <div className="text-[9px] font-bold text-white/30 uppercase tracking-wider mb-0.5">{k}</div>
+                        <div className="text-sm font-bold text-white">{v}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
