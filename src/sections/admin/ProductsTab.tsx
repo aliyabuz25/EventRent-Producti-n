@@ -406,15 +406,10 @@ export default function ProductsTab({ token }: { token: string }) {
                 <button className="btn-close" onClick={closeModal} />
               </div>
 
-// Silinmiş hissələr
-                <div className="d-flex gap-2 px-4 pt-2 pb-0">
-                  {/* Tabs removed */}
-                </div>
-
-                <form onSubmit={handleSubmit}>
-                  <div className="modal-body px-4 py-3" style={{ minHeight: 320 }}>
-                    
-                    {/* Basic Info */}
+              <form onSubmit={handleSubmit}>
+                <div className="modal-body px-4 py-3" style={{ minHeight: 320 }}>
+                  
+                  {/* Basic Info */}
                     <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: 12, marginBottom: 20 }}>
                       <h6 style={{ fontSize: 13, fontWeight: 700, color: '#495057', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Package size={14} /> Məhsul Məlumatları</h6>
                       <div className="row g-3">
@@ -511,10 +506,15 @@ export default function ProductsTab({ token }: { token: string }) {
                       </div>
 
                       {/* Şablondan seç */}
-                      {templates.length > 0 && (
-                        <div style={{ background: '#fff', borderRadius: 10, padding: 12, border: '1px solid #dee2e6', marginBottom: 12 }}>
+                      {templates.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '20px', background: '#fff', borderRadius: 10, border: '1px dashed #dee2e6', marginBottom: 12 }}>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: '#6c757d' }}>Sistemdə metrik yoxdur</div>
+                          <div style={{ fontSize: 11, color: '#adb5bd', marginTop: 4 }}>"Metrik Şablonları" düyməsinə klikləyərək yeni metrik yaradın.</div>
+                        </div>
+                      ) : (
+                        <div style={{ background: '#fff', borderRadius: 10, padding: 12, border: '1px solid #dee2e6', marginBottom: 16 }}>
                           <div className="d-flex align-items-center justify-content-between mb-2">
-                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6c757d' }}>Şablondan tez əlavə et</div>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6c757d' }}>Metrikləri əlavə et</div>
                             <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-light" style={{ borderRadius: 6, fontSize: 10, padding: '2px 8px', color: '#495057' }}>Hamısını əlavə et</button>
                           </div>
                           <div className="d-flex flex-wrap gap-2">
@@ -523,47 +523,38 @@ export default function ProductsTab({ token }: { token: string }) {
                                 style={{ border: form.technicalSpecs[t.name] !== undefined ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: form.technicalSpecs[t.name] !== undefined ? '#e8edff' : '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: form.technicalSpecs[t.name] !== undefined ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 4 }}>
                                 {form.technicalSpecs[t.name] !== undefined ? <Check size={10} /> : <Plus size={10} />}
                                 {t.name}{t.unit ? ` (${t.unit})` : ''}
-                                {t.category && <span style={{ fontSize: 9, color: '#adb5bd', marginLeft: 2 }}>{t.category}</span>}
                               </button>
                             ))}
                           </div>
                         </div>
                       )}
 
-                      {/* Manual əlavə et */}
-                      <div className="d-flex gap-2 flex-wrap mb-3">
-                        <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 140px' }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Xüsusiyyət adı (Güc, Rəng...)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                        <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 120px' }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (1000, Qırmızı)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                        <input className={inputCls} style={{ borderRadius: 9, flex: '0 0 80px' }} value={specUnit} onChange={e => setSpecUnit(e.target.value)} placeholder="Vahid (W)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                        <button type="button" onClick={addSpec} className="btn btn-dark btn-sm d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}>
-                          <Plus size={13} /> Əlavə et
-                        </button>
-                      </div>
-
                       {/* Siyahı */}
                       {Object.entries(form.technicalSpecs).length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '24px 0', color: '#adb5bd', background: '#fff', borderRadius: 10, border: '1px dashed #dee2e6' }}>
-                          <div style={{ fontSize: 12, fontWeight: 600 }}>Hələ heç bir metrik yoxdur</div>
+                          <div style={{ fontSize: 12, fontWeight: 600 }}>Hələ heç bir metrik seçilməyib</div>
+                          <div style={{ fontSize: 11, marginTop: 4 }}>Yuxarıdakı siyahıdan məhsula aid xüsusiyyətləri seçin</div>
                         </div>
                       ) : (
                         <div className="d-flex flex-column gap-2">
                           {Object.entries(form.technicalSpecs).map(([k, v], i) => (
                             <div key={k} className="d-flex align-items-center gap-2" style={{ background: '#fff', border: '1px solid #e9ecef', borderRadius: 10, padding: '8px 12px' }}>
                               <span style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', minWidth: 20 }}>#{i+1}</span>
-                              <input className="form-control form-control-sm fw-semibold" style={{ borderRadius: 8, fontSize: 12, flex: '0 0 35%', border: '1px solid #dee2e6', background: '#f8f9fa' }} value={k}
-                                onChange={e => { const newKey = e.target.value; setForm(f => { const entries = Object.entries(f.technicalSpecs); const updated: Record<string, string> = {}; entries.forEach(([ek, ev]) => { updated[ek === k ? newKey : ek] = ev; }); return { ...f, technicalSpecs: updated }; }); }} />
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#212529', flex: '0 0 35%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {k}
+                              </div>
                               <span style={{ color: '#dee2e6' }}>:</span>
                               {(() => {
                                 const tmpl = templates.find(t => t.name === k);
                                 const ft = tmpl?.field_type || 'text';
                                 const setVal = (val: string) => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: val } }));
                                 if (ft === 'boolean') return (
-                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)}>
+                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, background: '#f8f9fa' }} value={v} onChange={e => setVal(e.target.value)}>
                                     <option>Bəli</option><option>Xeyr</option>
                                   </select>
                                 );
                                 if ((ft === 'select' || ft === 'color') && tmpl?.options?.length) return (
-                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)}>
+                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, background: '#f8f9fa' }} value={v} onChange={e => setVal(e.target.value)}>
                                     <option value="">Seçin...</option>
                                     {tmpl.options.map(o => <option key={o} value={o}>{o}</option>)}
                                   </select>
@@ -573,23 +564,16 @@ export default function ProductsTab({ token }: { token: string }) {
                                     {tmpl.options.map(o => {
                                       const selected = v.split(',').map(s => s.trim()).includes(o);
                                       return <button key={o} type="button" onClick={() => { const cur = v.split(',').map(s => s.trim()).filter(Boolean); const next = selected ? cur.filter(x => x !== o) : [...cur, o]; setVal(next.join(', ')); }}
-                                        style={{ border: selected ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: selected ? '#e8edff' : '#fff', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, color: selected ? '#3b5bdb' : '#6c757d', cursor: 'pointer' }}>{o}</button>;
+                                        style={{ border: selected ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: selected ? '#e8edff' : '#f8f9fa', borderRadius: 20, padding: '2px 10px', fontSize: 10, fontWeight: 600, color: selected ? '#3b5bdb' : '#6c757d', cursor: 'pointer', transition: '0.1s' }}>{o}</button>;
                                     })}
                                   </div>
                                 );
                                 if (ft === 'dimensions') return (
-                                  <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)} placeholder="En × Boy × Hündürlük" />
+                                  <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, background: '#f8f9fa' }} value={v} onChange={e => setVal(e.target.value)} placeholder="Məs: 100 × 50 × 20" />
                                 );
-                                return <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)} placeholder={tmpl?.unit ? `Dəyər (${tmpl.unit})` : 'Dəyər'} />;
+                                return <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, background: '#f8f9fa' }} value={v} onChange={e => setVal(e.target.value)} placeholder={tmpl?.unit ? `Dəyər (${tmpl.unit})` : 'Dəyər yazın...'} />;
                               })()}
-                              <button type="button" onClick={() => {
-                                const t = templates.find(t => t.name === k);
-                                if (!t && window.confirm(`"${k}" şablon kimi yadda saxlansın?`)) {
-                                  fetch('/api/spec-templates', { method: 'POST', headers: h, body: JSON.stringify({ name: k, unit: '', category: '', field_type: 'text', options: [] }) })
-                                    .then(r => r.ok && loadTemplates());
-                                }
-                              }} className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 7px', flexShrink: 0 }} title="Şablon kimi saxla"><Tag size={10} /></button>
-                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 7px', flexShrink: 0 }}><X size={11} /></button>
+                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center" style={{ borderRadius: 8, padding: 0, width: 26, height: 26, flexShrink: 0 }}><X size={12} /></button>
                             </div>
                           ))}
                         </div>
