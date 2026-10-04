@@ -4,6 +4,7 @@ import { Send, Loader2, CheckCircle2, ChefHat, MapPin, Calendar, Clock, Users, F
 import { useToast } from '../../components/Toast';
 import { useSiteContent } from '../../content.context';
 import { t } from '../../content';
+import PhoneInput from '../../components/PhoneInput';
 
 type Step = 'form' | 'otp' | 'success';
 
@@ -45,12 +46,14 @@ export default function CateringRequest() {
     time_range: '', format: '', menu_note: '',
   });
 
-  
+  const set = (k: keyof typeof form, val?: string) =>
+    (e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm(f => ({ ...f, [k]: val ?? e!.target.value }));
 
   // Location search
   const searchLocation = (q: string) => {
     setForm(f => ({ ...f, location: q }));
-    clearTimeout(locationTimer.current);
+    if (locationTimer.current) clearTimeout(locationTimer.current);
     if (q.length < 2) { setLocationResults([]); setShowLocationDrop(false); return; }
     setLocationLoading(true);
     locationTimer.current = setTimeout(async () => {
@@ -218,7 +221,7 @@ export default function CateringRequest() {
                         </div>
                         <div>
                           <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Telefon <span className="text-premium-orange">*</span></label>
-                          <input type="tel" placeholder="+994 50 000 00 00" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inp} />
+                          <PhoneInput value={form.phone} onChange={val => setForm(f => ({ ...f, phone: val }))} className="w-full bg-white/[0.03] border border-white/[0.1] rounded-lg transition-colors focus-within:border-premium-orange/60 focus-within:bg-white/[0.05]" />
                         </div>
                       </div>
 
