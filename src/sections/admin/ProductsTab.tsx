@@ -251,33 +251,18 @@ export default function ProductsTab({ token }: { token: string }) {
                 filter: false,
                 resizable: false,
                 cellRenderer: (p: any) => {
-                  const prod = filtered.find(x => x.id === p.value);
-                  if (!prod) return '';
-                  const div = document.createElement('div');
-                  div.style.cssText = 'display:flex;gap:6px;align-items:center;height:100%';
-
-                  const btnEdit = document.createElement('button');
-                  btnEdit.innerHTML = '✏️';
-                  btnEdit.title = 'Düzəlt';
-                  btnEdit.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
-                  btnEdit.onclick = () => openEdit(prod);
-
-                  const btnToggle = document.createElement('button');
-                  btnToggle.innerHTML = prod.active ? '👁️' : '🔕';
-                  btnToggle.title = prod.active ? 'Deaktiv et' : 'Aktiv et';
-                  btnToggle.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
-                  btnToggle.onclick = () => handleToggle(prod);
-
-                  const btnDel = document.createElement('button');
-                  btnDel.innerHTML = '🗑️';
-                  btnDel.title = 'Sil';
-                  btnDel.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
-                  btnDel.onclick = () => handleDelete(prod.id, prod.name);
-
-                  div.appendChild(btnEdit);
-                  div.appendChild(btnToggle);
-                  div.appendChild(btnDel);
-                  return div;
+                  const prod = filtered.find((x: Product) => x.id === p.value);
+                  if (!prod) return null;
+                  return (
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', height: '100%' }}>
+                      <button title="Düzəlt" onClick={() => openEdit(prod)}
+                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
+                      <button title={prod.active ? 'Deaktiv et' : 'Aktiv et'} onClick={() => handleToggle(prod)}
+                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>{prod.active ? '👁️' : '🔕'}</button>
+                      <button title="Sil" onClick={() => handleDelete(prod.id, prod.name)}
+                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>🗑️</button>
+                    </div>
+                  );
                 },
               },
             ]}
