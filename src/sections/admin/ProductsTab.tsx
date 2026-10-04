@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight, LayoutGrid, List, Type, Hash, ListFilter, CheckSquare, ToggleLeft, Box, Palette } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight, ChevronDown, LayoutGrid, List, Type, Hash, ListFilter, CheckSquare, ToggleLeft, Box, Palette } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
@@ -90,6 +90,9 @@ export default function ProductsTab({ token }: { token: string }) {
   const [tmplForm, setTmplForm] = useState<{ name: string; unit: string; category: string; description: string; field_type: FieldType; options: string[] }>({ name: '', unit: '', category: '', description: '', field_type: 'text', options: [] });
   const [tmplOptionInput, setTmplOptionInput] = useState('');
   const [tmplEditId, setTmplEditId] = useState<string | null>(null);
+  const [specAccordionOpen, setSpecAccordionOpen] = useState(true);
+  const [quickSpecName, setQuickSpecName] = useState('');
+  const [quickSpecUnit, setQuickSpecUnit] = useState('');
   const [mediaPicker, setMediaPicker] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [imgPreviews, setImgPreviews] = useState<boolean[]>([]);
@@ -181,6 +184,19 @@ export default function ProductsTab({ token }: { token: string }) {
     setSpecKey(''); setSpecVal(''); setSpecUnit('');
   };
   const rmSpec = (k: string) => setForm(f => { const s = { ...f.technicalSpecs }; delete s[k]; return { ...f, technicalSpecs: s }; });
+
+  const saveQuickSpec = async () => {
+    if (!quickSpecName.trim()) return;
+    const h: Record<string, string> = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+    const r = await fetch('/api/spec-templates', { method: 'POST', headers: h, body: JSON.stringify({ name: quickSpecName.trim(), unit: quickSpecUnit.trim(), field_type: 'text', category: '', description: '', options: [] }) });
+    if (r.ok) {
+      const t = await r.json();
+      setTemplates(prev => [...prev, { ...t, options: t.options || [] }]);
+      setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [t.name]: '' } }));
+      setQuickSpecName(''); setQuickSpecUnit('');
+      toast.success('Metrik yaradıldı və əlavə edildi.');
+    } else { toast.error('Xəta baş verdi.'); }
+  };
 
   const applyTemplate = (t: SpecTemplate) => {
     if (form.technicalSpecs[t.name] !== undefined) return;
@@ -506,29 +522,68 @@ export default function ProductsTab({ token }: { token: string }) {
                         </button>
                       </div>
 
-                      {/* Şablondan seç */}
-                      {templates.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '20px', background: '#fff', borderRadius: 10, border: '1px dashed #dee2e6', marginBottom: 12 }}>
-                          <div style={{ fontSize: 12, fontWeight: 600, color: '#6c757d' }}>Sistemdə metrik yoxdur</div>
-                          <div style={{ fontSize: 11, color: '#adb5bd', marginTop: 4 }}>"Metrik Şablonları" düyməsinə klikləyərək yeni metrik yaradın.</div>
-                        </div>
-                      ) : (
-                        <div style={{ background: '#fff', borderRadius: 10, padding: 12, border: '1px solid #dee2e6', marginBottom: 16 }}>
-                          <div className="d-flex align-items-center justify-content-between mb-2">
-                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6c757d' }}>Metrikləri əlavə et</div>
-                            <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-light" style={{ borderRadius: 6, fontSize: 10, padding: '2px 8px', color: '#495057' }}>Hamısını əlavə et</button>
+                      {/* Şablondan seç — inline accordion */}
+                      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #dee2e6', marginBottom: 16, overflow: 'hidden' }}>
+                        <button type="button"
+                          onClick={() => setSpecAccordionOpen(v => !v)}
+                          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'none', border: 'none', cursor: 'pointer' }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Tag size={12} color="#e30613" /> Şablondan seç ({templates.length} metrik)
                           </div>
-                          <div className="d-flex flex-wrap gap-2">
-                            {templates.map(t => (
-                              <button key={t.id} type="button" onClick={() => applyTemplate(t)}
-                                style={{ border: form.technicalSpecs[t.name] !== undefined ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: form.technicalSpecs[t.name] !== undefined ? '#e8edff' : '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: form.technicalSpecs[t.name] !== undefined ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                {form.technicalSpecs[t.name] !== undefined ? <Check size={10} /> : <Plus size={10} />}
-                                {t.name}{t.unit ? ` (${t.unit})` : ''}
-                              </button>
-                            ))}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            {Object.keys(form.technicalSpecs).length > 0 && (
+                              <span style={{ fontSize: 10, fontWeight: 700, background: '#e8edff', color: '#3b5bdb', borderRadius: 20, padding: '2px 8px' }}>
+                                {Object.keys(form.technicalSpecs).length} seçilib
+                              </span>
+                            )}
+                            <ChevronDown size={14} color="#adb5bd" style={{ transform: specAccordionOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                           </div>
-                        </div>
-                      )}
+                        </button>
+                        {specAccordionOpen && (
+                          <div style={{ borderTop: '1px solid #f1f3f5', padding: '10px 14px' }}>
+                            {templates.length === 0 ? (
+                              <div style={{ fontSize: 11, color: '#adb5bd', textAlign: 'center', padding: '12px 0' }}>
+                                Hələ metrik şablonu yoxdur. Aşağıdan yeni metrik yaradın.
+                              </div>
+                            ) : (
+                              <>
+                                <div className="d-flex align-items-center justify-content-between mb-2">
+                                  <div style={{ fontSize: 10, color: '#adb5bd' }}>Seçmək üçün klikləyin</div>
+                                  <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-light" style={{ borderRadius: 6, fontSize: 10, padding: '2px 8px', color: '#495057' }}>Hamısını əlavə et</button>
+                                </div>
+                                <div className="d-flex flex-wrap gap-2">
+                                  {templates.map(t => {
+                                    const isAdded = form.technicalSpecs[t.name] !== undefined;
+                                    return (
+                                      <button key={t.id} type="button"
+                                        onClick={() => isAdded ? rmSpec(t.name) : applyTemplate(t)}
+                                        style={{ border: isAdded ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: isAdded ? '#e8edff' : '#f8f9fa', borderRadius: 20, padding: '5px 14px', fontSize: 11, fontWeight: 600, color: isAdded ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 5 }}>
+                                        {isAdded ? <Check size={11} /> : <Plus size={11} />}
+                                        {t.name}{t.unit ? ` (${t.unit})` : ''}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </>
+                            )}
+                            {/* Yeni metrik yaratma — inline mini form */}
+                            <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #dee2e6' }}>
+                              <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Tez Metrik Yarat</div>
+                              <div className="d-flex gap-2">
+                                <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 2 }}
+                                  placeholder="Ad (məs: Güc)" value={quickSpecName} onChange={e => setQuickSpecName(e.target.value)}
+                                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); saveQuickSpec(); } }} />
+                                <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 1 }}
+                                  placeholder="Vahid (W)" value={quickSpecUnit} onChange={e => setQuickSpecUnit(e.target.value)}
+                                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); saveQuickSpec(); } }} />
+                                <button type="button" onClick={saveQuickSpec} className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, padding: '4px 10px', flexShrink: 0 }}>
+                                  <Plus size={12} /> Yarat
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
                       {/* Siyahı */}
                       {Object.entries(form.technicalSpecs).length === 0 ? (
