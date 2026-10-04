@@ -193,8 +193,9 @@ export default function ProductsTab({ token }: { token: string }) {
 
   const saveTmpl = async () => {
     if (!tmplForm.name.trim()) return;
-    const method = tmplEditId ? 'PUT' : 'POST';
-    const url = tmplEditId ? `/api/spec-templates/${tmplEditId}` : '/api/spec-templates';
+    const isEdit = tmplEditId && tmplEditId !== 'new';
+    const method = isEdit ? 'PUT' : 'POST';
+    const url = isEdit ? `/api/spec-templates/${tmplEditId}` : '/api/spec-templates';
     const r = await fetch(url, { method, headers: h, body: JSON.stringify(tmplForm) });
     if (r.ok) { toast.success(tmplEditId ? 'Metrik yeniləndi.' : 'Metrik yaradıldı.'); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); setTmplEditId(null); await loadTemplates(); }
     else { const d = await r.json(); toast.error(d.error || 'Xəta'); }
