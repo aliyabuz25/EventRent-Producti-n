@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User as UserIcon, Phone, MapPin, Calendar, Mail, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { User as UserIcon, Phone as PhoneIcon, MapPin, Calendar, Mail, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useLocationAutocomplete } from '../../hooks/useLocationAutocomplete';
 import { useSiteContent } from '../../content.context';
 import { t } from '../../content';
+import PhoneInput from '../../components/PhoneInput';
 
 interface CartCheckoutProps {
   formData: any;
@@ -83,12 +84,13 @@ export default function CartCheckout({
             </div>
 
             {/* Phone */}
-            <div className="space-y-2">
+            <div className="space-y-2 z-10">
               <label className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] ml-1">{t(locale, c.labelPhone)}</label>
-              <div className="relative">
-                <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
-                <input type="tel" required value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className={inputCls} placeholder={t(locale, c.placeholderPhone)} />
-              </div>
+              <PhoneInput 
+                value={formData.phone} 
+                onChange={(val) => setFormData({ ...formData, phone: val })} 
+                className="w-full bg-white/5 border border-white/10 rounded-[24px] focus-within:bg-white/10 focus-within:border-premium-orange focus-within:shadow-[0_0_20px_rgba(227,6,19,0.1)] transition-all duration-300" 
+              />
             </div>
 
             {/* Location */}

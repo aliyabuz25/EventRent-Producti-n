@@ -84,7 +84,7 @@ export default function Cart() {
         category:    apiP?.category || item.category || 'Xidmət',
         description: apiP?.description || item.description || '',
         images:      apiP?.images?.length ? apiP.images : (item.image ? [item.image] : []),
-        technicalSpecs: apiP?.technicalSpecs || {},
+        technicalSpecs: apiP ? (apiP.technicalSpecs || {}) : {},
         tags: [],
         relatedProducts: [],
       };
