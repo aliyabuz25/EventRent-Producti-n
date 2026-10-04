@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import {
   LayoutDashboard, MessageSquare, Package, Users,
   TrendingUp, Clock, FileText, ExternalLink, Home, Info, Settings, Phone, AlignJustify,
-  ChevronRight, LogOut, Menu, ShoppingCart, Mail, UserCog, Eye, EyeOff, ImageIcon,
+  ChevronRight, LogOut, Menu, ShoppingCart, Mail, UserCog, Eye, EyeOff, ImageIcon, Database,
   Search, X as XIcon,
 } from 'lucide-react';
 import { Lead } from '../types';
@@ -23,6 +23,7 @@ const AdminReels = lazy(() => import('./admin/AdminReels'));
 const AdminWhatsApp = lazy(() => import('./admin/AdminWhatsApp'));
 const AdminCatering = lazy(() => import('../sections/admin/CateringTab'));
 const AdminSetup = lazy(() => import('../components/AdminSetup'));
+const DatabaseTab = lazy(() => import('../sections/admin/DatabaseTab'));
 
 // Bootstrap loaded lazily too — only affects admin
 import('bootstrap/dist/css/bootstrap.min.css');
@@ -30,7 +31,7 @@ import('bootstrap/dist/css/bootstrap.min.css');
 type Tab = 'dashboard' | 'orders' | 'leads' | 'products' | 'teambuilding' | 'support'
   | 'content-home' | 'content-about' | 'content-services'
   | 'content-contact' | 'content-footer' | 'content-catering' | 'content-portfolio'
-  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering';
+  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database';
 
 type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio';
 
@@ -264,9 +265,10 @@ export default function Admin() {
     { id: 'whatsapp'          as Tab, label: 'WhatsApp',  Icon: MessageSquare },
   ];
   const SYSTEM_NAV: NavItemDef[] = [
-    { id: 'media'  as Tab, label: 'Media',        Icon: ImageIcon },
-    { id: 'smtp'   as Tab, label: 'SMTP',          Icon: Mail },
-    { id: 'users'  as Tab, label: 'İstifadəçilər', Icon: UserCog },
+    { id: 'media'    as Tab, label: 'Media',          Icon: ImageIcon },
+    { id: 'smtp'     as Tab, label: 'SMTP',            Icon: Mail },
+    { id: 'users'    as Tab, label: 'İstifadəçilər',  Icon: UserCog },
+    { id: 'database' as Tab, label: 'Verilənlər Bazası', Icon: Database },
   ];
   const NAV_ITEMS = [...DATA_NAV, ...SYSTEM_NAV];
 
@@ -466,8 +468,9 @@ export default function Admin() {
             {tab === 'catering'         && <AdminCatering token={token} />}
             {tab === 'reels'            && <AdminReels />}
             {tab === 'whatsapp'         && <AdminWhatsApp />}
-            {tab === 'media'   && isAdmin && <AdminMedia token={token} />}
-            {tab === 'smtp'    && isAdmin && <AdminSmtp token={token} />}
+            {tab === 'media'    && isAdmin && <AdminMedia token={token} />}
+            {tab === 'smtp'     && isAdmin && <AdminSmtp token={token} />}
+            {tab === 'database' && isAdmin && <DatabaseTab token={token} />}
             {tab === 'users'   && isAdmin && <AdminUsers token={token} currentUserId={user.id} />}
             {contentSection   && !!token  && <AdminContent section={contentSection} />}
           </Suspense>

@@ -1683,6 +1683,67 @@ app.delete('/api/catering/orders/:id', authMiddleware, adminOnly, (req, res) => 
 });
 
 /* ══════════════════════════════════════════
+   DB Reset (Admin Only)
+══════════════════════════════════════════ */
+app.post('/api/admin/reset-db', authMiddleware, adminOnly, (req, res) => {
+  const { confirm, target } = req.body;
+  if (confirm !== 'RESET') return res.status(400).json({ error: 'Confirm text must be "RESET"' });
+
+  const targets = {
+    orders:    () => { db.prepare('DELETE FROM orders').run(); db.prepare("DELETE FROM sqlite_sequence WHERE name='orders'").run(); },
+    leads:     () => { db.prepare('DELETE FROM leads').run(); db.prepare("DELETE FROM sqlite_sequence WHERE name='leads'").run(); },
+    users:     () => {
+      // Keep the first admin user, delete the rest
+      const adminUser = db.prepare("SELECT id FROM users WHERE role='admin' ORDER BY id ASC LIMIT 1").get();
+      if (adminUser) db.prepare('DELETE FROM users WHERE id != ?').run(adminUser.id);
+      else db.prepare('DELETE FROM users').run();
+    },
+    products:  () => { db.prepare('DELETE FROM products').run(); },
+    catering_orders: () => { db.prepare('DELETE FROM catering_orders').run(); db.prepare("DELETE FROM sqlite_sequence WHERE name='catering_orders'").run(); },
+    tb_applications: () => { db.prepare('DELETE FROM tb_applications').run(); db.prepare("DELETE FROM sqlite_sequence WHERE name='tb_applications'").run(); },
+    spec_templates: () => { db.prepare('DELETE FROM spec_templates').run(); db.prepare("DELETE FROM sqlite_sequence WHERE name='spec_templates'").run(); },
+    all: () => {
+      db.prepare('DELETE FROM orders').run();
+      db.prepare('DELETE FROM leads').run();
+      db.prepare('DELETE FROM catering_orders').run();
+      db.prepare('DELETE FROM tb_applications').run();
+      const adminUser = db.prepare("SELECT id FROM users WHERE role='admin' ORDER BY id ASC LIMIT 1").get();
+      if (adminUser) db.prepare('DELETE FROM users WHERE id != ?').run(adminUser.id);
+      // Keep products and spec_templates
+      try { db.prepare("DELETE FROM sqlite_sequence WHERE name IN ('orders','leads','catering_orders','tb_applications')").run(); } catch {}
+    },
+  };
+
+  const fn = targets[target];
+  if (!fn) return res.status(400).json({ error: `Unknown target: ${target}. Valid: ${Object.keys(targets).join(', ')}` });
+
+  try {
+    fn();
+    console.log(`[RESET] Admin reset: ${target} by user ${req.user?.email}`);
+    res.json({ ok: true, message: `"${target}" reset successfully.` });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/admin/db-stats', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const stats = {
+      orders:          db.prepare('SELECT COUNT(*) as c FROM orders').get().c,
+      leads:           db.prepare('SELECT COUNT(*) as c FROM leads').get().c,
+      users:           db.prepare('SELECT COUNT(*) as c FROM users').get().c,
+      products:        db.prepare('SELECT COUNT(*) as c FROM products').get().c,
+      catering_orders: db.prepare('SELECT COUNT(*) as c FROM catering_orders').get().c,
+      tb_applications: db.prepare('SELECT COUNT(*) as c FROM tb_applications').get().c,
+      spec_templates:  db.prepare('SELECT COUNT(*) as c FROM spec_templates').get().c,
+    };
+    res.json(stats);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+/* ══════════════════════════════════════════
    Start
 ══════════════════════════════════════════ */
 app.listen(PORT, '0.0.0.0', () => {
