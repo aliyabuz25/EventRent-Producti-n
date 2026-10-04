@@ -1,12 +1,13 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
-# vite build üçün lazım ola bilər
 RUN apk add --no-cache python3 make g++
-# yalnız frontend paketləri
 COPY package.frontend.json ./package.json
+RUN npm install --legacy-peer-deps
+# tsx lazımdır (vite.config.ts-i işlətmək üçün)
+RUN npm install --no-save tsx typescript
 COPY vite.config.ts tsconfig*.json ./
 COPY src/ ./src/
-RUN npm install --legacy-peer-deps
+COPY data/ ./data/
 RUN npm run build
 
 FROM nginx:alpine
