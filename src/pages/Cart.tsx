@@ -54,6 +54,16 @@ export default function Cart() {
       }).catch(() => {});
   }, []);
 
+  // technicalAnswers: { [productId]: { [metricKey]: value } }
+  const [technicalAnswers, setTechnicalAnswers] = useState<Record<string, Record<string, string>>>({});
+
+  const setAnswer = (productId: string, key: string, value: string) => {
+    setTechnicalAnswers(prev => ({
+      ...prev,
+      [productId]: { ...(prev[productId] || {}), [key]: value }
+    }));
+  };
+
   const cartItems = useMemo(() => {
     return cart.map((item: any) => {
       const pid = item.productId || item.id;
@@ -64,13 +74,13 @@ export default function Cart() {
         category:    apiP?.category || item.category || 'Xidmət',
         description: apiP?.description || item.description || '',
         images:      apiP?.images?.length ? apiP.images : (item.image ? [item.image] : []),
-        technicalSpecs: item.technicalAnswers || {},
+        technicalSpecs: apiP?.technicalSpecs || {},
         tags: [],
         relatedProducts: [],
       };
-      return { ...item, product };
+      return { ...item, product, technicalAnswers: technicalAnswers[pid] || {} };
     });
-  }, [cart, apiProducts]);
+  }, [cart, apiProducts, technicalAnswers]);
 
   const updateQuantity = (id: string, delta: number) => {
     const newCart = cart.map((item: any) => {
@@ -111,7 +121,10 @@ export default function Cart() {
           event_date: formData.eventDate,
           location:   formData.location,
           note:       formData.note,
-          items:      cart,
+          items: cart.map((item: any) => {
+            const pid = item.productId || item.id;
+            return { ...item, technicalAnswers: technicalAnswers[pid] || {} };
+          }),
           source:     'website',
           lang:       locale,
         }),
@@ -146,6 +159,8 @@ export default function Cart() {
               items={cartItems}
               onUpdateQuantity={updateQuantity}
               onRemoveItem={removeItem}
+              technicalAnswers={technicalAnswers}
+              onSetAnswer={setAnswer}
             />
             <CartCheckout
               formData={formData}

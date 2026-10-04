@@ -309,9 +309,13 @@ export default function OrdersTab({ token }: { token: string }) {
                           <div className="flex-grow-1 min-w-0">
                             <div className="fw-semibold" style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
                             {cat && <div style={{ fontSize: 10, color: '#adb5bd' }}>{cat}</div>}
-                            {item.technicalAnswers && Object.keys(item.technicalAnswers).length > 0 && (
-                              <div style={{ fontSize: 10, color: '#6c757d', marginTop: 2 }}>
-                                {Object.entries(item.technicalAnswers).map(([k,v]) => `${k}: ${v}`).join(' · ')}
+                            {item.technicalAnswers && Object.keys(item.technicalAnswers).filter(k => item.technicalAnswers[k]).length > 0 && (
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
+                                {Object.entries(item.technicalAnswers).filter(([,v]) => v).map(([k, v]) => (
+                                  <span key={k} style={{ background: '#f0f4ff', border: '1px solid #dde3f5', borderRadius: 8, padding: '2px 8px', fontSize: 10, fontWeight: 600, color: '#3b5bdb' }}>
+                                    <span style={{ color: '#adb5bd', fontWeight: 500 }}>{k}: </span>{v as string}
+                                  </span>
+                                ))}
                               </div>
                             )}
                           </div>
