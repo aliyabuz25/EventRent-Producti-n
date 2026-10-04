@@ -209,10 +209,10 @@ export default function CateringRequest() {
         </div>
       </div>
 
-      {/* ── Sifariş Modalı (Light/Bootstrap Theme) ── */}
+{/* ── Sifariş Modalı (Light/Bootstrap Theme) ── */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" style={{ perspective: 1000 }}>
+          <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6" style={{ perspective: 1000, zIndex: 9999 }}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             
