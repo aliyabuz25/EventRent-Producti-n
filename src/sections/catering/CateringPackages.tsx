@@ -7,16 +7,10 @@ import { t } from '../../content';
 import PhoneInput from '../../components/PhoneInput';
 
 type Step = 'form' | 'otp' | 'success';
-
 const OTP_LENGTH = 6;
-
 const FORMATS = ['Korporativ', 'Toy', 'Nişan', 'Ad günü', 'Məzuniyyət', 'Açılış', 'Digər'];
 const GUEST_OPTIONS = ['10-20', '20-50', '50-100', '100-200', '200-500', '500+'];
-const TIME_SLOTS = [
-  '08:00–12:00', '10:00–14:00', '12:00–16:00',
-  '14:00–18:00', '16:00–20:00', '18:00–22:00',
-  '19:00–23:00', '20:00–00:00', 'Xüsusi saat'
-];
+const TIME_SLOTS = ['08:00–12:00', '10:00–14:00', '12:00–16:00', '14:00–18:00', '16:00–20:00', '18:00–22:00', '19:00–23:00', '20:00–00:00', 'Xüsusi saat'];
 
 export default function CateringRequest() {
   const toast = useToast();
@@ -25,6 +19,7 @@ export default function CateringRequest() {
   const firstRef = useRef<HTMLInputElement>(null);
   const otpRefs = Array.from({ length: OTP_LENGTH }, () => useRef<HTMLInputElement>(null));
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState<Step>('form');
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -33,7 +28,6 @@ export default function CateringRequest() {
   const [otpError, setOtpError] = useState('');
   const [devCode, setDevCode] = useState('');
 
-  // Location autocomplete
   const [locationResults, setLocationResults] = useState<any[]>([]);
   const [locationLoading, setLocationLoading] = useState(false);
   const [showLocationDrop, setShowLocationDrop] = useState(false);
@@ -46,11 +40,6 @@ export default function CateringRequest() {
     time_range: '', format: '', menu_note: '',
   });
 
-  const set = (k: keyof typeof form, val?: string) =>
-    (e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-      setForm(f => ({ ...f, [k]: val ?? e!.target.value }));
-
-  // Location search
   const searchLocation = (q: string) => {
     setForm(f => ({ ...f, location: q }));
     if (locationTimer.current) clearTimeout(locationTimer.current);
@@ -82,7 +71,6 @@ export default function CateringRequest() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // OTP göndər
   const sendOtp = async () => {
     if (!form.name.trim() || !form.phone.trim()) { toast.error('Ad və telefon mütləqdir.'); return; }
     setSending(true);
@@ -102,7 +90,6 @@ export default function CateringRequest() {
     finally { setSending(false); }
   };
 
-  // OTP daxil etmə
   const handleOtpChange = (idx: number, val: string) => {
     const digit = val.replace(/\D/g, '').slice(-1);
     const next = [...otp]; next[idx] = digit; setOtp(next); setOtpError('');
@@ -118,7 +105,6 @@ export default function CateringRequest() {
     if (e.key === 'Enter') verifyAndSubmit(otp.join(''));
   };
 
-  // Paste handler
   const handleOtpPaste = (e: React.ClipboardEvent) => {
     const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
     if (text.length > 0) {
@@ -131,7 +117,6 @@ export default function CateringRequest() {
     }
   };
 
-  // OTP yoxla + sifariş göndər
   const verifyAndSubmit = async (code?: string) => {
     const finalCode = code || otp.join('');
     if (finalCode.length < OTP_LENGTH) { setOtpError(`${OTP_LENGTH} rəqəmli kodu daxil edin.`); return; }
@@ -153,7 +138,7 @@ export default function CateringRequest() {
     finally { setVerifying(false); }
   };
 
-  const inp = 'w-full px-4 py-3 bg-white/[0.03] border border-white/[0.1] rounded-lg text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-premium-orange/60 focus:bg-white/[0.05] transition-all duration-200';
+  const inpLight = "w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all";
 
   return (
     <section className="relative bg-[#050505] py-28 md:py-36 overflow-hidden">
@@ -163,7 +148,6 @@ export default function CateringRequest() {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-
           {/* LEFT */}
           <motion.div initial={{ opacity: 0, x: -32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: 'easeOut' }}>
             <div className="flex items-center gap-4 mb-6">
@@ -196,222 +180,261 @@ export default function CateringRequest() {
             </div>
           </motion.div>
 
-          {/* RIGHT */}
-          <motion.div initial={{ opacity: 0, x: 32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}>
-            <div className="relative bg-[#0a0a0a] border border-white/[0.08] rounded-xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+          {/* RIGHT - Məlumat Kartı */}
+          <motion.div initial={{ opacity: 0, x: 32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
+            className="flex flex-col justify-center">
+            
+            <div className="bg-white/[0.02] border border-white/[0.06] rounded-[2rem] p-10 md:p-12 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-premium-orange/[0.05] rounded-full blur-[80px] pointer-events-none" />
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-premium-orange/40 to-transparent" />
-
-              <AnimatePresence mode="wait">
-
-                {/* FORM */}
-                {step === 'form' && (
-                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8 md:p-10">
-                    <div className="mb-8">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-premium-orange mb-1">Ketrinq Sifarişi</p>
-                      <h3 className="text-xl font-bold text-white">Zəhmət olmasa məlumatları doldurun</h3>
-                    </div>
-
-                    <div className="space-y-5">
-                      {/* Ad + Telefon */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                          <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Ad Soyad <span className="text-premium-orange">*</span></label>
-                          <input ref={firstRef} type="text" placeholder="Adınız" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inp} />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Telefon <span className="text-premium-orange">*</span></label>
-                          <PhoneInput value={form.phone} onChange={val => setForm(f => ({ ...f, phone: val }))} className="w-full bg-white/[0.03] border border-white/[0.1] rounded-lg transition-colors focus-within:border-premium-orange/60 focus-within:bg-white/[0.05]" />
-                        </div>
-                      </div>
-
-                      {/* Email */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Email</label>
-                        <input type="email" placeholder="email@domain.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inp} />
-                      </div>
-
-                      {/* Qonaq sayı — chip seçimi */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Qonaq sayı</label>
-                        <div className="flex flex-wrap gap-2">
-                          {GUEST_OPTIONS.map(g => (
-                            <button key={g} type="button" onClick={() => setForm(f => ({ ...f, guests: g }))}
-                              className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-all duration-150 ${form.guests === g ? 'bg-premium-orange border-premium-orange text-white' : 'bg-white/[0.02] border-white/[0.1] text-white/60 hover:border-premium-orange/40 hover:text-white'}`}>
-                              {g}
-                            </button>
-                          ))}
-                          <input type="text" placeholder="Özəl say" value={GUEST_OPTIONS.includes(form.guests) ? '' : form.guests}
-                            onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
-                            className="flex-1 min-w-[80px] px-3 py-1.5 bg-white/[0.02] border border-white/[0.1] rounded-md text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-premium-orange/60" />
-                        </div>
-                      </div>
-
-                      {/* Məkan — autocomplete */}
-                      <div ref={locationRef}>
-                        <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Məkan</label>
-                        <div className="relative">
-                          <input type="text" placeholder="Şəhər, küçə, yer adı..." value={form.location}
-                            onChange={e => searchLocation(e.target.value)}
-                            onFocus={() => { if (locationResults.length > 0) setShowLocationDrop(true); }}
-                            className={inp} autoComplete="off" />
-                          {locationLoading && <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 animate-spin" />}
-                          {showLocationDrop && locationResults.length > 0 && (
-                            <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-[#111] border border-white/10 rounded-lg overflow-hidden shadow-2xl">
-                              {locationResults.map((r: any) => (
-                                <button key={r.place_id} type="button" onClick={() => selectLocation(r.display_name)}
-                                  className="w-full text-left px-4 py-3 text-xs text-white/70 hover:bg-white/10 hover:text-white transition-colors border-b border-white/5 last:border-0 flex items-start gap-2">
-                                  <MapPin className="w-3.5 h-3.5 text-premium-orange mt-0.5 shrink-0" />
-                                  <span className="line-clamp-2 leading-snug">{r.display_name}</span>
-                                </button>
-                              ))}
-                              <div className="px-4 py-1.5 text-[9px] text-white/20 border-t border-white/5 bg-black/50">© OpenStreetMap</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Tarix + Saat */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                          <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Tarix</label>
-                          <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                            min={new Date().toISOString().split('T')[0]} className={inp} />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Saat aralığı</label>
-                          <div className="flex flex-wrap gap-1.5">
-                            {TIME_SLOTS.map(slot => (
-                              <button key={slot} type="button" onClick={() => setForm(f => ({ ...f, time_range: slot === 'Xüsusi saat' ? '' : slot }))}
-                                className={`px-2 py-1 rounded text-[10px] font-semibold border transition-all duration-150 ${form.time_range === slot ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70'}`}>
-                                {slot}
-                              </button>
-                            ))}
-                          </div>
-                          {(form.time_range === '' || !TIME_SLOTS.slice(0, -1).includes(form.time_range)) && (
-                            <input type="text" placeholder="məs: 18:00 – 23:00" value={form.time_range}
-                              onChange={e => setForm(f => ({ ...f, time_range: e.target.value }))}
-                              className={`${inp} mt-2`} />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Format — chip seçimi */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Tədbir formatı</label>
-                        <div className="flex flex-wrap gap-2">
-                          {FORMATS.map(fmt => (
-                            <button key={fmt} type="button" onClick={() => setForm(f => ({ ...f, format: fmt }))}
-                              className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-all duration-150 ${form.format === fmt ? 'bg-premium-orange border-premium-orange text-white' : 'bg-white/[0.02] border-white/[0.1] text-white/60 hover:border-premium-orange/40 hover:text-white'}`}>
-                              {fmt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Menyu qeyd */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">Menyu haqqında xüsusi istək</label>
-                        <textarea rows={2} placeholder="Allerji, xüsusi diyet..." value={form.menu_note}
-                          onChange={e => setForm(f => ({ ...f, menu_note: e.target.value }))} className={`${inp} resize-none`} />
-                      </div>
-                    </div>
-
-                    {/* WhatsApp note */}
-                    <div className="mt-6 flex items-start gap-3 p-3 bg-white/[0.02] border border-white/[0.06] rounded-lg">
-                      <MessageCircle className="w-4 h-4 text-white/40 mt-0.5 shrink-0" />
-                      <p className="text-white/40 text-xs leading-relaxed">
-                        Formu göndərəndə telefon nömrənizə WhatsApp vasitəsilə {OTP_LENGTH} rəqəmli təsdiq kodu göndəriləcək.
-                      </p>
-                    </div>
-
-                    <button type="button" disabled={sending} onClick={sendOtp}
-                      className="w-full mt-4 py-4 bg-white hover:bg-gray-100 disabled:opacity-50 text-black font-bold text-sm uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
-                      {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Göndərilir...</> : <>Kodu al və davam et</>}
-                    </button>
-                    <p className="text-center text-white/20 text-[10px] mt-3 uppercase tracking-widest">WhatsApp bildirişi sizə və adminə göndəriləcək</p>
-                  </motion.div>
-                )}
-
-                {/* OTP */}
-                {step === 'otp' && (
-                  <motion.div key="otp" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="p-8 md:p-10">
-                    <div className="flex items-center justify-between mb-8">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-premium-orange mb-1">Təsdiq kodu</p>
-                        <h3 className="text-xl font-bold text-white">WhatsApp kodu</h3>
-                        <p className="text-white/40 text-sm mt-1"><span className="text-white/80">{form.phone}</span> nömrəsinə göndərildi</p>
-                      </div>
-                      <button onClick={() => setStep('form')} className="w-8 h-8 flex items-center justify-center rounded bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all">
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    {devCode && (
-                      <div className="mb-6 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-xs text-yellow-400 font-bold text-center">
-                        Dev mode kodu: {devCode}
-                      </div>
-                    )}
-
-                    {/* OTP inputs */}
-                    <div className="flex gap-2 justify-center mb-6" onPaste={handleOtpPaste}>
-                      {otp.map((digit, idx) => (
-                        <input key={idx} ref={otpRefs[idx]} type="text" inputMode="numeric" maxLength={1} value={digit}
-                          onChange={e => handleOtpChange(idx, e.target.value)}
-                          onKeyDown={e => handleOtpKeyDown(idx, e)}
-                          className={`w-12 h-14 text-center text-xl font-bold bg-white/[0.02] border rounded-lg text-white focus:outline-none transition-colors duration-200 ${
-                            otpError ? 'border-red-500/50 bg-red-500/5' : digit ? 'border-premium-orange/50 bg-premium-orange/5' : 'border-white/[0.1] focus:border-white/30 focus:bg-white/[0.05]'
-                          }`}
-                        />
-                      ))}
-                    </div>
-
-                    {otpError && <p className="text-center text-red-400 text-xs font-bold mb-4">{otpError}</p>}
-
-                    <button type="button" disabled={verifying || otp.join('').length < OTP_LENGTH} onClick={() => verifyAndSubmit()}
-                      className="w-full py-4 bg-white hover:bg-gray-100 disabled:opacity-50 text-black font-bold text-sm uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
-                      {verifying ? <><Loader2 className="w-4 h-4 animate-spin" /> Yoxlanılır...</> : <>Təsdiqlə və Göndər</>}
-                    </button>
-
-                    <div className="flex items-center justify-center gap-2 mt-6">
-                      <p className="text-white/30 text-xs">Kodu almadınız?</p>
-                      {resendCooldown > 0
-                        ? <span className="text-white/30 text-xs font-bold">{resendCooldown}s gözləyin</span>
-                        : <button type="button" onClick={sendOtp} className="text-white hover:text-premium-orange text-xs font-bold transition-colors">Yenidən göndər</button>
-                      }
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* SUCCESS */}
-                {step === 'success' && (
-                  <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center py-20 px-8 text-center gap-5">
-                    <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-full flex items-center justify-center mb-2">
-                      <CheckCircle2 className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white tracking-tight mb-2">Sifarişiniz qəbul edildi!</h3>
-                      <p className="text-white/40 text-sm max-w-xs leading-relaxed">Komandamız ən qısa zamanda sizinlə əlaqə saxlayacaq.</p>
-                    </div>
-                    {(form.date || form.location || form.guests) && (
-                      <div className="bg-white/[0.02] border border-white/[0.08] rounded-lg px-6 py-4 text-sm text-white/50 space-y-2 w-full max-w-xs text-left mt-2">
-                        {form.guests   && <p><span className="text-white/30">Qonaq:</span> <span className="text-white font-medium ml-2">{form.guests}</span></p>}
-                        {form.date     && <p><span className="text-white/30">Tarix:</span> <span className="text-white font-medium ml-2">{form.date}</span></p>}
-                        {form.location && <p><span className="text-white/30">Məkan:</span> <span className="text-white font-medium ml-2">{form.location}</span></p>}
-                      </div>
-                    )}
-                    <button onClick={() => { setStep('form'); setForm({ name:'',phone:'',email:'',guests:'',location:'',date:'',time_range:'',format:'',menu_note:'' }); setOtp(Array(OTP_LENGTH).fill('')); }}
-                      className="mt-6 px-8 py-3 bg-white/[0.05] hover:bg-white/[0.1] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors duration-200">
-                      Yeni Sifariş
-                    </button>
-                  </motion.div>
-                )}
-
-              </AnimatePresence>
+              <h3 className="text-3xl font-black tracking-tight text-white mb-4">Sifariş üçün hazırsınız?</h3>
+              <p className="text-white/50 leading-relaxed mb-8">
+                Tədbirinizin detallarını bizimlə paylaşın. Xüsusi hazırladığımız form vasitəsilə ehtiyaclarınızı qısa zamanda komandamıza çatdıra bilərsiniz.
+              </p>
+              <div className="space-y-4 mb-10">
+                <div className="flex items-center gap-4 text-sm font-semibold text-white/70">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10"><CheckCircle2 size={16} className="text-premium-orange" /></div>
+                  Sürətli və asan sifariş
+                </div>
+                <div className="flex items-center gap-4 text-sm font-semibold text-white/70">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10"><MessageCircle size={16} className="text-premium-orange" /></div>
+                  WhatsApp ilə anında təsdiq
+                </div>
+              </div>
+              <button onClick={() => { setIsModalOpen(true); setStep('form'); }}
+                className="w-full py-5 bg-premium-orange hover:bg-premium-orange/90 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl transition-colors duration-300 shadow-[0_20px_40px_rgba(227,6,19,0.25)] flex items-center justify-center gap-3">
+                <ChefHat size={18} /> Sifariş Formunu Aç
+              </button>
             </div>
           </motion.div>
         </div>
       </div>
+
+      {/* ── Sifariş Modalı (Light/Bootstrap Theme) ── */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" style={{ perspective: 1000 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20, scale: 0.95 }} 
+              animate={{ opacity: 1, y: 0, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-2xl bg-[#f8f9fa] border border-gray-200 rounded-[20px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+            >
+              {step !== 'success' && (
+                <button onClick={() => setIsModalOpen(false)} className="absolute top-5 right-5 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 transition-colors">
+                  <X size={16} />
+                </button>
+              )}
+
+              <div className="overflow-y-auto overflow-x-hidden p-6 md:p-8 custom-scrollbar">
+                <AnimatePresence mode="wait">
+
+                  {/* FORM */}
+                  {step === 'form' && (
+                    <motion.div key="form" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                      <div className="mb-6 pr-8 border-b border-gray-200 pb-4">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-600 mb-1">Ketrinq Sifarişi</p>
+                        <h3 className="text-xl font-bold text-gray-900">Zəhmət olmasa məlumatları doldurun</h3>
+                      </div>
+
+                      <div className="space-y-5 bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                        {/* Ad + Telefon */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Ad Soyad <span className="text-red-500">*</span></label>
+                            <input ref={firstRef} type="text" placeholder="Adınız" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inpLight} />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Telefon <span className="text-red-500">*</span></label>
+                            <PhoneInput theme="light" value={form.phone} onChange={val => setForm(f => ({ ...f, phone: val }))} className="w-full bg-white border border-gray-300 rounded-lg transition-colors focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20" />
+                          </div>
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Email</label>
+                          <input type="email" placeholder="email@domain.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inpLight} />
+                        </div>
+
+                        {/* Qonaq sayı */}
+                        <div>
+                          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Qonaq sayı</label>
+                          <div className="flex flex-wrap gap-2">
+                            {GUEST_OPTIONS.map(g => (
+                              <button key={g} type="button" onClick={() => setForm(f => ({ ...f, guests: g }))}
+                                className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-all duration-150 ${form.guests === g ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-sm' : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                                {g}
+                              </button>
+                            ))}
+                            <input type="text" placeholder="Özəl say" value={GUEST_OPTIONS.includes(form.guests) ? '' : form.guests}
+                              onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
+                              className="flex-1 min-w-[80px] px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                          </div>
+                        </div>
+
+                        {/* Məkan */}
+                        <div ref={locationRef}>
+                          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Məkan</label>
+                          <div className="relative">
+                            <input type="text" placeholder="Şəhər, küçə, yer adı..." value={form.location}
+                              onChange={e => searchLocation(e.target.value)}
+                              onFocus={() => { if (locationResults.length > 0) setShowLocationDrop(true); }}
+                              className={inpLight} autoComplete="off" />
+                            {locationLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />}
+                            {showLocationDrop && locationResults.length > 0 && (
+                              <div className="absolute left-0 right-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-lg">
+                                {locationResults.map((r: any) => (
+                                  <button key={r.place_id} type="button" onClick={() => selectLocation(r.display_name)}
+                                    className="w-full text-left px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 flex items-start gap-2">
+                                    <MapPin className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
+                                    <span className="line-clamp-2 leading-snug">{r.display_name}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Tarix + Saat */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Tarix</label>
+                            <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                              min={new Date().toISOString().split('T')[0]} className={inpLight} />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Saat aralığı</label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {TIME_SLOTS.map(slot => (
+                                <button key={slot} type="button" onClick={() => setForm(f => ({ ...f, time_range: slot === 'Xüsusi saat' ? '' : slot }))}
+                                  className={`px-2 py-1 rounded text-[10px] font-semibold border transition-all duration-150 ${form.time_range === slot ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-sm' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'}`}>
+                                  {slot}
+                                </button>
+                              ))}
+                            </div>
+                            {(form.time_range === '' || !TIME_SLOTS.slice(0, -1).includes(form.time_range)) && (
+                              <input type="text" placeholder="məs: 18:00 – 23:00" value={form.time_range}
+                                onChange={e => setForm(f => ({ ...f, time_range: e.target.value }))}
+                                className={`${inpLight} mt-2`} />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Format */}
+                        <div>
+                          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Tədbir formatı</label>
+                          <div className="flex flex-wrap gap-2">
+                            {FORMATS.map(fmt => (
+                              <button key={fmt} type="button" onClick={() => setForm(f => ({ ...f, format: fmt }))}
+                                className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-all duration-150 ${form.format === fmt ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-sm' : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                                {fmt}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Menyu qeyd */}
+                        <div>
+                          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">Menyu haqqında xüsusi istək</label>
+                          <textarea rows={2} placeholder="Allerji, xüsusi diyet..." value={form.menu_note}
+                            onChange={e => setForm(f => ({ ...f, menu_note: e.target.value }))} className={`${inpLight} resize-none`} />
+                        </div>
+                      </div>
+
+                      {/* WhatsApp note */}
+                      <div className="mt-5 flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <MessageCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                        <p className="text-green-800 text-xs leading-relaxed">
+                          Formu göndərəndə telefon nömrənizə <span className="font-bold">WhatsApp</span> vasitəsilə <b>{OTP_LENGTH}</b> rəqəmli təsdiq kodu göndəriləcək.
+                        </p>
+                      </div>
+
+                      <button type="button" disabled={sending} onClick={sendOtp}
+                        className="w-full mt-4 py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 shadow-sm">
+                        {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Göndərilir...</> : <>Kodu al və davam et</>}
+                      </button>
+                      <p className="text-center text-gray-400 text-[10px] mt-3 uppercase tracking-wider">WhatsApp bildirişi sizə və adminə göndəriləcək</p>
+                    </motion.div>
+                  )}
+
+                  {/* OTP */}
+                  {step === 'otp' && (
+                    <motion.div key="otp" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="py-4">
+                      <div className="text-center mb-6">
+                        <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><MessageCircle className="w-7 h-7 text-green-600" /></div>
+                        <h3 className="text-xl font-bold text-gray-900">WhatsApp Kodu</h3>
+                        <p className="text-gray-500 text-sm mt-2">Kod <span className="text-gray-900 font-bold">{form.phone}</span> nömrəsinə göndərildi</p>
+                      </div>
+
+                      {devCode && (
+                        <div className="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 font-bold text-center shadow-sm">
+                          Dev mode kodu: {devCode}
+                        </div>
+                      )}
+
+                      {/* OTP inputs */}
+                      <div className="flex gap-2 sm:gap-3 justify-center mb-6" onPaste={handleOtpPaste}>
+                        {otp.map((digit, idx) => (
+                          <input key={idx} ref={otpRefs[idx]} type="text" inputMode="numeric" maxLength={1} value={digit}
+                            onChange={e => handleOtpChange(idx, e.target.value)}
+                            onKeyDown={e => handleOtpKeyDown(idx, e)}
+                            className={`w-10 h-14 sm:w-12 sm:h-16 text-center text-2xl font-bold bg-white border-2 rounded-xl text-gray-900 focus:outline-none transition-colors duration-200 shadow-sm ${
+                              otpError ? 'border-red-500 bg-red-50' : digit ? 'border-green-500 bg-green-50' : 'border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {otpError && <p className="text-center text-red-500 text-sm font-bold mb-4">{otpError}</p>}
+
+                      <button type="button" disabled={verifying || otp.join('').length < OTP_LENGTH} onClick={() => verifyAndSubmit()}
+                        className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 shadow-sm">
+                        {verifying ? <><Loader2 className="w-4 h-4 animate-spin" /> Yoxlanılır...</> : <>Təsdiqlə və Göndər</>}
+                      </button>
+
+                      <div className="flex items-center justify-center gap-2 mt-6">
+                        <p className="text-gray-500 text-xs">Kodu almadınız?</p>
+                        {resendCooldown > 0
+                          ? <span className="text-gray-500 text-xs font-bold">{resendCooldown}s gözləyin</span>
+                          : <button type="button" onClick={sendOtp} className="text-blue-600 hover:text-blue-800 text-xs font-bold transition-colors">Yenidən göndər</button>
+                        }
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* SUCCESS */}
+                  {step === 'success' && (
+                    <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center py-10 text-center gap-4">
+                      <div className="w-20 h-20 bg-green-50 border-4 border-green-100 rounded-full flex items-center justify-center mb-2">
+                        <CheckCircle2 className="w-10 h-10 text-green-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-900 tracking-tight mb-2">Sifarişiniz qəbul edildi!</h3>
+                        <p className="text-gray-500 text-sm max-w-sm leading-relaxed">Komandamız ən qısa zamanda sizinlə əlaqə saxlayaraq detalları dəqiqləşdirəcək.</p>
+                      </div>
+                      {(form.date || form.location || form.guests) && (
+                        <div className="bg-white border border-gray-200 shadow-sm rounded-xl px-6 py-4 text-sm text-gray-600 space-y-2 w-full max-w-sm text-left mt-4">
+                          {form.guests   && <p className="flex justify-between border-b border-gray-100 pb-2"><span className="text-gray-400">Qonaq:</span> <span className="text-gray-900 font-medium">{form.guests}</span></p>}
+                          {form.date     && <p className="flex justify-between border-b border-gray-100 pb-2 pt-1"><span className="text-gray-400">Tarix:</span> <span className="text-gray-900 font-medium">{form.date}</span></p>}
+                          {form.location && <p className="flex justify-between pt-1"><span className="text-gray-400">Məkan:</span> <span className="text-gray-900 font-medium">{form.location}</span></p>}
+                        </div>
+                      )}
+                      <button onClick={() => { setStep('form'); setForm({ name:'',phone:'',email:'',guests:'',location:'',date:'',time_range:'',format:'',menu_note:'' }); setOtp(Array(OTP_LENGTH).fill('')); setIsModalOpen(false); }}
+                        className="mt-6 px-10 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm rounded-xl transition-colors duration-200 shadow-md">
+                        Pəncərəni Bağla
+                      </button>
+                    </motion.div>
+                  )}
+
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
