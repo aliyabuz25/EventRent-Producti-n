@@ -566,20 +566,13 @@ export default function ProductsTab({ token }: { token: string }) {
                                 </div>
                               </>
                             )}
-                            {/* Yeni metrik yaratma — inline mini form */}
-                            <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #dee2e6' }}>
-                              <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Tez Metrik Yarat</div>
-                              <div className="d-flex gap-2">
-                                <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 2 }}
-                                  placeholder="Ad (məs: Güc)" value={quickSpecName} onChange={e => setQuickSpecName(e.target.value)}
-                                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); saveQuickSpec(); } }} />
-                                <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 1 }}
-                                  placeholder="Vahid (W)" value={quickSpecUnit} onChange={e => setQuickSpecUnit(e.target.value)}
-                                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); saveQuickSpec(); } }} />
-                                <button type="button" onClick={saveQuickSpec} className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, padding: '4px 10px', flexShrink: 0 }}>
-                                  <Plus size={12} /> Yarat
-                                </button>
-                              </div>
+                            {/* Metrik offcanvas linki */}
+                            <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px dashed #dee2e6', textAlign: 'center' }}>
+                              <button type="button" onClick={() => setShowTemplateManager(true)}
+                                className="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+                                style={{ borderRadius: 8, fontSize: 11, padding: '4px 12px' }}>
+                                <Tag size={11} /> Yeni metrik yarat / idarə et
+                              </button>
                             </div>
                           </div>
                         )}
