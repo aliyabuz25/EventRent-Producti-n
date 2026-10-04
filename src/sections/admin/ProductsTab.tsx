@@ -202,8 +202,8 @@ export default function ProductsTab({ token }: { token: string }) {
                 cellRenderer: (p: any) => {
                   const src = p.value?.[0];
                   return src
-                    ? `<img src="${src}" style="width:48px;height:48px;object-fit:contain;border-radius:8px;border:1px solid #f1f3f5;background:#fff;padding:2px" />`
-                    : `<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #f1f3f5;background:#f8f9fa;color:#adb5bd;font-size:18px">📦</div>`;
+                    ? <img src={src} style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 8, border: '1px solid #f1f3f5', background: '#fff', padding: 2 }} />
+                    : <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, border: '1px solid #f1f3f5', background: '#f8f9fa', color: '#adb5bd' }}><Package size={20} /></div>;
                 },
               },
               {
@@ -211,16 +211,20 @@ export default function ProductsTab({ token }: { token: string }) {
                 field: 'name',
                 flex: 2,
                 minWidth: 160,
-                cellRenderer: (p: any) =>
-                  `<div style="font-weight:600;font-size:13px;line-height:1.3">${p.value}</div>`,
+                cellRenderer: (p: any) => (
+                  <div style={{ fontWeight: 600, fontSize: 13, lineHeight: 1.3, display: 'flex', alignItems: 'center', height: '100%' }}>{p.value}</div>
+                ),
               },
               {
                 headerName: 'Kateqoriya',
                 field: 'category',
                 flex: 1,
                 minWidth: 120,
-                cellRenderer: (p: any) =>
-                  p.value ? `<span style="background:#f1f3f5;color:#495057;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">${p.value}</span>` : '',
+                cellRenderer: (p: any) => (
+                  <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                    {p.value ? <span style={{ background: '#f1f3f5', color: '#495057', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '3px 10px' }}>{p.value}</span> : null}
+                  </div>
+                ),
               },
               {
                 headerName: 'Teqlər',
@@ -228,20 +232,26 @@ export default function ProductsTab({ token }: { token: string }) {
                 flex: 1,
                 minWidth: 120,
                 sortable: false,
-                cellRenderer: (p: any) =>
-                  (p.value || []).slice(0, 3).map((t: string) =>
-                    `<span style="background:#e9ecef;color:#6c757d;font-size:10px;border-radius:20px;padding:2px 8px;margin-right:4px">${t}</span>`
-                  ).join(''),
+                cellRenderer: (p: any) => (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, height: '100%', flexWrap: 'wrap' }}>
+                    {(p.value || []).slice(0, 3).map((t: string) => (
+                      <span key={t} style={{ background: '#e9ecef', color: '#6c757d', fontSize: 10, borderRadius: 20, padding: '2px 8px' }}>{t}</span>
+                    ))}
+                  </div>
+                ),
               },
               {
                 headerName: 'Status',
                 field: 'active',
                 width: 100,
                 filter: false,
-                cellRenderer: (p: any) =>
-                  p.value
-                    ? `<span style="background:#d1e7dd;color:#0a3622;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">Aktiv</span>`
-                    : `<span style="background:#f8d7da;color:#58151c;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">Deaktiv</span>`,
+                cellRenderer: (p: any) => (
+                  <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                    {p.value
+                      ? <span style={{ background: '#d1e7dd', color: '#0a3622', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '3px 10px' }}>Aktiv</span>
+                      : <span style={{ background: '#f8d7da', color: '#58151c', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '3px 10px' }}>Deaktiv</span>}
+                  </div>
+                ),
               },
               {
                 headerName: 'Əməliyyat',
