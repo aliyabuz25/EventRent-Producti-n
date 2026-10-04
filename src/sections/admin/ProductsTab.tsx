@@ -14,9 +14,22 @@ interface Product {
   relatedProducts: string[]; active: number; sort_order: number;
 }
 
+type FieldType = 'text' | 'number' | 'select' | 'multiselect' | 'boolean' | 'dimensions' | 'color';
+
 interface SpecTemplate {
-  id: string; name: string; unit: string; category: string; description: string; sort_order: number;
+  id: string; name: string; unit: string; category: string; description: string;
+  field_type: FieldType; options: string[]; sort_order: number;
 }
+
+const FIELD_TYPES: { value: FieldType; label: string; icon: string; desc: string }[] = [
+  { value: 'text',        label: 'Mətn',       icon: '✍️', desc: 'Sərbəst mətn girişi' },
+  { value: 'number',      label: 'Rəqəm',      icon: '🔢', desc: 'Ədədi dəyər + vahid' },
+  { value: 'select',      label: 'Seçim',       icon: '📋', desc: 'Bir seçim (dropdown)' },
+  { value: 'multiselect', label: 'Çox seçim',   icon: '☑️', desc: 'Bir neçə seçim' },
+  { value: 'boolean',     label: 'Bəli/Xeyr',   icon: '✅', desc: 'Hə/Yox toggle' },
+  { value: 'dimensions',  label: 'Ölçülər',     icon: '📐', desc: 'En × Boy × Hündürlük' },
+  { value: 'color',       label: 'Rəng',         icon: '🎨', desc: 'Rəng seçimi + ad' },
+];
 
 const EMPTY: Omit<Product, 'id' | 'active' | 'sort_order'> = {
   name: '', category: '', description: '', technicalSpecs: {}, images: [''], tags: [], relatedProducts: [],
@@ -74,7 +87,8 @@ export default function ProductsTab({ token }: { token: string }) {
   const [specUnit, setSpecUnit] = useState('');
   const [templates, setTemplates] = useState<SpecTemplate[]>([]);
   const [showTemplateManager, setShowTemplateManager] = useState(false);
-  const [tmplForm, setTmplForm] = useState({ name: '', unit: '', category: '', description: '' });
+  const [tmplForm, setTmplForm] = useState<{ name: string; unit: string; category: string; description: string; field_type: FieldType; options: string[] }>({ name: '', unit: '', category: '', description: '', field_type: 'text', options: [] });
+  const [tmplOptionInput, setTmplOptionInput] = useState('');
   const [tmplEditId, setTmplEditId] = useState<string | null>(null);
   const [mediaPicker, setMediaPicker] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
@@ -169,17 +183,20 @@ export default function ProductsTab({ token }: { token: string }) {
   const rmSpec = (k: string) => setForm(f => { const s = { ...f.technicalSpecs }; delete s[k]; return { ...f, technicalSpecs: s }; });
 
   const applyTemplate = (t: SpecTemplate) => {
-    if (form.technicalSpecs[t.name] !== undefined) return; // artıq var
-    setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [t.name]: t.unit ? '' : '' } }));
-    setSpecKey(t.name); setSpecVal(''); setSpecUnit(t.unit);
+    if (form.technicalSpecs[t.name] !== undefined) return;
+    const defaultVal = t.field_type === 'boolean' ? 'Bəli' : t.field_type === 'dimensions' ? '0 × 0 × 0' : '';
+    setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [t.name]: defaultVal } }));
+    setSpecKey(t.name); setSpecVal(defaultVal); setSpecUnit(t.unit);
   };
+
+  const TMPL_EMPTY = { name: '', unit: '', category: '', description: '', field_type: 'text' as FieldType, options: [] };
 
   const saveTmpl = async () => {
     if (!tmplForm.name.trim()) return;
     const method = tmplEditId ? 'PUT' : 'POST';
     const url = tmplEditId ? `/api/spec-templates/${tmplEditId}` : '/api/spec-templates';
     const r = await fetch(url, { method, headers: h, body: JSON.stringify(tmplForm) });
-    if (r.ok) { toast.success(tmplEditId ? 'Şablon yeniləndi.' : 'Şablon yaradıldı.'); setTmplForm({ name: '', unit: '', category: '', description: '' }); setTmplEditId(null); await loadTemplates(); }
+    if (r.ok) { toast.success(tmplEditId ? 'Metrik yeniləndi.' : 'Metrik yaradıldı.'); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); setTmplEditId(null); await loadTemplates(); }
     else { const d = await r.json(); toast.error(d.error || 'Xəta'); }
   };
 
@@ -568,12 +585,39 @@ export default function ProductsTab({ token }: { token: string }) {
                               <input className="form-control form-control-sm fw-semibold" style={{ borderRadius: 8, fontSize: 12, flex: '0 0 35%', border: '1px solid #dee2e6', background: '#f8f9fa' }} value={k}
                                 onChange={e => { const newKey = e.target.value; setForm(f => { const entries = Object.entries(f.technicalSpecs); const updated: Record<string, string> = {}; entries.forEach(([ek, ev]) => { updated[ek === k ? newKey : ek] = ev; }); return { ...f, technicalSpecs: updated }; }); }} />
                               <span style={{ color: '#dee2e6' }}>:</span>
-                              <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, border: '1px solid #dee2e6' }} value={v}
-                                onChange={e => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: e.target.value } }))} />
+                              {(() => {
+                                const tmpl = templates.find(t => t.name === k);
+                                const ft = tmpl?.field_type || 'text';
+                                const setVal = (val: string) => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: val } }));
+                                if (ft === 'boolean') return (
+                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)}>
+                                    <option>Bəli</option><option>Xeyr</option>
+                                  </select>
+                                );
+                                if ((ft === 'select' || ft === 'color') && tmpl?.options?.length) return (
+                                  <select className="form-select form-select-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)}>
+                                    <option value="">Seçin...</option>
+                                    {tmpl.options.map(o => <option key={o} value={o}>{o}</option>)}
+                                  </select>
+                                );
+                                if (ft === 'multiselect' && tmpl?.options?.length) return (
+                                  <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                    {tmpl.options.map(o => {
+                                      const selected = v.split(',').map(s => s.trim()).includes(o);
+                                      return <button key={o} type="button" onClick={() => { const cur = v.split(',').map(s => s.trim()).filter(Boolean); const next = selected ? cur.filter(x => x !== o) : [...cur, o]; setVal(next.join(', ')); }}
+                                        style={{ border: selected ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: selected ? '#e8edff' : '#fff', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, color: selected ? '#3b5bdb' : '#6c757d', cursor: 'pointer' }}>{o}</button>;
+                                    })}
+                                  </div>
+                                );
+                                if (ft === 'dimensions') return (
+                                  <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)} placeholder="En × Boy × Hündürlük" />
+                                );
+                                return <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1 }} value={v} onChange={e => setVal(e.target.value)} placeholder={tmpl?.unit ? `Dəyər (${tmpl.unit})` : 'Dəyər'} />;
+                              })()}
                               <button type="button" onClick={() => {
                                 const t = templates.find(t => t.name === k);
                                 if (!t && window.confirm(`"${k}" şablon kimi yadda saxlansın?`)) {
-                                  fetch('/api/spec-templates', { method: 'POST', headers: h, body: JSON.stringify({ name: k, unit: '', category: '' }) })
+                                  fetch('/api/spec-templates', { method: 'POST', headers: h, body: JSON.stringify({ name: k, unit: '', category: '', field_type: 'text', options: [] }) })
                                     .then(r => r.ok && loadTemplates());
                                 }
                               }} className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 7px', flexShrink: 0 }} title="Şablon kimi saxla"><Tag size={10} /></button>
@@ -671,48 +715,99 @@ export default function ProductsTab({ token }: { token: string }) {
                 <div style={{ fontWeight: 700, fontSize: 16 }}>Metrik Şablonları</div>
                 <div style={{ fontSize: 12, color: '#6c757d', marginTop: 2 }}>Məhsullara tətbiq edilə bilən xüsusiyyət şablonları</div>
               </div>
-              <button onClick={() => { setShowTemplateManager(false); setTmplEditId(null); setTmplForm({ name: '', unit: '', category: '', description: '' }); }}
+              <button onClick={() => { setShowTemplateManager(false); setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }}
                 style={{ border: 'none', background: '#f8f9fa', borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                 <X size={16} />
               </button>
             </div>
 
-            {/* Yeni şablon formu */}
-            <div style={{ padding: '16px 24px', borderBottom: '1px solid #f1f3f5', background: '#f8f9ff' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bdb', marginBottom: 10 }}>
-                {tmplEditId ? '✏️ Şablonu Redaktə Et' : '+ Yeni Şablon'}
+            {/* Yeni metrik formu */}
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid #f1f3f5', background: '#f8f9ff', overflowY: 'auto', maxHeight: '55vh' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bdb', marginBottom: 12 }}>
+                {tmplEditId ? '✏️ Metrikin Redaktəsi' : '+ Yeni Metrik'}
               </div>
-              <div className="d-flex flex-column gap-2">
-                <div className="d-flex gap-2">
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Ad *</div>
-                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.name} onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))} placeholder="məs: Güc, Ölçü, Çəki" onKeyDown={e => e.key === 'Enter' && saveTmpl()} />
-                  </div>
+
+              {/* Tip seçimi */}
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 6 }}>Tip seç *</div>
+                <div className="d-flex flex-wrap gap-2">
+                  {FIELD_TYPES.map(ft => (
+                    <button key={ft.value} type="button" onClick={() => setTmplForm(f => ({ ...f, field_type: ft.value, options: [] }))}
+                      style={{ border: tmplForm.field_type === ft.value ? '2px solid #3b5bdb' : '1px solid #dee2e6', background: tmplForm.field_type === ft.value ? '#e8edff' : '#fff', borderRadius: 10, padding: '6px 10px', cursor: 'pointer', fontSize: 11, fontWeight: 600, color: tmplForm.field_type === ft.value ? '#3b5bdb' : '#495057', transition: '0.12s', textAlign: 'center', minWidth: 80 }}>
+                      <div style={{ fontSize: 16, marginBottom: 2 }}>{ft.icon}</div>
+                      <div>{ft.label}</div>
+                      <div style={{ fontSize: 9, color: '#adb5bd', fontWeight: 400 }}>{ft.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ad + Vahid */}
+              <div className="d-flex gap-2 mb-2">
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Metrik adı *</div>
+                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.name} onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))} placeholder="məs: Güc, Rəng, Material" />
+                </div>
+                {(tmplForm.field_type === 'number' || tmplForm.field_type === 'dimensions') && (
                   <div style={{ width: 90 }}>
                     <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Vahid</div>
                     <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.unit} onChange={e => setTmplForm(f => ({ ...f, unit: e.target.value }))} placeholder="W, m, kg" />
                   </div>
+                )}
+              </div>
+
+              {/* Qrup + Açıqlama */}
+              <div className="d-flex gap-2 mb-2">
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Qrup</div>
+                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.category} onChange={e => setTmplForm(f => ({ ...f, category: e.target.value }))} placeholder="Elektrik, Ölçü, Görünüş..." list="cat-list" />
+                  <datalist id="cat-list">
+                    {Array.from(new Set(templates.map(t => t.category).filter(Boolean))).map(c => <option key={c} value={c} />)}
+                  </datalist>
                 </div>
-                <div className="d-flex gap-2">
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Qrup</div>
-                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.category} onChange={e => setTmplForm(f => ({ ...f, category: e.target.value }))} placeholder="Elektrik, Ölçü, Görünüş..." />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Açıqlama</div>
-                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.description} onChange={e => setTmplForm(f => ({ ...f, description: e.target.value }))} placeholder="İstəyə bağlı..." />
-                  </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Açıqlama</div>
+                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.description} onChange={e => setTmplForm(f => ({ ...f, description: e.target.value }))} placeholder="İstəyə bağlı..." />
                 </div>
-                <div className="d-flex gap-2">
-                  <button onClick={saveTmpl} className="btn btn-sm btn-primary fw-semibold d-flex align-items-center gap-1 flex-grow-1" style={{ borderRadius: 8 }}>
-                    <Check size={13} /> {tmplEditId ? 'Yenilə' : 'Şablon Yarat'}
-                  </button>
-                  {tmplEditId && (
-                    <button onClick={() => { setTmplEditId(null); setTmplForm({ name: '', unit: '', category: '', description: '' }); }} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 8 }}>
-                      <X size={12} /> Ləğv
-                    </button>
+              </div>
+
+              {/* Seçim dəyərləri (select/multiselect/color) */}
+              {(tmplForm.field_type === 'select' || tmplForm.field_type === 'multiselect' || tmplForm.field_type === 'color') && (
+                <div style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 6 }}>
+                    {tmplForm.field_type === 'color' ? 'Rəng variantları' : 'Seçim variantları'}
+                  </div>
+                  <div className="d-flex gap-2 mb-2">
+                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplOptionInput} onChange={e => setTmplOptionInput(e.target.value)}
+                      placeholder={tmplForm.field_type === 'color' ? 'Qırmızı, #FF0000' : 'Variant əlavə et...'}
+                      onKeyDown={e => { if (e.key === 'Enter' && tmplOptionInput.trim()) { e.preventDefault(); setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}} />
+                    <button type="button" onClick={() => { if (tmplOptionInput.trim()) { setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}}
+                      className="btn btn-sm btn-outline-primary d-flex align-items-center" style={{ borderRadius: 8, padding: '4px 10px' }}><Plus size={12} /></button>
+                  </div>
+                  {tmplForm.options.length > 0 && (
+                    <div className="d-flex flex-wrap gap-1">
+                      {tmplForm.options.map((opt, i) => (
+                        <span key={i} style={{ background: '#e8edff', color: '#3b5bdb', borderRadius: 20, padding: '3px 10px', fontSize: 11, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          {tmplForm.field_type === 'color' && <span style={{ width: 10, height: 10, borderRadius: '50%', background: opt.includes('#') ? opt.split(',')[1]?.trim() || opt : '#ccc', border: '1px solid rgba(0,0,0,0.1)', display: 'inline-block' }} />}
+                          {opt}
+                          <button type="button" onClick={() => setTmplForm(f => ({ ...f, options: f.options.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#3b5bdb', lineHeight: 1 }}><X size={9} /></button>
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
+              )}
+
+              {/* Saxla */}
+              <div className="d-flex gap-2 mt-3">
+                <button onClick={saveTmpl} className="btn btn-sm btn-primary fw-semibold d-flex align-items-center gap-1 flex-grow-1" style={{ borderRadius: 8 }}>
+                  <Check size={13} /> {tmplEditId ? 'Yenilə' : 'Metrik Yarat'}
+                </button>
+                {tmplEditId && (
+                  <button onClick={() => { setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 8 }}>
+                    <X size={12} /> Ləğv
+                  </button>
+                )}
               </div>
             </div>
 
@@ -734,13 +829,18 @@ export default function ProductsTab({ token }: { token: string }) {
                         {templates.filter(t => (t.category || 'Digər') === cat).map(t => (
                           <div key={t.id} style={{ background: '#f8f9fa', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, border: '1px solid #e9ecef' }}>
                             <div style={{ flex: 1 }}>
-                              <div style={{ fontWeight: 600, fontSize: 13 }}>{t.name}</div>
-                              <div style={{ fontSize: 11, color: '#6c757d', marginTop: 1 }}>
-                                {t.unit && <span style={{ background: '#e9ecef', borderRadius: 4, padding: '1px 6px', marginRight: 6, fontSize: 10 }}>{t.unit}</span>}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 14 }}>{FIELD_TYPES.find(f => f.value === t.field_type)?.icon || '✍️'}</span>
+                                <span style={{ fontWeight: 600, fontSize: 13 }}>{t.name}</span>
+                                {t.unit && <span style={{ background: '#e9ecef', borderRadius: 4, padding: '1px 6px', fontSize: 10, color: '#6c757d' }}>{t.unit}</span>}
+                              </div>
+                              <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 2, display: 'flex', gap: 6, alignItems: 'center' }}>
+                                <span style={{ background: '#f1f3f5', borderRadius: 4, padding: '1px 6px' }}>{FIELD_TYPES.find(f => f.value === t.field_type)?.label || 'Mətn'}</span>
+                                {t.options?.length > 0 && <span>{t.options.length} variant</span>}
                                 {t.description && <span>{t.description}</span>}
                               </div>
                             </div>
-                            <button onClick={() => { setTmplEditId(t.id); setTmplForm({ name: t.name, unit: t.unit, category: t.category, description: t.description }); }}
+                            <button onClick={() => { setTmplEditId(t.id); setTmplForm({ name: t.name, unit: t.unit, category: t.category, description: t.description, field_type: t.field_type, options: t.options }); setTmplOptionInput(''); }}
                               style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 7, padding: '4px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Redaktə et">
                               <Pencil size={12} color="#6c757d" />
                             </button>
