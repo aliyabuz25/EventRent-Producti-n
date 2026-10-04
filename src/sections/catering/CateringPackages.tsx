@@ -212,16 +212,16 @@ export default function CateringRequest() {
 {/* ── Sifariş Modalı (Light/Bootstrap Theme) ── */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6" style={{ perspective: 1000, zIndex: 9999 }}>
+          <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 z-[99999]" style={{ perspective: 1000 }}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm z-[99999]" />
             
             <motion.div 
               initial={{ opacity: 0, y: 20, scale: 0.95 }} 
               animate={{ opacity: 1, y: 0, scale: 1 }} 
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-2xl bg-[#f8f9fa] border border-gray-200 rounded-[20px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-2xl bg-[#f8f9fa] border border-gray-200 rounded-[20px] overflow-hidden shadow-[0_50px_150px_rgba(0,0,0,0.8)] flex flex-col max-h-[90vh] z-[999999]"
             >
               {step !== 'success' && (
                 <button onClick={() => setIsModalOpen(false)} className="absolute top-5 right-5 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 transition-colors">
