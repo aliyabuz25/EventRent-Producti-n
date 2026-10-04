@@ -3,7 +3,7 @@ services:
     build:
       context: /datastore/eventrent/app
       dockerfile: Dockerfile.backend
-    image: eventrent-backend:latest
+    image: localhost/eventrent-backend:latest
     restart: unless-stopped
     environment:
       PORT: "4320"
@@ -30,7 +30,7 @@ services:
     build:
       context: /datastore/eventrent/app
       dockerfile: Dockerfile.frontend
-    image: eventrent-frontend:latest
+    image: localhost/eventrent-frontend:latest
     restart: unless-stopped
     volumes:
       - /datastore/eventrent/nginx-logs:/app/nginx-logs
