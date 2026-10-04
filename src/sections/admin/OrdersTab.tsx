@@ -304,7 +304,7 @@ export default function OrdersTab({ token }: { token: string }) {
                       return (
                         <div key={i} className="d-flex align-items-center gap-3 p-2 rounded-3 mb-2" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
                           <div style={{ width: 44, height: 44, borderRadius: 9, background: '#e9ecef', overflow: 'hidden', flexShrink: 0 }}>
-                            {img ? <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100"><Package size={16} color="#adb5bd" /></div>}
+                            {img ? <img src={img} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <div className="d-flex align-items-center justify-content-center h-100"><Package size={16} color="#adb5bd" /></div>}
                           </div>
                           <div className="flex-grow-1 min-w-0">
                             <div className="fw-semibold" style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>

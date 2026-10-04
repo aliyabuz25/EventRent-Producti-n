@@ -31,8 +31,8 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
                       onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'}
                       onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}
                       onClick={() => { onPick(f.url); onClose(); }}>
-                      <div style={{ height: 80, background: '#f8f9fa', overflow: 'hidden' }}>
-                        <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ height: 80, background: '#fff', borderBottom: '1px solid #f1f3f5', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img src={f.url} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} />
                       </div>
                       <div style={{ padding: '4px 6px', fontSize: 9, color: '#6c757d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     </div>
@@ -346,8 +346,10 @@ export default function CateringTab({ token }: { token: string }) {
             <div key={p.id} className="col-12 col-md-6 col-xl-4">
               <div className={`card h-100 border ${p.active ? 'border-0 shadow-sm' : 'border-warning'}`} style={{ borderRadius: 16 }}>
                 {p.image_url && (
-                  <img src={p.image_url} alt={p.name} className="card-img-top"
-                    style={{ height: 160, objectFit: 'cover', borderRadius: '16px 16px 0 0' }} />
+                  <div style={{ height: 160, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={p.image_url} alt={p.name}
+                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} />
+                  </div>
                 )}
                 <div className="card-body">
                   <div className="d-flex align-items-start justify-content-between gap-2 mb-2">

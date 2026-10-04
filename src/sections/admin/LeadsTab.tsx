@@ -140,7 +140,7 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
                         const p = products.find(x => x.id === item.productId);
                         return (
                           <div key={idx} style={{ width: 32, height: 32, borderRadius: 8, background: '#f8f9fa', border: '1px solid #e9ecef', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#adb5bd' }}>
-                            {p?.images?.[0] ? <img src={p.images[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" /> : idx + 1}
+                            {p?.images?.[0] ? <img src={p.images[0]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} referrerPolicy="no-referrer" /> : idx + 1}
                           </div>
                         );
                       })}
@@ -219,7 +219,7 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
                         return (
                           <div key={idx} className="d-flex align-items-center gap-3 p-2 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
                             <div style={{ width: 40, height: 40, borderRadius: 10, background: '#e9ecef', overflow: 'hidden', flexShrink: 0 }}>
-                              {p?.images?.[0] ? <img src={p.images[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" /> : <Package size={18} color="#adb5bd" />}
+                              {p?.images?.[0] ? <img src={p.images[0]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} referrerPolicy="no-referrer" /> : <Package size={18} color="#adb5bd" />}
                             </div>
                             <div className="flex-grow-1">
                               <div className="fw-semibold" style={{ fontSize: 13 }}>{p?.name ?? 'Naməlum'}</div>

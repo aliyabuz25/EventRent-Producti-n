@@ -25,9 +25,9 @@ function MediaCard({ file, copied, onPreview, onCopy, onDelete }: {
       >
         <div style={{ height: 110, background: '#f8f9fa', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {file.filename.endsWith('.svg') ? (
-            <img src={file.url} style={{ maxWidth: '70%', maxHeight: '70%', objectFit: 'contain' }} />
+            <img src={file.url} style={{ maxWidth: '80%', maxHeight: '80%', objectFit: 'contain' }} />
           ) : (
-            <img src={file.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={file.url} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
           )}
           {hover && (
             <div className="position-absolute top-0 end-0 d-flex gap-1 p-1" style={{ background: 'rgba(0,0,0,0.35)', borderRadius: '0 0 0 10px' }}>

@@ -34,7 +34,9 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
                 {files.map(f => (
                   <div key={f.filename} className="col-4 col-md-3">
                     <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer' }} onClick={() => { onPick(f.url); onClose(); }}>
-                      <div style={{ height: 80, overflow: 'hidden' }}><img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div>
+                      <div style={{ height: 80, background: '#fff', borderBottom: '1px solid #f1f3f5', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img src={f.url} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} />
+                      </div>
                       <div style={{ padding: '4px 6px', fontSize: 9, color: '#6c757d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     </div>
                   </div>
@@ -179,8 +181,8 @@ export default function ProductsTab({ token }: { token: string }) {
               <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: p.active ? 1 : 0.5 }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
-                <div style={{ height: 130, background: '#f8f9fa', overflow: 'hidden', position: 'relative' }}>
-                  {p.images?.[0] ? <img src={p.images[0]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><Package size={32} /></div>}
+                <div style={{ height: 130, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {p.images?.[0] ? <img src={p.images[0]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><Package size={32} opacity={0.3} /></div>}
                   {!p.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
                   {p.category && <span style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>{p.category}</span>}
                 </div>

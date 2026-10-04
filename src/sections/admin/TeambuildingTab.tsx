@@ -46,8 +46,8 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
                       onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'}
                       onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}
                       onClick={() => { onPick(f.url); onClose(); }}>
-                      <div style={{ height: 80, background: '#f8f9fa', overflow: 'hidden' }}>
-                        <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ height: 80, background: '#fff', borderBottom: '1px solid #f1f3f5', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img src={f.url} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} />
                       </div>
                       <div style={{ padding: '4px 6px', fontSize: 9, color: '#6c757d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     </div>
@@ -280,8 +280,8 @@ export default function TeambuildingTab({ token }: { token: string }) {
               <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: game.active ? 1 : 0.5, transition: 'transform 0.15s' }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
-                <div style={{ height: 130, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
-                  {game.image ? <img src={game.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
+                <div style={{ height: 130, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {game.image ? <img src={game.image} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
                   <span style={{ position: 'absolute', top: 8, left: 8, background: game.category === 'Indoor' ? '#0d6efd' : '#198754', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>{game.category}</span>
                   {!game.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
                 </div>
@@ -306,8 +306,8 @@ export default function TeambuildingTab({ token }: { token: string }) {
               <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: concept.active ? 1 : 0.5, transition: 'transform 0.15s' }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
-                <div style={{ height: 130, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
-                  {concept.image ? <img src={concept.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
+                <div style={{ height: 130, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {concept.image ? <img src={concept.image} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
                   {!concept.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
                 </div>
                 <div className="p-3">
