@@ -1,8 +1,7 @@
 FROM node:20-alpine
 WORKDIR /app
-# native build tools (better-sqlite3 üçün)
-RUN apk add --no-cache python3 make g++
-# yalnız backend package.json istifadə et
+# native build tools (better-sqlite3, baileys üçün)
+RUN apk add --no-cache python3 make g++ git
 COPY package.backend.json ./package.json
 RUN npm install
 COPY server.js ./
