@@ -37,7 +37,7 @@ function Badge({ status }: { status: string }) {
   return <span style={{ background: s.bg, color: s.color, borderRadius: 20, padding: '3px 10px', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{s.label}</span>;
 }
 
-interface DbProduct { id: string; name: string; category: string; images: string[]; description?: string; tags?: string[]; }
+interface DbProduct { id: string; name: string; category: string; images: string[]; description?: string; tags?: string[]; technicalSpecs?: Record<string, string>; }
 
 export default function OrdersTab({ token }: { token: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
