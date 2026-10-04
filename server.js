@@ -227,8 +227,10 @@ CREATE TABLE IF NOT EXISTS leads (
       active      INTEGER NOT NULL DEFAULT 1,
       created_at  TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
-    );
+    )
+  `).run();
 
+  db.prepare(`
     CREATE TABLE IF NOT EXISTS spec_templates (
       id          TEXT PRIMARY KEY,
       name        TEXT NOT NULL,
@@ -237,7 +239,7 @@ CREATE TABLE IF NOT EXISTS leads (
       description TEXT NOT NULL DEFAULT '',
       sort_order  INTEGER NOT NULL DEFAULT 0,
       created_at  TEXT NOT NULL DEFAULT (datetime('now'))
-    );
+    )
   `).run();
 
   console.log('✓ SQLite ready:', DB_PATH);
