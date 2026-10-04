@@ -136,7 +136,7 @@ export default function ServicesShowcase() {
           {items.map((svc, i) => (
             <div key={svc.num} className="absolute inset-0 transition-opacity duration-700"
               style={{ opacity: i === activeIdx ? 1 : 0 }}>
-              <img src={svc.image} className="w-full h-full object-cover" alt={t(locale, svc.eyebrow)} referrerPolicy="no-referrer" />
+              <img src={svc.image} loading="lazy" decoding="async" className="w-full h-full object-cover" alt={t(locale, svc.eyebrow)} referrerPolicy="no-referrer" />
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 {(() => {
                   const Icon = ICONS[svc.iconKey] || Monitor;

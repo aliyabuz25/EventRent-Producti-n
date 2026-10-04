@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import SiteFooter from './SiteFooter';
 import SmoothScroll from './SmoothScroll';
+import ScrollToTop from './ScrollToTop';
 import Cursor from './Cursor';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -46,6 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
+      <ScrollToTop />
       <Cursor />
       <SmoothScroll>
         <div className="relative z-10">

@@ -51,16 +51,16 @@ export default function ProfileOrders({ orders }: ProfileOrdersProps) {
                   <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest">{t(locale, labels.orderId)} #{String(order.id).padStart(4, '0')}</p>
                   <div className="flex items-center gap-2 text-sm text-white/50">
                     <Clock className="w-4 h-4" />
-                    {format(new Date(order.createdAt || order.created_at), 'dd MMMM yyyy, HH:mm')}
+                    {(order.createdAt || order.created_at) && !isNaN(new Date(order.createdAt || order.created_at!).getTime()) ? format(new Date(order.createdAt || order.created_at!), 'dd MMMM yyyy, HH:mm') : '—'}
                   </div>
                 </div>
                 <div className={cn("px-6 py-2 rounded-2xl text-xs font-bold border", STATUS_COLORS[order.status])}>
-                  {t(locale, statusLabelMap[order.status])}
+                  {statusLabelMap[order.status] ? t(locale, statusLabelMap[order.status]) : order.status}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-{order.items.map((item, idx) => {
+{(order.items ?? []).map((item, idx) => {
                    return (
                     <div key={idx} className="flex items-center gap-4 p-4 bg-white/5 rounded-3xl border border-white/10">
                        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -96,7 +96,7 @@ export default function ProfileOrders({ orders }: ProfileOrdersProps) {
                   <div>
                     <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest">{t(locale, labels.date)}</p>
                     <p className="text-sm text-white font-bold">
-                      {order.eventDate ? format(new Date(order.eventDate), 'dd MMMM yyyy') : t(locale, labels.notSpecified)}
+                      {order.eventDate && !isNaN(new Date(order.eventDate).getTime()) ? format(new Date(order.eventDate), 'dd MMMM yyyy') : t(locale, labels.notSpecified)}
                     </p>
                   </div>
                 </div>

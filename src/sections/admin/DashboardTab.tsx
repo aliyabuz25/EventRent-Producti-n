@@ -117,7 +117,7 @@ export default function DashboardTab({ token, onNavigate, isAdmin }: Props) {
     ...(stats?.leadsOverTime || []).map((d: any) => d.day),
   ]);
   const timeData = Array.from(allDays).sort().map(day => ({
-    day: day.slice(5), // MM-DD
+    day: typeof day === 'string' ? day.slice(5) : String(day), // MM-DD
     Sifarişlər: (stats?.ordersOverTime || []).find((d: any) => d.day === day)?.count || 0,
     Sorğular:   (stats?.leadsOverTime || []).find((d: any) => d.day === day)?.count || 0,
   }));

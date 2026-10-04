@@ -72,11 +72,11 @@ export default function ProfileOverview({ orders, onViewAll }: ProfileOverviewPr
                 </div>
                 <div>
                   <p className="font-bold text-white">{t(locale, labels.order)} #{String(order.id).padStart(4, '0')}</p>
-                  <p className="text-xs text-white/70">{order.createdAt ? format(new Date(order.createdAt), 'dd MMM yyyy') : order.created_at ? format(new Date(order.created_at), 'dd MMM yyyy') : '—'}</p>
+                  <p className="text-xs text-white/70">{order.createdAt && !isNaN(new Date(order.createdAt).getTime()) ? format(new Date(order.createdAt), 'dd MMM yyyy') : order.created_at && !isNaN(new Date(order.created_at).getTime()) ? format(new Date(order.created_at), 'dd MMM yyyy') : '—'}</p>
                 </div>
               </div>
               <div className={cn("px-4 py-1.5 rounded-full text-[10px] font-bold border capitalize", STATUS_COLORS[order.status])}>
-                {t(locale, statusLabelMap[order.status])}
+                {statusLabelMap[order.status] ? t(locale, statusLabelMap[order.status]) : order.status}
               </div>
             </div>
           ))}

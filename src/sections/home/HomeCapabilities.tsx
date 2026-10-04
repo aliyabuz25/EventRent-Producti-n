@@ -86,7 +86,7 @@ export default function HomeCapabilities() {
     <div ref={triggerRef} className="overflow-hidden bg-black">
       <div
         ref={sectionRef}
-        className="flex h-screen relative"
+        className="flex h-screen relative will-change-transform"
         style={{ width: `${capabilities.length * 100}vw` }}
       >
         {capabilities.map((cap, i) => (
@@ -98,7 +98,7 @@ export default function HomeCapabilities() {
             <div className="absolute inset-0 z-0 overflow-hidden">
               <img
                 src={cap.image}
-                className="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-1000"
+                className="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-[filter,opacity] duration-1000"
                 referrerPolicy="no-referrer"
                 alt={cap.title}
               />
@@ -126,7 +126,7 @@ export default function HomeCapabilities() {
 
                 <button className="group flex min-h-12 items-center gap-4 rounded-full border border-white/10 px-6 py-3 text-[11px] font-black uppercase tracking-[0.24em] text-white hover:border-premium-red/40 hover:text-premium-red transition-colors duration-300">
                   {t(locale, content.home.capabilities.cta)}
-                  <div className="w-10 h-px bg-white/20 group-hover:bg-premium-red group-hover:w-16 transition-all duration-300" />
+                  <div className="w-10 h-px bg-white/20 group-hover:bg-premium-red group-hover:w-16 transition-[width,background-color] duration-300" />
                 </button>
               </div>
 

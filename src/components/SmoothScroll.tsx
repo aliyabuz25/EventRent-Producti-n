@@ -24,25 +24,27 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     }
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
+      wheelMultiplier: 1.2,
       touchMultiplier: 2,
       infinite: false,
     });
 
-    // Bridge Lenis virtual scroll to GSAP ScrollTrigger so pinned/scrubbed
-    // sections stay in sync with the smoothed scroll position.
+    // Bridge Lenis virtual scroll to GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
+    // Store ticker reference to correctly remove it on cleanup (stale closure fix)
+    const ticker = (time: number) => { lenis.raf(time * 1000); };
+    gsap.ticker.add(ticker);
+    // Restore lag smoothing protection (0 disables it, causing frame jumps on tab focus)
+    gsap.ticker.lagSmoothing(300, 0.5);
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => { lenis.raf(time * 1000); });
+      gsap.ticker.remove(ticker); // same reference — removes correctly
     };
   }, []);
 

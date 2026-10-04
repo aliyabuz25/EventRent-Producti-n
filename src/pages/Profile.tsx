@@ -31,7 +31,7 @@ export default function Profile() {
   const [saveMsg, setSaveMsg]     = useState<'ok' | 'err' | null>(null);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem(TOKEN_KEY) || '';
+  const token = (() => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } })();
   const authHeaders = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
   /* load user from JWT */

@@ -121,7 +121,7 @@ export default function UsersTab({ token, currentUserId }: { token: string; curr
                     <td className="ps-4 align-middle">
                       <div className="d-flex align-items-center gap-2">
                         <div style={{ width: 32, height: 32, borderRadius: 9, background: '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{user.name[0].toUpperCase()}</span>
+                          <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toUpperCase()}</span>
                         </div>
                         <div>
                           <div className="fw-semibold" style={{ fontSize: 13 }}>{user.name} {isMe && <span style={{ fontSize: 9, color: '#e30613', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginLeft: 4 }}>siz</span>}</div>
@@ -140,7 +140,7 @@ export default function UsersTab({ token, currentUserId }: { token: string; curr
                       </span>
                     </td>
                     <td className="align-middle" style={{ fontSize: 11, color: '#adb5bd' }}>
-                      {new Date(user.created_at).toLocaleDateString('az-AZ')}
+                      {user.created_at && !isNaN(new Date(user.created_at).getTime()) ? (() => { try { return new Date(user.created_at).toLocaleDateString('az-AZ'); } catch { return new Date(user.created_at).toLocaleDateString(); } })() : '—'}
                     </td>
                     <td className="align-middle text-end pe-3">
                       <div className="d-flex gap-1 justify-content-end">

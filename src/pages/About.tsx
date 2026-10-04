@@ -6,6 +6,7 @@ import AboutValues from '../sections/about/AboutValues';
 import AboutVisionMission from '../sections/about/AboutVisionMission';
 import AboutApproach from '../sections/about/AboutApproach';
 import AboutPartnerIntro from '../sections/about/AboutPartnerIntro';
+import HomeTeam from '../sections/home/HomeTeam';
 
 export default function About() {
   return (
@@ -15,6 +16,9 @@ export default function About() {
       <AboutApproach />
       <AboutVisionMission />
       <AboutBento />
+      <section id="team-section" aria-label="Komanda">
+        <HomeTeam />
+      </section>
       <AboutTeam />
       <AboutValues />
     </div>

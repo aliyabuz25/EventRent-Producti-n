@@ -36,7 +36,7 @@ export function SiteContentProvider({ children }: { children: React.ReactNode })
       return normalizeLocale(urlLocale);
     }
 
-    const storedLocale = localStorage.getItem('site_locale');
+    const storedLocale = (() => { try { return localStorage.getItem('site_locale'); } catch { return null; } })();
     return normalizeLocale(storedLocale);
   });
 
@@ -53,7 +53,7 @@ export function SiteContentProvider({ children }: { children: React.ReactNode })
 
   /* Geolocation-based locale — only if user hasn't chosen manually */
   useEffect(() => {
-    const stored = localStorage.getItem('site_locale');
+    const stored = (() => { try { return localStorage.getItem('site_locale'); } catch { return null; } })();
     const urlLocale = new URLSearchParams(window.location.search).get('lang');
     if (stored || urlLocale) return;
 

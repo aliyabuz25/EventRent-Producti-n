@@ -20,6 +20,7 @@ export default function ServiceDetail() {
   const currentItem = id && category ? getServiceSubItemBySlug(content, category, id) : null;
 
   if (!currentCategory) return <div className="p-20 text-center">Xidmət tapılmadı.</div>;
+  if (id && !currentItem) return <div className="p-20 text-center">Xidmət tapılmadı.</div>;
 
   const categoryTitle = t(locale, currentCategory.title);
   const categoryDescription = t(locale, currentCategory.description);

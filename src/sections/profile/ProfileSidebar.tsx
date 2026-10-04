@@ -37,7 +37,7 @@ export default function ProfileSidebar({ user, isPremium, activeTab, setActiveTa
     { id: 'support',  label: t(locale, labels.menuSupport),  icon: HelpCircle },
   ];
 
-  const initials = user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const initials = (user.name || user.email || '?').split(' ').map((w: string) => w[0] || '').join('').slice(0, 2).toUpperCase();
 
   return (
     <aside className="lg:w-80 space-y-8">

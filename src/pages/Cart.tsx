@@ -13,7 +13,7 @@ const TOKEN_KEY = 'er_admin_token';
 export default function Cart() {
   const navigate = useNavigate();
   const { locale, content } = useSiteContent();
-  const [cart, setCart]           = useState<any[]>(() => JSON.parse(localStorage.getItem('cart') || '[]'));
+  const [cart, setCart]           = useState<any[]>(() => { try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; } });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError]         = useState<string | null>(null);
@@ -38,7 +38,7 @@ export default function Cart() {
 
   /* sync cart from localStorage */
   useEffect(() => {
-    const sync = () => setCart(JSON.parse(localStorage.getItem('cart') || '[]'));
+    const sync = () => { try { setCart(JSON.parse(localStorage.getItem('cart') || '[]')); } catch { setCart([]); } };
     window.addEventListener('cart-updated', sync);
     return () => window.removeEventListener('cart-updated', sync);
   }, []);

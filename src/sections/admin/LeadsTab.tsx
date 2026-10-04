@@ -12,7 +12,7 @@ const STATUS_MAP: Record<LeadStatus, { bg: string; color: string; label: string 
 };
 
 function Badge({ status }: { status: LeadStatus }) {
-  const s = STATUS_MAP[status];
+  const s = STATUS_MAP[status] ?? { bg: '#f8f9fa', color: '#495057', label: status };
   return (
     <span style={{ background: s.bg, color: s.color, borderRadius: 20, padding: '3px 10px', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
       {s.label}
@@ -40,17 +40,17 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
     onReload?.();
   };
 
-  const filtered = leads.filter(l => {
+  const filtered = (leads ?? []).filter(l => {
     const mf = filter === 'all' || l.status === filter;
     const ms = [l.name, l.email, l.phone].join(' ').toLowerCase().includes(search.toLowerCase());
     return mf && ms;
   });
 
   const stats = {
-    total: leads.length,
-    new: leads.filter(l => l.status === 'new').length,
-    won: leads.filter(l => l.status === 'won').length,
-    conv: leads.length ? Math.round(leads.filter(l => l.status === 'won').length / leads.length * 100) : 0,
+    total: (leads ?? []).length,
+    new: (leads ?? []).filter(l => l.status === 'new').length,
+    won: (leads ?? []).filter(l => l.status === 'won').length,
+    conv: (leads ?? []).length ? Math.round((leads ?? []).filter(l => l.status === 'won').length / (leads ?? []).length * 100) : 0,
   };
 
   const inputCls = 'form-control form-control-sm';
@@ -130,13 +130,13 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
                   </td>
                   <td className="align-middle">
                     <div style={{ fontSize: 12, color: '#495057' }}>
-                      {lead.eventDate ? format(new Date(lead.eventDate), 'dd MMM yyyy') : '—'}
+                      {lead.eventDate && !isNaN(new Date(lead.eventDate).getTime()) ? format(new Date(lead.eventDate), 'dd MMM yyyy') : '—'}
                     </div>
                     <div style={{ fontSize: 11, color: '#adb5bd' }}>{lead.location || '—'}</div>
                   </td>
                   <td className="align-middle">
                     <div className="d-flex gap-1">
-                      {lead.items.slice(0, 3).map((item, idx) => {
+                      {(lead.items ?? []).slice(0, 3).map((item, idx) => {
                         const p = products.find(x => x.id === item.productId);
                         return (
                           <div key={idx} style={{ width: 32, height: 32, borderRadius: 8, background: '#f8f9fa', border: '1px solid #e9ecef', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#adb5bd' }}>
@@ -205,16 +205,16 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
                   <div className="col-md-6">
                     <div className="p-3 rounded-3" style={{ background: '#f8f9fa' }}>
                       <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}><Calendar size={11} /> Tədbir</div>
-                      <div style={{ fontSize: 13 }}>{selected.eventDate ? format(new Date(selected.eventDate), 'dd MMMM yyyy') : 'Tarix qeyd edilməyib'}</div>
+                      <div style={{ fontSize: 13 }}>{selected.eventDate && !isNaN(new Date(selected.eventDate).getTime()) ? format(new Date(selected.eventDate), 'dd MMMM yyyy') : 'Tarix qeyd edilməyib'}</div>
                       <div style={{ fontSize: 12, color: '#6c757d', display: 'flex', alignItems: 'center', gap: 5 }}><MapPin size={11} /> {selected.location || 'Məkan qeyd edilməyib'}</div>
                     </div>
                   </div>
                 </div>
-                {selected.items.length > 0 && (
+                {(selected.items ?? []).length > 0 && (
                   <div className="mb-3">
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}><Package size={11} /> Məhsullar</div>
                     <div className="d-flex flex-column gap-2">
-                      {selected.items.map((item, idx) => {
+                      {(selected.items ?? []).map((item, idx) => {
                         const p = products.find(x => x.id === item.productId);
                         return (
                           <div key={idx} className="d-flex align-items-center gap-3 p-2 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>

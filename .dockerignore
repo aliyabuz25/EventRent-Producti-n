@@ -1,9 +1,0 @@
-node_modules
-dist
-.git
-.claude
-Knowledge
-*.md
-!nginx.conf
-.env
-.env.*

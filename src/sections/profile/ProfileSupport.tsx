@@ -32,7 +32,7 @@ export default function ProfileSupport() {
   const [error, setError]       = useState<string | null>(null);
   const [success, setSuccess]   = useState(false);
 
-  const token = localStorage.getItem(TOKEN_KEY) || '';
+  const token = (() => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } })();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
   const L = {

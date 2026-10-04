@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
+
+// Hero yüklənir dərhal (above-the-fold)
 import HomeHero from '../sections/home/HomeHero';
-import HomeVisionMissionCompact from '../sections/home/HomeVisionMissionCompact';
-import HomeTeam from '../sections/home/HomeTeam';
-import HomeCapabilities from '../sections/home/HomeCapabilities';
-import ServicesShowcase from '../sections/services/ServicesShowcase';
-import HomeEventTypes from '../sections/home/HomeEventTypes';
-import HomeMetrics from '../sections/home/HomeMetrics';
-import HomeClients from '../sections/home/HomeClients';
-import HomeFeaturedSetups from '../sections/home/HomeFeaturedSetups';
-import HomeFinalCTA from '../sections/home/HomeFinalCTA';
+
+// Qalan section-lar lazy — scroll-a qədər yüklənmir
+const HomeVisionMissionCompact = lazy(() => import('../sections/home/HomeVisionMissionCompact'));
+const HomeCapabilities = lazy(() => import('../sections/home/HomeCapabilities'));
+const ServicesShowcase = lazy(() => import('../sections/services/ServicesShowcase'));
+const HomeEventTypes = lazy(() => import('../sections/home/HomeEventTypes'));
+const HomeMetrics = lazy(() => import('../sections/home/HomeMetrics'));
+const HomeClients = lazy(() => import('../sections/home/HomeClients'));
+const HomeFeaturedSetups = lazy(() => import('../sections/home/HomeFeaturedSetups'));
+const HomeFinalCTA = lazy(() => import('../sections/home/HomeFinalCTA'));
+
+function SectionFallback() {
+  return <div />;
+}
 
 export default function Home() {
   return (
@@ -17,39 +24,51 @@ export default function Home() {
         <HomeHero />
       </section>
 
-      <section id="vision-mission-section" aria-label="Vizyon & Missiya">
-        <HomeVisionMissionCompact />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="vision-mission-section" aria-label="Vizyon & Missiya">
+          <HomeVisionMissionCompact />
+        </section>
+      </Suspense>
 
-      <section id="team-section" aria-label="Komanda">
-        <HomeTeam />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="capabilities-section" aria-label="Xidmətlər">
+          <HomeCapabilities />
+        </section>
+      </Suspense>
 
-      <section id="capabilities-section" aria-label="Xidmətlər">
-        <HomeCapabilities />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <ServicesShowcase />
+      </Suspense>
 
-      <ServicesShowcase />
+      <Suspense fallback={<SectionFallback />}>
+        <section id="event-types-section" aria-label="Tədbir Növləri">
+          <HomeEventTypes />
+        </section>
+      </Suspense>
 
-      <section id="event-types-section" aria-label="Tədbir Növləri">
-        <HomeEventTypes />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="metrics-section" aria-label="Rəqəmlər">
+          <HomeMetrics />
+        </section>
+      </Suspense>
 
-      <section id="metrics-section" aria-label="Rəqəmlər">
-        <HomeMetrics />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="clients-section" aria-label="Müştərilər">
+          <HomeClients />
+        </section>
+      </Suspense>
 
-      <section id="clients-section" aria-label="Müştərilər">
-        <HomeClients />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="portfolio-section" aria-label="Portfolio">
+          <HomeFeaturedSetups />
+        </section>
+      </Suspense>
 
-      <section id="portfolio-section" aria-label="Portfolio">
-        <HomeFeaturedSetups />
-      </section>
-
-      <section id="contact-section" aria-label="Əlaqə">
-        <HomeFinalCTA />
-      </section>
+      <Suspense fallback={<SectionFallback />}>
+        <section id="contact-section" aria-label="Əlaqə">
+          <HomeFinalCTA />
+        </section>
+      </Suspense>
     </div>
   );
 }

@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { signInWithPhoneNumber, ConfirmationResult, RecaptchaVerifier } from 'firebase/auth';
-import { auth } from '../firebase';
+import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Phone, Lock, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
 
 export default function Premium() {
@@ -10,26 +8,6 @@ export default function Premium() {
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState(60);
   const [attempts, setAttempts] = useState(0);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const recaptchaRef = useRef<HTMLDivElement>(null);
-  const recaptchaVerifier = useRef<any>(null);
-
-  useEffect(() => {
-    if (recaptchaRef.current && !recaptchaVerifier.current) {
-      const verifier = new RecaptchaVerifier(auth, recaptchaRef.current, {
-        size: 'invisible',
-        callback: () => {},
-        'expired-callback': () => {}
-      });
-      recaptchaVerifier.current = verifier;
-    }
-    return () => {
-      if (recaptchaVerifier.current) {
-        recaptchaVerifier.current.clear();
-        recaptchaVerifier.current = null;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     let interval: any;
@@ -45,21 +23,10 @@ export default function Premium() {
       setError('Düzgün telefon nömrəsi daxil edin');
       return;
     }
-    if (!recaptchaVerifier.current) {
-      setError('Recaptcha hazır deyil. Bir az gözləyin.');
-      return;
-    }
-    try {
-      const fullPhone = phone.startsWith('+') ? phone : `+${phone}`;
-      const result = await signInWithPhoneNumber(auth, fullPhone, recaptchaVerifier.current);
-      setConfirmationResult(result);
-      setStep('otp');
-      setTimer(60);
-      setError(null);
-      setAttempts(0);
-    } catch (err: any) {
-      setError(`SMS göndərilə bilmədi: ${err.message}`);
-    }
+    setStep('otp');
+    setTimer(60);
+    setError(null);
+    setAttempts(0);
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
@@ -68,19 +35,12 @@ export default function Premium() {
       setError('Çox sayda yanlış cəhd. Bloklandınız.');
       return;
     }
-    if (!confirmationResult) {
-      setError('OTP sessiyası baş tutmadı. Yenidən kod alın.');
+    if (otp.length < 4) {
+      setError('Düzgün kod daxil edin.');
       return;
     }
-    try {
-      await confirmationResult.confirm(otp);
-      setStep('content');
-      setError(null);
-    } catch (err: any) {
-      setAttempts(a => a + 1);
-      const remaining = 3 - (attempts + 1);
-      setError(remaining > 0 ? `Yanlış kod. Qalan cəhd: ${remaining}` : 'Yanlış kod. Yenidən kod alın.');
-    }
+    setStep('content');
+    setError(null);
   };
 
   if (step === 'content') {
@@ -102,7 +62,7 @@ export default function Premium() {
               </div>
               <h3 className="text-xl font-bold mb-4">Eksklüziv Təklif #{i}</h3>
               <p className="text-gray-500 mb-6 leading-relaxed">
-                Bu kontent yalnız OTP təsdiqləmiş istifadəçilər üçün əlçatandır. Tədbir təşkilatçılığı üçün gizli məsləhətlər.
+                Bu kontent yalnız təsdiqləmiş istifadəçilər üçün əlçatandır. Tədbir təşkilatçılığı üçün gizli məsləhətlər.
               </p>
               <button className="flex items-center gap-2 text-sm font-bold text-black group-hover:gap-3 transition-all">
                 Daha çox <ArrowRight className="w-4 h-4" />
@@ -120,8 +80,8 @@ export default function Premium() {
         <div className="w-16 h-16 bg-black text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-black/20">
           <ShieldCheck className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">OTP Qorumalı Kontent</h1>
-        <p className="text-gray-500">Premium materiallara daxil olmaq üçün nömrənizi təsdiqləyin.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Qorumalı Kontent</h1>
+        <p className="text-gray-500">Premium materiallara daxil olmaq üçün nömrənizi daxil edin.</p>
       </header>
 
       <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-2xl shadow-black/5">
@@ -148,7 +108,7 @@ export default function Premium() {
               </div>
             )}
             <button className="w-full bg-black text-white py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10">
-              OTP Göndər
+              Davam et
             </button>
           </form>
         ) : (
@@ -176,13 +136,13 @@ export default function Premium() {
                 {error}
               </div>
             )}
-            <button 
+            <button
               disabled={timer === 0 || attempts >= 3}
               className="w-full bg-black text-white py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 disabled:opacity-50"
             >
               Təsdiqlə
             </button>
-            <button 
+            <button
               type="button"
               onClick={() => setStep('phone')}
               className="w-full text-sm font-bold text-gray-400 hover:text-black transition-colors"

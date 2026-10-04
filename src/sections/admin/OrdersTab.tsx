@@ -108,11 +108,16 @@ export default function OrdersTab({ token }: { token: string }) {
 
   const handleSendEmail = async (id: number) => {
     setSendingEmail(id);
-    const res = await fetch(`/api/orders/${id}/send-email`, { method: 'POST', headers: h });
-    const data = await res.json();
-    setSendingEmail(null);
-    if (data.ok) toast.success('Email göndərildi!');
-    else toast.error('Email göndərilmədi. SMTP ayarlarını yoxlayın.');
+    try {
+      const res = await fetch(`/api/orders/${id}/send-email`, { method: 'POST', headers: h });
+      const data = res.ok ? await res.json() : {};
+      setSendingEmail(null);
+      if (data.ok) toast.success('Email göndərildi!');
+      else toast.error('Email göndərilmədi. SMTP ayarlarını yoxlayın.');
+    } catch {
+      setSendingEmail(null);
+      toast.error('Email göndərilmədi. Serverə qoşulma xətası.');
+    }
   };
 
   const inputCls = 'form-control form-control-sm';
@@ -258,7 +263,7 @@ export default function OrdersTab({ token }: { token: string }) {
                   </div>
                   <div>
                     <h6 className="mb-0 fw-bold">{selected.name}</h6>
-                    <div style={{ fontSize: 11, color: '#adb5bd' }}>Sifariş #{selected.id} · {new Date(selected.created_at).toLocaleDateString('az-AZ')}</div>
+                    <div style={{ fontSize: 11, color: '#adb5bd' }}>Sifariş #{selected.id} · {fmtDate(selected.created_at)}</div>
                   </div>
                   <Badge status={selected.status} />
                 </div>

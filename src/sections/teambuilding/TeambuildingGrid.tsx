@@ -23,7 +23,7 @@ export default function TeambuildingGrid({ activeTab, filteredGames, concepts, v
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               className="group relative aspect-square rounded-[40px] overflow-hidden shadow-2xl cursor-pointer"
-              onClick={() => onGameClick(game)}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onGameClick(game); }}
             >
               <img 
                 src={game.image} 

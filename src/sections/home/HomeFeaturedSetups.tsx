@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useGsap, gsap } from '../../motion/useGsap';
 import { ArrowRight } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
@@ -48,15 +48,20 @@ const ProjectCard = ({ project }: { project: any }) => {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
 
+  // Cache rect — only update on mount/resize, not every mousemove
+  const rectRef = useRef<DOMRect | null>(null);
+  const updateRect = () => { rectRef.current = cardRef.current?.getBoundingClientRect() ?? null; };
+  useEffect(() => {
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    return () => window.removeEventListener('resize', updateRect);
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = cardRef.current?.getBoundingClientRect();
+    const rect = rectRef.current;
     if (!rect) return;
-
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
   const handleMouseLeave = () => {
@@ -149,8 +154,9 @@ export default function HomeFeaturedSetups() {
       }
     });
 
+    // Use scaleX instead of width to avoid layout reflow on every scrub frame
     gsap.to('#horizontal-progress', {
-      width: '100%',
+      scaleX: 1,
       ease: 'none',
       scrollTrigger: {
         trigger: component.current,
@@ -190,7 +196,7 @@ export default function HomeFeaturedSetups() {
 
       <div
         ref={slider}
-        className="flex gap-10 md:gap-12 px-6 md:px-12 h-[70vh] w-fit items-center relative z-10"
+        className="flex gap-10 md:gap-12 px-6 md:px-12 h-[70vh] w-fit items-center relative z-10 will-change-transform"
       >
         {projects.map((project, i) => (
           <ProjectCard key={i} project={project} />
@@ -208,8 +214,8 @@ export default function HomeFeaturedSetups() {
 
       <div className="absolute bottom-10 md:bottom-12 left-6 md:left-12 right-6 md:right-12 z-20 h-px bg-white/10">
         <motion.div
-          className="absolute top-0 left-0 h-full bg-premium-orange"
-          style={{ width: '0%' }}
+          className="absolute top-0 left-0 h-full w-full bg-premium-orange origin-left"
+          style={{ scaleX: 0 }}
           id="horizontal-progress"
         />
       </div>

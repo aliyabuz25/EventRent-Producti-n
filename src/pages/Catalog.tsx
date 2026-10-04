@@ -18,9 +18,9 @@ export default function Catalog() {
 
   useEffect(() => {
     fetch('/api/products')
-      .then(r => r.json())
-      .then((data: Product[]) => {
-        setProducts(data.filter((p: any) => p.active !== 0));
+      .then(r => r.ok ? r.json() : [])
+      .then((data: any) => {
+        setProducts(Array.isArray(data) ? data.filter((p: any) => p.active !== 0) : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));

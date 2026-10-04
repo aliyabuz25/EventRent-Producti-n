@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import crypto from 'node:crypto';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -16,13 +17,21 @@ const app  = express();
 const PORT = Number(process.env.PORT || 4320);
 const CONTENT_FILE_PATH = path.resolve('data/site-content.json');
 const DB_PATH = path.resolve(process.env.DB_PATH || 'data/eventrent.db');
-const JWT_SECRET = process.env.JWT_SECRET || 'ev3ntr3nt_s3cr3t_' + Date.now();
+const JWT_SECRET = process.env.JWT_SECRET || 'ev3ntr3nt_pr0d_s3cr3t_2025';
 
 app.use(express.json({ limit: '4mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.resolve('uploads')));
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5050,http://localhost:5173').split(',');
+
+// Rate limiters
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Çox cəhd. 15 dəq sonra yenidən cəhd edin.' }, standardHeaders: true, legacyHeaders: false });
+const otpLimiter  = rateLimit({ windowMs: 5  * 60 * 1000, max: 5,  message: { error: 'Çox OTP sorğusu. 5 dəq sonra yenidən cəhd edin.' }, standardHeaders: true, legacyHeaders: false });
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin || '';
+  if (ALLOWED_ORIGINS.includes(origin) || !origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
@@ -37,7 +46,7 @@ let db;
 function initDb() {
   const Database = require('better-sqlite3');
   const dataDir  = path.dirname(DB_PATH);
-  if (!existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
   db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
   db.exec(`
@@ -126,27 +135,101 @@ function initDb() {
       active      INTEGER DEFAULT 1,
       created_at  TEXT NOT NULL DEFAULT (datetime('now'))
     );
-    CREATE TABLE IF NOT EXISTS leads (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      name       TEXT NOT NULL,
-      phone      TEXT DEFAULT '',
-      email      TEXT DEFAULT '',
-      message    TEXT DEFAULT '',
-      status     TEXT NOT NULL DEFAULT 'new',
-      created_at TEXT NOT NULL DEFAULT (datetime('now')),
-      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    );
-  `);
+CREATE TABLE IF NOT EXISTS leads (
+       id         INTEGER PRIMARY KEY AUTOINCREMENT,
+       name       TEXT NOT NULL,
+       phone      TEXT DEFAULT '',
+       email      TEXT DEFAULT '',
+       message    TEXT DEFAULT '',
+       status     TEXT NOT NULL DEFAULT 'new',
+       created_at TEXT NOT NULL DEFAULT (datetime('now')),
+       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+     );
+   `);
 
-  /* seed first admin if table empty */
-  const count = db.prepare('SELECT COUNT(*) as c FROM users').get();
-  if (count.c === 0) {
-    const bcrypt = require('bcryptjs');
-    const hashed = bcrypt.hashSync('admin123', 10);
-    db.prepare(`INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')`)
-      .run('Admin', 'admin@eventrent.az', hashed);
-    console.log('✓ Default admin created: admin@eventrent.az / admin123');
-  }
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS wa_logs (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      phone       TEXT NOT NULL DEFAULT '',
+      message     TEXT NOT NULL DEFAULT '',
+      direction   TEXT NOT NULL DEFAULT 'out',
+      created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `).run();
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS tb_applications (
+      id          TEXT PRIMARY KEY,
+      order_no    TEXT NOT NULL DEFAULT '',
+      name        TEXT NOT NULL,
+      phone       TEXT NOT NULL,
+      company     TEXT NOT NULL DEFAULT '',
+      game_id     TEXT NOT NULL DEFAULT '',
+      game_name   TEXT NOT NULL DEFAULT '',
+      extra       TEXT NOT NULL DEFAULT '{}',
+      status      TEXT NOT NULL DEFAULT 'new',
+      created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `).run();
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS catering_orders (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      name        TEXT NOT NULL,
+      phone       TEXT NOT NULL,
+      email       TEXT NOT NULL DEFAULT '',
+      guests      TEXT NOT NULL DEFAULT '',
+      location    TEXT NOT NULL DEFAULT '',
+      date        TEXT NOT NULL DEFAULT '',
+      time_range  TEXT NOT NULL DEFAULT '',
+      format      TEXT NOT NULL DEFAULT '',
+      menu_note   TEXT NOT NULL DEFAULT '',
+      package_name TEXT NOT NULL DEFAULT '',
+      status      TEXT NOT NULL DEFAULT 'new',
+      created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `).run();
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS catering_packages (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      name        TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      price       TEXT NOT NULL DEFAULT '',
+      price_note  TEXT NOT NULL DEFAULT '',
+      features    TEXT NOT NULL DEFAULT '[]',
+      badge       TEXT NOT NULL DEFAULT '',
+      badge_color TEXT NOT NULL DEFAULT 'orange',
+      image_url   TEXT NOT NULL DEFAULT '',
+      is_popular  INTEGER NOT NULL DEFAULT 0,
+      active      INTEGER NOT NULL DEFAULT 1,
+      sort_order  INTEGER NOT NULL DEFAULT 0,
+      created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `).run();
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS reels (
+      id          TEXT PRIMARY KEY,
+      title       TEXT NOT NULL,
+      client      TEXT NOT NULL DEFAULT '',
+      date_label  TEXT NOT NULL DEFAULT '',
+      location    TEXT NOT NULL DEFAULT '',
+      category    TEXT NOT NULL DEFAULT '',
+      tags        TEXT NOT NULL DEFAULT '[]',
+      media_type  TEXT NOT NULL DEFAULT 'video',
+      media_url   TEXT NOT NULL DEFAULT '',
+      poster_url  TEXT NOT NULL DEFAULT '',
+      sort_order  INTEGER NOT NULL DEFAULT 0,
+      active      INTEGER NOT NULL DEFAULT 1,
+      created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `).run();
+
   console.log('✓ SQLite ready:', DB_PATH);
 }
 
@@ -201,9 +284,9 @@ async function buildTransporter(cfg = null) {
       console.warn('⚠ SMTP: host, user or password missing');
       transporter = null; return false;
     }
-    const tlsOptions = secure
-      ? { rejectUnauthorized: false }
-      : { rejectUnauthorized: false };
+const tlsOptions = secure
+     ? { rejectUnauthorized: false }   // SSL — cert check disabled for self-signed certs
+     : {};
     const t = nodemailer.createTransport({
       host, port, secure,
       auth: { user, pass },
@@ -479,6 +562,44 @@ function supportReplyEmailHtml(ticket, replyText, lang = 'az') {
 }
 
 /* ══════════════════════════════════════════
+   SETUP — ilk qurulum (yalnız admin yoxdursa)
+══════════════════════════════════════════ */
+
+// Check if setup needed
+app.get('/api/setup/status', (req, res) => {
+  const count = db.prepare("SELECT COUNT(*) as c FROM users WHERE role='admin' AND active=1").get();
+  res.json({ needsSetup: count.c === 0 });
+});
+
+// Create first admin (only if no admin exists)
+app.post('/api/setup', (req, res) => {
+  const count = db.prepare("SELECT COUNT(*) as c FROM users WHERE role='admin' AND active=1").get();
+  if (count.c > 0) return res.status(403).json({ error: 'Qurulum artıq tamamlanmışdır.' });
+
+  const { name, email, password } = req.body;
+  if (!name?.trim() || !email?.trim() || !password?.trim())
+    return res.status(400).json({ error: 'Ad, email və şifrə mütləqdir.' });
+  if (password.length < 8)
+    return res.status(400).json({ error: 'Şifrə ən az 8 simvol olmalıdır.' });
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return res.status(400).json({ error: 'Düzgün email formatı daxil edin.' });
+
+  const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase().trim());
+  if (existing) return res.status(409).json({ error: 'Bu email artıq istifadə olunur.' });
+
+  const bcrypt = require('bcryptjs');
+  const hashed = bcrypt.hashSync(password, 10);
+  const result = db.prepare("INSERT INTO users (name, email, password, role, active) VALUES (?, ?, ?, 'admin', 1)")
+    .run(name.trim(), email.toLowerCase().trim(), hashed);
+
+  const user  = db.prepare('SELECT id,name,email,role,active FROM users WHERE id=?').get(result.lastInsertRowid);
+  const token = signToken({ id: user.id, email: user.email, role: user.role });
+  console.log(`✓ First admin created: ${email}`);
+  res.status(201).json({ token, user });
+});
+
+/* ══════════════════════════════════════════
    AUTH ROUTES
 ══════════════════════════════════════════ */
 app.post('/api/auth/register', (req, res) => {
@@ -495,7 +616,7 @@ app.post('/api/auth/register', (req, res) => {
   res.status(201).json({ token, user });
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', loginLimiter, (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email və parol tələb olunur.' });
   const user = db.prepare('SELECT * FROM users WHERE email=? AND active=1').get(email.toLowerCase().trim());
@@ -722,6 +843,42 @@ app.delete('/api/leads/:id', authMiddleware, adminOnly, (req, res) => {
   const lead = db.prepare('SELECT * FROM leads WHERE id=?').get(req.params.id);
   if (!lead) return res.status(404).json({ error: 'Tapılmadı.' });
   db.prepare('DELETE FROM leads WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* ══════════════════════════════════════════
+   REELS / PORTFOLIO
+══════════════════════════════════════════ */
+app.get('/api/reels', (_req, res) => {
+  const rows = db.prepare('SELECT * FROM reels ORDER BY sort_order ASC, created_at DESC').all();
+  res.json(rows.map(r => ({ ...r, tags: JSON.parse(r.tags || '[]'), active: !!r.active })));
+});
+
+app.post('/api/reels', authMiddleware, adminOnly, (req, res) => {
+  const { title, client, date_label, location, category, tags, media_type, media_url, poster_url, sort_order } = req.body;
+  if (!title || !media_url) return res.status(400).json({ error: 'title və media_url mütləqdir.' });
+  const id = 'reel_' + Date.now();
+  db.prepare(`INSERT INTO reels (id,title,client,date_label,location,category,tags,media_type,media_url,poster_url,sort_order)
+              VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+    .run(id, title, client||'', date_label||'', location||'', category||'', JSON.stringify(tags||[]), media_type||'video', media_url, poster_url||'', sort_order||0);
+  const reel = db.prepare('SELECT * FROM reels WHERE id=?').get(id);
+  res.status(201).json({ ...reel, tags: JSON.parse(reel.tags), active: !!reel.active });
+});
+
+app.put('/api/reels/:id', authMiddleware, adminOnly, (req, res) => {
+  const { title, client, date_label, location, category, tags, media_type, media_url, poster_url, sort_order, active } = req.body;
+  const existing = db.prepare('SELECT * FROM reels WHERE id=?').get(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare(`UPDATE reels SET title=?,client=?,date_label=?,location=?,category=?,tags=?,media_type=?,media_url=?,poster_url=?,sort_order=?,active=?,updated_at=datetime('now') WHERE id=?`)
+    .run(title, client||'', date_label||'', location||'', category||'', JSON.stringify(tags||[]), media_type||'video', media_url, poster_url||'', sort_order??0, active===false?0:1, req.params.id);
+  const reel = db.prepare('SELECT * FROM reels WHERE id=?').get(req.params.id);
+  res.json({ ...reel, tags: JSON.parse(reel.tags), active: !!reel.active });
+});
+
+app.delete('/api/reels/:id', authMiddleware, adminOnly, (req, res) => {
+  const existing = db.prepare('SELECT * FROM reels WHERE id=?').get(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare('DELETE FROM reels WHERE id=?').run(req.params.id);
   res.json({ ok: true });
 });
 
@@ -1155,9 +1312,322 @@ app.post('/api/content/restore/:filename', authMiddleware, adminOnly, async (req
 });
 
 /* ══════════════════════════════════════════
+   WHATSAPP (Baileys) + OTP
+══════════════════════════════════════════ */
+let waSocket = null;
+let waQr = null;
+let waStatus = 'disconnected'; // disconnected | qr | connecting | connected
+const OTP_STORE = new Map(); // phone -> { code, expires, attempts }
+
+async function startWhatsApp() {
+  try {
+    const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = await import('@whiskeysockets/baileys');
+    const pino = (await import('pino')).default;
+
+    const sessionDir = path.resolve('data/wa_session');
+    if (!existsSync(sessionDir)) mkdirSync(sessionDir, { recursive: true });
+
+    const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
+    const { version } = await fetchLatestBaileysVersion();
+
+    waSocket = makeWASocket({
+      version,
+      auth: state,
+      logger: pino({ level: 'silent' }),
+      printQRInTerminal: false,
+      browser: ['EventRent', 'Chrome', '120.0.0'],
+    });
+
+    waSocket.ev.on('creds.update', saveCreds);
+
+    waSocket.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+      if (qr) {
+        waQr = qr;
+        waStatus = 'qr';
+        console.log('📱 WhatsApp QR hazır — Admin paneldən skan edin');
+      }
+      if (connection === 'open') {
+        waQr = null;
+        waStatus = 'connected';
+        console.log('✅ WhatsApp qoşuldu');
+      }
+      if (connection === 'close') {
+        const code = lastDisconnect?.error?.output?.statusCode;
+        const shouldReconnect = code !== DisconnectReason.loggedOut;
+        waStatus = 'disconnected';
+        waQr = null;
+        console.log('WhatsApp bağlantı kəsildi, kod:', code);
+        if (shouldReconnect) {
+          setTimeout(startWhatsApp, 5000);
+        }
+      }
+    });
+  } catch (err) {
+    console.error('WhatsApp başlatıla bilmədi:', err.message);
+  }
+}
+
+async function sendWhatsApp(phone, message) {
+  if (!waSocket || waStatus !== 'connected') throw new Error('WhatsApp qoşulu deyil');
+  const jid = phone.replace(/\D/g, '') + '@s.whatsapp.net';
+  await waSocket.sendMessage(jid, { text: message });
+  // Log to DB
+  db.prepare(`INSERT INTO wa_logs (phone, message, direction) VALUES (?,?,'out')`).run(phone, message);
+}
+
+function generateOtp() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+// WhatsApp status + QR
+app.get('/api/wa/status', authMiddleware, adminOnly, (_req, res) => {
+  res.json({ status: waStatus, qr: waQr });
+});
+
+app.post('/api/wa/reconnect', authMiddleware, adminOnly, async (_req, res) => {
+  waStatus = 'connecting';
+  startWhatsApp().catch(() => {});
+  res.json({ ok: true });
+});
+
+app.post('/api/wa/disconnect', authMiddleware, adminOnly, async (_req, res) => {
+  try {
+    if (waSocket) { await waSocket.logout(); waSocket = null; }
+    waStatus = 'disconnected'; waQr = null;
+  } catch {}
+  res.json({ ok: true });
+});
+
+app.post('/api/wa/send', authMiddleware, adminOnly, async (req, res) => {
+  const { phone, message } = req.body;
+  if (!phone || !message) return res.status(400).json({ error: 'phone və message lazımdır.' });
+  try {
+    await sendWhatsApp(phone, message);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/wa/logs', authMiddleware, adminOnly, (_req, res) => {
+  const logs = db.prepare('SELECT * FROM wa_logs ORDER BY created_at DESC LIMIT 200').all();
+  res.json(logs);
+});
+
+app.delete('/api/wa/logs', authMiddleware, adminOnly, (_req, res) => {
+  db.prepare('DELETE FROM wa_logs').run();
+  res.json({ ok: true });
+});
+
+// OTP: göndər
+app.post('/api/otp/send', otpLimiter, async (req, res) => {
+  const { phone } = req.body;
+  if (!phone) return res.status(400).json({ error: 'Telefon nömrəsi lazımdır.' });
+  const clean = phone.replace(/\D/g, '');
+  if (clean.length < 7) return res.status(400).json({ error: 'Düzgün telefon nömrəsi daxil edin.' });
+
+  const code = generateOtp();
+  OTP_STORE.set(clean, { code, expires: Date.now() + 5 * 60 * 1000, attempts: 0 });
+
+  const msg = `🔐 EventRent\n\nTəsdiq kodunuz: *${code}*\n\nBu kod 5 dəqiqə ərzində etibarlıdır.`;
+
+  if (waStatus === 'connected') {
+    try {
+      await sendWhatsApp(clean, msg);
+      res.json({ ok: true, via: 'whatsapp' });
+    } catch (err) {
+      // Fallback: dev mode - return code
+      console.log(`OTP [${clean}]: ${code}`);
+      res.json({ ok: true, via: 'fallback', _dev_code: process.env.NODE_ENV !== 'production' ? code : undefined });
+    }
+  } else {
+    // WhatsApp qoşulu deyilsə dev mode
+    console.log(`OTP [${clean}]: ${code}`);
+    res.json({ ok: true, via: 'fallback', _dev_code: process.env.NODE_ENV !== 'production' ? code : undefined });
+  }
+});
+
+// OTP: yoxla
+app.post('/api/otp/verify', (req, res) => {
+  const { phone, code } = req.body;
+  const clean = phone?.replace(/\D/g, '');
+  const entry = OTP_STORE.get(clean);
+
+  if (!entry) return res.status(400).json({ error: 'OTP tapılmadı. Yenidən göndərin.' });
+  if (Date.now() > entry.expires) { OTP_STORE.delete(clean); return res.status(400).json({ error: 'OTP müddəti bitib.' }); }
+  if (entry.attempts >= 5) { OTP_STORE.delete(clean); return res.status(400).json({ error: 'Çox sayda yanlış giriş. Yenidən göndərin.' }); }
+  if (entry.code !== String(code).trim()) {
+    entry.attempts++;
+    return res.status(400).json({ error: 'Yanlış kod. Cəhd sayı: ' + entry.attempts });
+  }
+
+  OTP_STORE.delete(clean);
+  res.json({ ok: true });
+});
+
+/* ══════════════════════════════════════════
+   TB APPLICATIONS (Teambuilding başvuruları)
+══════════════════════════════════════════ */
+app.get('/api/tb/applications', authMiddleware, adminOnly, (_req, res) => {
+  const rows = db.prepare('SELECT * FROM tb_applications ORDER BY created_at DESC').all();
+  res.json(rows.map(r => ({ ...r, extra: JSON.parse(r.extra || '{}') })));
+});
+
+app.post('/api/tb/applications', async (req, res) => {
+  const { name, phone, company, game_id, game_name, concept_id, concept_name, location, participants, date } = req.body;
+  if (!name || !phone) return res.status(400).json({ error: 'Ad və telefon mütləqdir.' });
+
+  const id = 'tba_' + Date.now();
+  
+  // Avtomatik sifariş nömrəsi (#TB-100X)
+  const count = db.prepare("SELECT COUNT(*) as c FROM tb_applications").get().c;
+  const order_no = 'TB-' + (1000 + count + 1);
+
+  const extra = JSON.stringify({ location, participants, date, concept_id, concept_name });
+  db.prepare(`INSERT INTO tb_applications (id,order_no,name,phone,company,game_id,game_name,extra,status) VALUES (?,?,?,?,?,?,?,?,'new')`)
+    .run(id, order_no, name, phone, company || '', game_id || '', game_name || '', extra);
+
+  const app_row = db.prepare('SELECT * FROM tb_applications WHERE id=?').get(id);
+
+  // WA mesajı müştəriyə
+  const siteUrl = process.env.SITE_URL || 'http://localhost:5050';
+  const clientMsg = `✅ *EventRent — Müraciətiniz qəbul edildi!*\n\nSifariş Nömrəsi: ${order_no}\nAd: ${name}\nŞirkət: ${company || '—'}\nOyun: ${game_name || '—'}\nMəkan: ${location || '—'}\nTarix: ${date || '—'}\nİştirakçı: ${participants || '—'}\n\n🔗 Sifarişi izləyin: ${siteUrl}/track/${order_no.replace('#', '')}\n\n📞 Tezliklə sizinlə əlaqə saxlayacağıq.`;
+
+  // WA mesajı sahibəyə
+  const ownerPhone = process.env.OWNER_WA_PHONE || '';
+  const ownerMsg = `🔔 *Yeni Teambuilding Başvurusu (${order_no})!*\n\nAd: ${name}\nTelefon: ${phone}\nŞirkət: ${company || '—'}\nOyun: ${game_name || '—'}\nKonsepsiya: ${concept_name || '—'}\nMəkan: ${location || '—'}\nTarix: ${date || '—'}\nİştirakçı: ${participants || '—'}`;
+
+  if (waStatus === 'connected') {
+    sendWhatsApp(phone.replace(/\D/g, ''), clientMsg).catch(() => {});
+    if (ownerPhone) sendWhatsApp(ownerPhone.replace(/\D/g, ''), ownerMsg).catch(() => {});
+  }
+
+  res.status(201).json({ ok: true, id, app: { ...app_row, extra: JSON.parse(app_row.extra) } });
+});
+
+app.patch('/api/tb/applications/:id/status', authMiddleware, adminOnly, (req, res) => {
+  const { status } = req.body;
+  const VALID = ['new', 'in_progress', 'done', 'cancelled'];
+  if (!status || !VALID.includes(status)) return res.status(400).json({ error: 'Yanlış status.' });
+  const exists = db.prepare('SELECT id FROM tb_applications WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare(`UPDATE tb_applications SET status=?, updated_at=datetime('now') WHERE id=?`).run(status, req.params.id);
+  res.json({ ok: true });
+});
+
+app.delete('/api/tb/applications/:id', authMiddleware, adminOnly, (req, res) => {
+  const exists = db.prepare('SELECT id FROM tb_applications WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare('DELETE FROM tb_applications WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+// Public tracking endpoint
+app.get('/api/tb/track/:order_no', (req, res) => {
+  const row = db.prepare('SELECT id,order_no,name,game_name,status,created_at FROM tb_applications WHERE order_no=?').get(req.params.order_no);
+  if (!row) return res.status(404).json({ error: 'Sifariş tapılmadı.' });
+  res.json({ ...row });
+});
+
+/* ══════════════════════════════════════════
+   Catering Packages
+══════════════════════════════════════════ */
+
+// Public — list active packages
+app.get('/api/catering/packages', (req, res) => {
+  const rows = db.prepare(`SELECT * FROM catering_packages WHERE active=1 ORDER BY sort_order ASC, id ASC`).all();
+  res.json(rows.map(r => ({ ...r, features: JSON.parse(r.features || '[]') })));
+});
+
+// Admin — list all packages
+app.get('/api/catering/packages/all', authMiddleware, adminOnly, (req, res) => {
+  const rows = db.prepare(`SELECT * FROM catering_packages ORDER BY sort_order ASC, id ASC`).all();
+  res.json(rows.map(r => ({ ...r, features: JSON.parse(r.features || '[]') })));
+});
+
+// Admin — create
+app.post('/api/catering/packages', authMiddleware, adminOnly, (req, res) => {
+  const { name, description, price, price_note, features, badge, badge_color, image_url, is_popular, active, sort_order } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Ad mütləqdir.' });
+  const { lastInsertRowid } = db.prepare(`
+    INSERT INTO catering_packages (name, description, price, price_note, features, badge, badge_color, image_url, is_popular, active, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(name, description||'', price||'', price_note||'', JSON.stringify(features||[]), badge||'', badge_color||'orange', image_url||'', is_popular?1:0, active!==false?1:0, sort_order||0);
+  const row = db.prepare('SELECT * FROM catering_packages WHERE id=?').get(lastInsertRowid);
+  res.status(201).json({ ...row, features: JSON.parse(row.features) });
+});
+
+// Admin — update
+app.put('/api/catering/packages/:id', authMiddleware, adminOnly, (req, res) => {
+  const exists = db.prepare('SELECT id FROM catering_packages WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  const { name, description, price, price_note, features, badge, badge_color, image_url, is_popular, active, sort_order } = req.body;
+  db.prepare(`
+    UPDATE catering_packages SET name=?, description=?, price=?, price_note=?, features=?, badge=?, badge_color=?, image_url=?, is_popular=?, active=?, sort_order=?, updated_at=datetime('now') WHERE id=?
+  `).run(name, description||'', price||'', price_note||'', JSON.stringify(features||[]), badge||'', badge_color||'orange', image_url||'', is_popular?1:0, active!==false?1:0, sort_order||0, req.params.id);
+  const row = db.prepare('SELECT * FROM catering_packages WHERE id=?').get(req.params.id);
+  res.json({ ...row, features: JSON.parse(row.features) });
+});
+
+// Admin — delete
+app.delete('/api/catering/packages/:id', authMiddleware, adminOnly, (req, res) => {
+  const exists = db.prepare('SELECT id FROM catering_packages WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare('DELETE FROM catering_packages WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+// Public — catering order (ayrıca catering_orders cədvəlinə)
+app.post('/api/catering/orders', async (req, res) => {
+  const { name, phone, email, guests, package_name, location, date, time_range, format, menu_note } = req.body;
+  if (!name?.trim() || !phone?.trim()) return res.status(400).json({ error: 'Ad və telefon mütləqdir.' });
+  const { lastInsertRowid } = db.prepare(`
+    INSERT INTO catering_orders (name, phone, email, guests, location, date, time_range, format, menu_note, package_name, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')
+  `).run(name, phone, email||'', guests||'', location||'', date||'', time_range||'', format||'', menu_note||'', package_name||'Fərdi Sifariş');
+  const ownerPhone = process.env.OWNER_WA_PHONE;
+  const siteUrl = process.env.SITE_URL || 'http://localhost:5050';
+  if (waSocket) {
+    const ownerMsg = `🍽️ *Yeni Ketrinq Sifarişi! #${lastInsertRowid}*\n\n👤 Ad: ${name}\n📞 Tel: ${phone}\n📧 Email: ${email||'—'}\n👥 Qonaq: ${guests||'—'}\n📦 Paket: ${package_name||'—'}\n📍 Məkan: ${location||'—'}\n📅 Tarix: ${date||'—'}\n⏰ Saat: ${time_range||'—'}\n🎉 Format: ${format||'—'}\n📝 Qeyd: ${menu_note||'—'}\n\n🔗 ${siteUrl}/admin`;
+    if (ownerPhone) sendWhatsApp(ownerPhone.replace(/\D/g,''), ownerMsg).catch(()=>{});
+    if (phone) {
+      const clientMsg = `✅ *EventRent — Ketrinq Sifarişiniz qəbul edildi!*\n\n🍽️ Paket: ${package_name||'Fərdi Sifariş'}\n📍 Məkan: ${location||'—'}\n📅 Tarix: ${date||'—'}\n👥 Qonaq: ${guests||'—'}\n\n📞 Tezliklə sizinlə əlaqə saxlayacağıq.\n\nEventRent.az`;
+      sendWhatsApp(phone.replace(/\D/g,''), clientMsg).catch(()=>{});
+    }
+  }
+  res.status(201).json({ ok: true, id: lastInsertRowid });
+});
+
+// Admin — get all catering orders
+app.get('/api/catering/orders', authMiddleware, (req, res) => {
+  const rows = db.prepare(`SELECT * FROM catering_orders ORDER BY id DESC`).all();
+  res.json(rows);
+});
+
+// Admin — update catering order status
+app.patch('/api/catering/orders/:id/status', authMiddleware, adminOnly, (req, res) => {
+  const { status } = req.body;
+  const VALID = ['new', 'in_progress', 'done', 'cancelled'];
+  if (!VALID.includes(status)) return res.status(400).json({ error: 'Yanlış status.' });
+  const exists = db.prepare('SELECT id FROM catering_orders WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare(`UPDATE catering_orders SET status=?, updated_at=datetime('now') WHERE id=?`).run(status, req.params.id);
+  res.json({ ok: true });
+});
+
+// Admin — delete catering order
+app.delete('/api/catering/orders/:id', authMiddleware, adminOnly, (req, res) => {
+  const exists = db.prepare('SELECT id FROM catering_orders WHERE id=?').get(req.params.id);
+  if (!exists) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare('DELETE FROM catering_orders WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* ══════════════════════════════════════════
    Start
 ══════════════════════════════════════════ */
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✓ API :${PORT}  DB: ${DB_PATH}`);
   buildTransporter().catch(() => {});
+  startWhatsApp().catch(() => {});
 });

@@ -45,12 +45,17 @@ export default function Metrics() {
         const suffix = valueEl.dataset.suffix ?? '';
         const numericVal = parseFloat(raw.replace(/,/g, ''));
         const obj = { val: 0 };
+        let lastRounded = -1;
         gsap.to(obj, {
           val: numericVal, duration: 2.5, ease: 'power2.out', delay: i * 0.15 + 0.4,
           scrollTrigger: { trigger: containerRef.current, start: 'top 80%', once: true },
           onUpdate() {
-            const display = Math.round(obj.val).toLocaleString('en-US');
-            if (valueEl) valueEl.innerHTML = display + suffix;
+            const rounded = Math.round(obj.val);
+            if (rounded !== lastRounded) {
+              lastRounded = rounded;
+              // textContent avoids DOM parse overhead vs innerHTML
+              valueEl.textContent = rounded.toLocaleString('en-US') + suffix;
+            }
           },
         });
       }

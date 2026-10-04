@@ -34,7 +34,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <div className="relative bg-white rounded-[3rem] overflow-hidden border border-gray-100 transition-all duration-500 shadow-xl group-hover:shadow-2xl">
             <div className="block relative aspect-square overflow-hidden border-8 border-gray-50 rounded-[3rem] m-4 shadow-sm group-hover:border-white transition-all duration-500">
               <img
-                src={product.images[0]}
+                src={product.images?.[0] ?? ''}
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"

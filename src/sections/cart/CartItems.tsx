@@ -30,21 +30,21 @@ export default function CartItems({ items, onUpdateQuantity, onRemoveItem }: Car
             className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-[40px] shadow-xl shadow-black/20 group"
           >
             <div className="w-24 h-24 rounded-3xl overflow-hidden bg-white/5 border border-white/10 flex-shrink-0 flex items-center justify-center">
-              {item.product.images?.[0] ? (
+              {item.product?.images?.[0] ? (
                 <img
                   src={item.product.images[0]}
-                  alt={item.product.name}
+                  alt={item.product?.name ?? ''}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
               ) : (
-                <span className="text-white/20 text-3xl font-black">{item.product.name?.[0] || '?'}</span>
+                <span className="text-white/20 text-3xl font-black">{(item.product?.name ?? item.name ?? '?')[0]}</span>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-white truncate">{item.product.name}</h3>
-              <p className="text-sm text-white/70 font-medium">{item.product.category}</p>
+              <h3 className="text-xl font-bold text-white truncate">{item.product?.name ?? item.name ?? '—'}</h3>
+              <p className="text-sm text-white/70 font-medium">{item.product?.category ?? item.category ?? ''}</p>
               {item.technicalAnswers && Object.keys(item.technicalAnswers).length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {Object.entries(item.technicalAnswers).map(([key, value]) => (

@@ -1,9 +1,8 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import Layout from './components/Layout';
 import { appRoutes } from './routes/appRoutes';
-import { useEnsureUserDoc } from './hooks/useEnsureUserDoc';
 
 function PageLoader() {
   return (
@@ -23,7 +22,6 @@ function AdminLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation();
-  useEnsureUserDoc();
   const isAdmin = location.pathname.startsWith('/admin');
 
   if (isAdmin) {
@@ -40,14 +38,22 @@ function AnimatedRoutes() {
 
   return (
     <Layout>
-      <AnimatePresence mode="wait">
-        <Suspense fallback={<PageLoader />}>
-          <Routes location={location} key={location.pathname}>
-            {appRoutes.filter(r => !r.path.startsWith('/admin')).map(r => (
-              <Route key={r.path} path={r.path} element={r.element} />
-            ))}
-          </Routes>
-        </Suspense>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <Suspense fallback={<PageLoader />}>
+            <Routes location={location} key={location.pathname}>
+              {appRoutes.filter(r => !r.path.startsWith('/admin')).map(r => (
+                <Route key={r.path} path={r.path} element={r.element} />
+              ))}
+            </Routes>
+          </Suspense>
+        </motion.div>
       </AnimatePresence>
     </Layout>
   );

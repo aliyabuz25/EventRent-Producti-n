@@ -1,1 +1,0 @@
-*/15 * * * * cd /home/aliv/Desktop/Projeler/02.-yenievent && /home/aliv/.local/bin/node port_cleaner.js >> port_cleaner.log 2>&1

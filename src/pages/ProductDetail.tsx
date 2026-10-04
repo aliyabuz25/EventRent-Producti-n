@@ -32,8 +32,8 @@ export default function ProductDetail() {
         if (!data) { setIsLoading(false); return; }
         setProduct(data);
         if (data.relatedProducts?.length) {
-          const all: Product[] = await fetch('/api/products').then(r => r.json());
-          setRelatedProducts(all.filter(p => data.relatedProducts.includes(p.id)));
+          const all: Product[] = await fetch('/api/products').then(r => r.ok ? r.json() : []).catch(() => []);
+          setRelatedProducts(Array.isArray(all) ? all.filter(p => data.relatedProducts.includes(p.id)) : []);
         }
         setIsLoading(false);
       })

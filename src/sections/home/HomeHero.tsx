@@ -1,15 +1,18 @@
-import { useRef } from 'react';
+import { useRef, useState, lazy, Suspense } from 'react';
 import { useGsap, gsap } from '../../motion/useGsap';
 import { ArrowRight, Play } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useSiteContent } from '../../content.context';
 import { t } from '../../content';
 
+const ContactModal = lazy(() => import('../../components/ContactModal'));
+
 export default function HomeHero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const { content, locale } = useSiteContent();
+  const [modalOpen, setModalOpen] = useState(false);
 
   useGsap(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.2 } });
@@ -20,10 +23,16 @@ export default function HomeHero() {
       stagger: 0.14,
     });
 
-    tl.fromTo(
-      bgRef.current,
-      { scale: 1.2, filter: 'blur(16px) grayscale(100%) brightness(0%)' },
-      { scale: 1.08, filter: 'blur(0px) grayscale(100%) brightness(42%)', duration: 2.6 },
+    // Animate scale on bgRef — no filter on video container (GPU cost)
+    tl.fromTo(bgRef.current,
+      { scale: 1.2 },
+      { scale: 1.08, duration: 2.6 },
+      '0'
+    );
+    // Animate blur on a separate overlay div (no video compositing)
+    tl.fromTo('.hero-blur-overlay',
+      { opacity: 1 },
+      { opacity: 0, duration: 2.0 },
       '0'
     );
 
@@ -49,6 +58,7 @@ export default function HomeHero() {
   }, { scope: containerRef });
 
   return (
+    <>
     <section
       ref={containerRef}
       className="relative h-svh w-full flex items-center justify-center overflow-hidden bg-brand-bg md:h-dvh -mt-[72px]"
@@ -56,7 +66,7 @@ export default function HomeHero() {
       {/* Background Layer */}
       <div
         ref={bgRef}
-        className="absolute -inset-[6%] z-0 will-change-transform"
+        className="absolute -inset-[6%] z-0 will-change-transform grayscale brightness-[0.42]"
       >
         <video
           className="w-full h-full object-cover"
@@ -70,30 +80,31 @@ export default function HomeHero() {
           <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
         </video>
 
-        <div className="absolute inset-0 overflow-hidden">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="audience-layer absolute inset-x-0 bottom-0 h-[60%] pointer-events-none"
-              style={{
-                opacity: 0.4 / i,
-                maskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-              }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600"
-                className="w-full h-full object-cover grayscale brightness-150"
-                alt=""
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          ))}
+        {/* Single audience overlay — reduced from 3 stacked filtered images */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[60%] pointer-events-none"
+          style={{
+            opacity: 0.3,
+            maskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600"
+            className="w-full h-full object-cover"
+            alt=""
+            referrerPolicy="no-referrer"
+            loading="eager"
+            decoding="async"
+          />
         </div>
 
         <div className="absolute inset-0 bg-linear-to-b from-brand-bg/95 via-brand-bg/55 to-brand-bg" />
         <div className="absolute inset-0 bg-black/20" />
       </div>
+
+      {/* Blur intro overlay — animated separately, not on video container */}
+      <div className="hero-blur-overlay absolute inset-0 z-[1] pointer-events-none" style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }} />
 
       {/* Content Layer */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -116,9 +127,9 @@ export default function HomeHero() {
       </div>
 
       {/* Bottom Bar */}
-      <motion.div className="hero-sub absolute bottom-16 md:bottom-20 left-0 right-0 z-20 w-full space-y-6 md:space-y-8">
+      <div className="hero-sub absolute bottom-16 md:bottom-20 left-0 right-0 z-20 w-full space-y-6 md:space-y-8">
         <div className="flex w-full flex-col items-end gap-4 md:hidden sm:flex-row sm:justify-end mb-8">
-          <button className="min-h-12 px-7 md:px-8 py-3 md:py-3.5 bg-premium-orange text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] border border-premium-orange/70 transition-all duration-300 hover:bg-premium-orange/90 hover:border-premium-orange/60 active:scale-95 shadow-[0_20px_50px_rgba(227,6,19,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
+          <button onClick={() => setModalOpen(true)} className="min-h-12 px-7 md:px-8 py-3 md:py-3.5 bg-premium-orange text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] border border-premium-orange/70 transition-[background-color,border-color] duration-300 hover:bg-premium-orange/90 hover:border-premium-orange/60 active:scale-95 shadow-[0_20px_50px_rgba(227,6,19,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
             <span className="flex items-center justify-center gap-2.5 md:gap-3">
               {t(locale, content.home.hero.primaryCta)} <ArrowRight className="w-4 h-4" />
             </span>
@@ -153,7 +164,7 @@ export default function HomeHero() {
               </div>
 
               <div className="flex flex-col lg:flex-row items-end gap-4 lg:gap-5">
-                <button className="min-h-12 px-7 md:px-8 py-3 md:py-3.5 bg-premium-orange text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] border border-premium-orange/70 transition-all duration-300 hover:bg-premium-orange/90 hover:border-premium-orange/60 active:scale-95 shadow-[0_20px_50px_rgba(227,6,19,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
+                <button onClick={() => setModalOpen(true)} className="min-h-12 px-7 md:px-8 py-3 md:py-3.5 bg-premium-orange text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] border border-premium-orange/70 transition-[background-color,border-color] duration-300 hover:bg-premium-orange/90 hover:border-premium-orange/60 active:scale-95 shadow-[0_20px_50px_rgba(227,6,19,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
                   <span className="flex items-center gap-2.5 md:gap-3">
                     {t(locale, content.home.hero.primaryCta)} <ArrowRight className="w-4 h-4" />
                   </span>
@@ -167,7 +178,7 @@ export default function HomeHero() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Scroll Indicator */}
       <motion.div
@@ -199,5 +210,10 @@ export default function HomeHero() {
         </p>
       </div>
     </section>
+
+    <Suspense fallback={null}>
+      <ContactModal open={modalOpen} onClose={() => setModalOpen(false)} />
+    </Suspense>
+    </>
   );
 }

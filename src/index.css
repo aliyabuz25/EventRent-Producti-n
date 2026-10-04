@@ -25,7 +25,8 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth removed — Lenis handles smooth scroll, double-smoothing causes stutter */
+    scroll-behavior: auto;
   }
 
   body {

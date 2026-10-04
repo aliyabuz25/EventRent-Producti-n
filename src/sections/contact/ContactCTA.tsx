@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { Phone, Mail, MapPin, Instagram, Facebook } from 'lucide-react';
 import { useGsap, gsap } from '../../motion/useGsap';
 import { useSiteContent } from '../../content.context';
@@ -10,8 +10,8 @@ function FloatingOrb({ style }: { style: React.CSSProperties }) {
 
 export default function ContactCTA() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const { content, locale } = useSiteContent();
   const s = content.contact.cta;
 
@@ -23,19 +23,28 @@ export default function ContactCTA() {
     { icon: Facebook,  label: t(locale, s.channelFacebook),  value: t(locale, s.channelFacebookValue),  href: 'https://facebook.com/eventrent',        color: '#1565c0', tag: t(locale, s.channelTagFacebook) },
   ];
 
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      setMousePos({
-        x: ((e.clientX - rect.left) / rect.width) * 100,
-        y: ((e.clientY - rect.top) / rect.height) * 100,
-      });
-    };
-    const el = sectionRef.current;
-    el?.addEventListener('mousemove', handleMouse);
-    return () => el?.removeEventListener('mousemove', handleMouse);
+  // Direct DOM update — no setState, no re-render on every mousemove
+  const rectCache = useRef<DOMRect | null>(null);
+  const handleMouse = useCallback((e: MouseEvent) => {
+    if (!rectCache.current) rectCache.current = sectionRef.current?.getBoundingClientRect() ?? null;
+    const rect = rectCache.current;
+    if (!rect || !orbRef.current) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 30;
+    const y = ((e.clientY - rect.top) / rect.height) * 20 - 10;
+    orbRef.current.style.left = `${x}%`;
+    orbRef.current.style.top = `${y}%`;
   }, []);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    const resetRect = () => { rectCache.current = null; }; // invalidate on resize
+    el?.addEventListener('mousemove', handleMouse, { passive: true });
+    window.addEventListener('resize', resetRect);
+    return () => {
+      el?.removeEventListener('mousemove', handleMouse);
+      window.removeEventListener('resize', resetRect);
+    };
+  }, [handleMouse]);
 
   useGsap(() => {
     gsap.fromTo('.hc-char',
@@ -66,14 +75,19 @@ export default function ContactCTA() {
     <section ref={sectionRef} className="relative bg-[#060606] overflow-hidden" style={{ isolation: 'isolate' }}>
       <div className="absolute top-0 left-0 right-0 h-px bg-white/[0.06]" />
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <FloatingOrb style={{
-          width: 600, height: 600,
-          left: `${mousePos.x * 0.3}%`, top: `${mousePos.y * 0.2 - 10}%`,
-          background: 'radial-gradient(circle, rgba(227,6,19,0.08) 0%, transparent 70%)',
-          transform: 'translate(-50%, -50%)',
-          transition: 'left 1.2s cubic-bezier(0.25,0.46,0.45,0.94), top 1.2s cubic-bezier(0.25,0.46,0.45,0.94)',
-          filter: 'blur(40px)',
-        }} />
+        <div
+          ref={orbRef}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 600, height: 600,
+            left: '50%', top: '0%',
+            background: 'radial-gradient(circle, rgba(227,6,19,0.08) 0%, transparent 70%)',
+            transform: 'translate(-50%, -50%)',
+            transition: 'left 1.2s cubic-bezier(0.25,0.46,0.45,0.94), top 1.2s cubic-bezier(0.25,0.46,0.45,0.94)',
+            filter: 'blur(40px)',
+            willChange: 'transform',
+          }}
+        />
         <FloatingOrb style={{
           width: 400, height: 400, right: '20%', bottom: '10%',
           background: 'radial-gradient(circle, rgba(227,6,19,0.05) 0%, transparent 70%)',

@@ -441,6 +441,59 @@ export interface HomeServicesTeaser {
   subtitle: LocalizedText;
 }
 
+/* ── Catering ── */
+export interface CateringSectionContent {
+  hero: {
+    eyebrow: LocalizedText;
+    titleLine1: LocalizedText;
+    titleLine2: LocalizedText;
+    subtitle: LocalizedText;
+  };
+  content: {
+    eyebrow: LocalizedText;
+    title: LocalizedText;
+    subtitle: LocalizedText;
+    menuItems: { title: LocalizedText; desc: LocalizedText }[];
+    galleryLabel: LocalizedText;
+  };
+  request: {
+    eyebrow: LocalizedText;
+    titleLine1: LocalizedText;
+    titleLine2: LocalizedText;
+    subtitle: LocalizedText;
+    features: LocalizedText[];
+    formTitle: LocalizedText;
+    formSubtitle: LocalizedText;
+    fields: {
+      name: LocalizedText; phone: LocalizedText; email: LocalizedText;
+      guests: LocalizedText; location: LocalizedText; date: LocalizedText;
+      timeRange: LocalizedText; format: LocalizedText; menuNote: LocalizedText;
+    };
+    submitBtn: LocalizedText;
+    waNote: LocalizedText;
+    successTitle: LocalizedText;
+    successSubtitle: LocalizedText;
+    newOrderBtn: LocalizedText;
+  };
+}
+
+/* ── Portfolio ── */
+export interface PortfolioSectionContent {
+  hero: {
+    eyebrow: LocalizedText;
+    title: LocalizedText;
+    subtitle: LocalizedText;
+  };
+  filters: {
+    searchPlaceholder: LocalizedText;
+    categoryLabel: LocalizedText;
+    tagsLabel: LocalizedText;
+    clearLabel: LocalizedText;
+    allLabel: LocalizedText;
+    emptyLabel: LocalizedText;
+  };
+}
+
 export interface SiteContent {
   home: {
     hero: HomeHeroSection;
@@ -467,6 +520,8 @@ export interface SiteContent {
   about: AboutSection;
   contact: ContactSection;
   footer: FooterSection;
+  catering: CateringSectionContent;
+  portfolio: PortfolioSectionContent;
   cart: Record<string, LocalizedText>;
   product: Record<string, LocalizedText>;
   catalog: Record<string, LocalizedText>;

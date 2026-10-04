@@ -103,7 +103,7 @@ export default function Navbar() {
       <nav
         aria-label="Main navigation"
         className={cn(
-          'fixed inset-x-0 top-0 z-[100] border-b transition-all duration-500',
+          'fixed inset-x-0 top-0 z-[100] border-b transition-[background-color,border-color,box-shadow,padding] duration-500',
           isScrolled
             ? 'border-white/[0.08] bg-black/92 py-3 backdrop-blur-2xl shadow-xl shadow-black/30'
             : 'border-transparent bg-black/50 py-4 backdrop-blur-xl'
@@ -142,7 +142,7 @@ export default function Navbar() {
                     {t(locale, link.name)}
                     <span
                       className={cn(
-                        'absolute bottom-0 left-0 h-[1.5px] bg-premium-orange transition-all duration-300',
+                        'absolute bottom-0 left-0 h-[1.5px] bg-premium-orange transition-[width] duration-300',
                         isActive ? 'w-full' : 'w-0 group-hover:w-full'
                       )}
                     />
@@ -164,7 +164,7 @@ export default function Navbar() {
                 aria-expanded={isLangMenuOpen ? 'true' : 'false'}
                 aria-haspopup="true"
                 className={cn(
-                  'flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-[11px] font-black uppercase tracking-wide transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black',
+                  'flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-[11px] font-black uppercase tracking-wide transition-[color,background-color,border-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black',
                   isScrolled
                     ? 'text-gray-400 hover:bg-white/[0.08] hover:text-white'
                     : 'text-gray-400 hover:bg-white/[0.06] hover:text-white'
@@ -226,7 +226,7 @@ export default function Navbar() {
             <Link
               to="/cart"
               aria-label={t(locale, cartLabel)}
-              className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-all hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
+              className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-[color,background-color,border-color] hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
             >
               <ShoppingCart aria-hidden="true" className="h-[19px] w-[19px] transition-transform group-hover:scale-110" />
               {cartCount > 0 && (
@@ -242,7 +242,7 @@ export default function Navbar() {
               <Link
                 to="/profile"
                 aria-label={t(locale, profileLabel)}
-                className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-all hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
+                className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-[color,background-color,border-color] hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
               >
                 <UserIcon aria-hidden="true" className="h-[19px] w-[19px] transition-transform group-hover:scale-110" />
               </Link>
@@ -250,7 +250,7 @@ export default function Navbar() {
               <Link
                 to="/login"
                 aria-label={t(locale, loginLabel)}
-                className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-all hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
+                className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-[color,background-color,border-color] hover:border-premium-orange/30 hover:bg-premium-orange/10 hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
               >
                 <LogIn aria-hidden="true" className="h-[19px] w-[19px] transition-transform group-hover:scale-110" />
               </Link>
@@ -266,7 +266,7 @@ export default function Navbar() {
               aria-label={isMobileMenuOpen ? t(locale, closeMenuLabel) : t(locale, menuLabel)}
               aria-expanded={isMobileMenuOpen ? 'true' : 'false'}
               aria-controls="mobile-navigation"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-all hover:border-white/[0.15] hover:bg-white/[0.08] hover:text-white lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-400 transition-[color,background-color,border-color] hover:border-white/[0.15] hover:bg-white/[0.08] hover:text-white lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-black"
             >
               {isMobileMenuOpen ? (
                 <X aria-hidden="true" className="h-[18px] w-[18px]" />
@@ -323,7 +323,7 @@ export default function Navbar() {
                   aria-label={`${t(locale, languageLabel)}: ${langLabels[lang]}`}
                   aria-pressed={locale === lang ? 'true' : 'false'}
                   className={cn(
-                    'rounded-full px-3 py-1.5 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-brand-bg',
+                    'rounded-full px-3 py-1.5 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-1 focus-visible:ring-offset-brand-bg',
                     locale === lang
                       ? 'bg-premium-orange text-white'
                       : 'text-gray-400 hover:text-white'
@@ -350,7 +350,7 @@ export default function Navbar() {
                     className="group flex items-center justify-between rounded-2xl px-5 py-5 text-[clamp(2rem,8vw,3.2rem)] font-black uppercase tracking-[-0.03em] text-white transition-colors hover:text-premium-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                   >
                     {t(locale, link.name)}
-                    <ArrowRight className="h-7 w-7 -translate-x-4 text-premium-orange opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+                    <ArrowRight className="h-7 w-7 -translate-x-4 text-premium-orange opacity-0 transition-[transform,opacity] group-hover:translate-x-0 group-hover:opacity-100" />
                   </Link>
                 </motion.div>
               ))}

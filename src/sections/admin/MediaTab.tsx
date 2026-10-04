@@ -106,7 +106,7 @@ export default function MediaTab({ token }: { token: string }) {
   };
 
   const copyUrl = (url: string) => {
-    const full = window.location.origin + url;
+    const full = window.location.origin + url; // keep origin for clipboard copy only — user needs full URL
     navigator.clipboard.writeText(full).then(() => {
       setCopied(url);
       setTimeout(() => setCopied(null), 1800);

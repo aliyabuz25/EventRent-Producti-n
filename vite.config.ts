@@ -138,9 +138,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss(), createContentApiPlugin()],
-    define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-    },
+    
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -163,16 +161,77 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
-      chunkSizeWarningLimit: 600,
+      target: 'es2020',
+      chunkSizeWarningLimit: 700,
+      cssCodeSplit: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
+          passes: 2,
+        },
+        mangle: { safari10: true },
+        format: { comments: false },
+      },
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-motion': ['motion/react'],
-            'vendor-gsap': ['gsap'],
-            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
-            'vendor-ui': ['lucide-react', 'swiper'],
+          manualChunks(id) {
+            // React core
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/scheduler/')) {
+              return 'vendor-react';
+            }
+            // Router
+            if (id.includes('node_modules/react-router') || id.includes('node_modules/@remix-run')) {
+              return 'vendor-router';
+            }
+            // Motion
+            if (id.includes('node_modules/motion') || id.includes('node_modules/framer-motion')) {
+              return 'vendor-motion';
+            }
+            // GSAP
+            if (id.includes('node_modules/gsap')) {
+              return 'vendor-gsap';
+            }
+            // Icons
+            if (id.includes('node_modules/lucide-react')) {
+              return 'vendor-icons';
+            }
+            // Swiper
+            if (id.includes('node_modules/swiper')) {
+              return 'vendor-swiper';
+            }
+            // Date picker (heavy — separate chunk)
+            if (id.includes('node_modules/react-datepicker') || id.includes('node_modules/date-fns')) {
+              return 'vendor-datepicker';
+            }
+            // Lenis
+            if (id.includes('node_modules/lenis') || id.includes('node_modules/@studio-freight')) {
+              return 'vendor-lenis';
+            }
+            // Phone input
+            if (id.includes('node_modules/react-phone') || id.includes('node_modules/libphonenumber')) {
+              return 'vendor-phone';
+            }
+            // Admin panel (Bootstrap + heavy admin deps) — only loaded on /admin
+            if (id.includes('node_modules/bootstrap') || id.includes('node_modules/@popperjs')) {
+              return 'vendor-bootstrap';
+            }
+            // Recharts — only loaded in DashboardTab
+            if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-') || id.includes('node_modules/victory')) {
+              return 'vendor-charts';
+            }
           },
+          // Better asset naming
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+        },
+        // Tree shake unused exports
+        treeshake: {
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
         },
       },
     },

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import {
   LayoutDashboard, MessageSquare, Package, Users,
   TrendingUp, Clock, FileText, ExternalLink, Home, Info, Settings, Phone, AlignJustify,
@@ -7,23 +6,33 @@ import {
   Search, X as XIcon,
 } from 'lucide-react';
 import { Lead } from '../types';
-import AdminLeads from '../sections/admin/LeadsTab';
-import AdminProducts from '../sections/admin/ProductsTab';
-import AdminTeambuilding from '../sections/admin/TeambuildingTab';
-import AdminOrders from '../sections/admin/OrdersTab';
-import AdminSmtp from '../sections/admin/SmtpTab';
-import AdminUsers from '../sections/admin/UsersTab';
-import AdminMedia from '../sections/admin/MediaTab';
-import AdminSupport from '../sections/admin/SupportTab';
-import AdminContent from '../components/ContentStudio';
-import DashboardTab from '../sections/admin/DashboardTab';
 import { ToastProvider } from '../components/Toast';
+
+// Lazy load heavy admin tabs — only loaded when tab is first opened
+const AdminLeads = lazy(() => import('../sections/admin/LeadsTab'));
+const AdminProducts = lazy(() => import('../sections/admin/ProductsTab'));
+const AdminTeambuilding = lazy(() => import('../sections/admin/TeambuildingTab'));
+const AdminOrders = lazy(() => import('../sections/admin/OrdersTab'));
+const AdminSmtp = lazy(() => import('../sections/admin/SmtpTab'));
+const AdminUsers = lazy(() => import('../sections/admin/UsersTab'));
+const AdminMedia = lazy(() => import('../sections/admin/MediaTab'));
+const AdminSupport = lazy(() => import('../sections/admin/SupportTab'));
+const AdminContent = lazy(() => import('../components/ContentStudio'));
+const DashboardTab = lazy(() => import('../sections/admin/DashboardTab'));
+const AdminReels = lazy(() => import('./admin/AdminReels'));
+const AdminWhatsApp = lazy(() => import('./admin/AdminWhatsApp'));
+const AdminCatering = lazy(() => import('../sections/admin/CateringTab'));
+const AdminSetup = lazy(() => import('../components/AdminSetup'));
+
+// Bootstrap loaded lazily too — only affects admin
+import('bootstrap/dist/css/bootstrap.min.css');
 
 type Tab = 'dashboard' | 'orders' | 'leads' | 'products' | 'teambuilding' | 'support'
   | 'content-home' | 'content-about' | 'content-services'
-  | 'content-contact' | 'content-footer' | 'smtp' | 'users' | 'media';
+  | 'content-contact' | 'content-footer' | 'content-catering' | 'content-portfolio'
+  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering';
 
-type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer';
+type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio';
 
 interface NavItemDef {
   id: Tab;
@@ -41,11 +50,13 @@ interface AuthUser {
 }
 
 const CONTENT_TABS: { id: Tab; section: ContentSection; label: string }[] = [
-  { id: 'content-home',     section: 'home',     label: 'Ana Səhifə' },
-  { id: 'content-about',    section: 'about',    label: 'Haqqımızda' },
-  { id: 'content-services', section: 'services', label: 'Xidmətlər' },
-  { id: 'content-contact',  section: 'contact',  label: 'Əlaqə' },
-  { id: 'content-footer',   section: 'footer',   label: 'Footer' },
+  { id: 'content-home',      section: 'home',      label: 'Ana Səhifə' },
+  { id: 'content-about',     section: 'about',     label: 'Haqqımızda' },
+  { id: 'content-services',  section: 'services',  label: 'Xidmətlər' },
+  { id: 'content-contact',   section: 'contact',   label: 'Əlaqə' },
+  { id: 'content-footer',    section: 'footer',    label: 'Footer' },
+  { id: 'content-catering',  section: 'catering',  label: 'Ketrinq Mətn' },
+  { id: 'content-portfolio', section: 'portfolio', label: 'Portfolio Mətn' },
 ];
 
 const TOKEN_KEY = 'er_admin_token';
@@ -144,8 +155,9 @@ function LoginScreen({ onLogin }: { onLogin: (token: string, user: AuthUser) => 
 ══════════════════════════════════════════ */
 export default function Admin() {
   const [user, setUser]         = useState<AuthUser | null>(null);
-  const [token, setTokenState]  = useState<string>('');
+  const [token, setTokenState]  = useState<string>(() => { try { return localStorage.getItem('er_admin_token') || ''; } catch { return ''; } });
   const [loading, setLoading]   = useState(true);
+  const [needsSetup, setNeedsSetup] = useState(false);
   const [tab, setTab]           = useState<Tab>('dashboard');
   const [sideOpen, setSide]     = useState(true);
 
@@ -176,14 +188,20 @@ export default function Admin() {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
-  /* Auto-login from stored token */
+  /* Auto-login from stored token + setup check */
   useEffect(() => {
     const stored = getToken();
-    if (!stored) { setLoading(false); return; }
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${stored}` } })
-      .then(r => r.ok ? r.json() : null)
-      .then(u => { if (u) { setUser(u); setTokenState(stored); } else clearToken(); })
-      .catch(() => clearToken())
+    // First check if setup is needed
+    fetch('/api/setup/status')
+      .then(r => r.ok ? r.json() : { needsSetup: false })
+      .then(data => {
+        if (data.needsSetup) { setNeedsSetup(true); setLoading(false); return; }
+        if (!stored) { setLoading(false); return; }
+        return fetch('/api/auth/me', { headers: { Authorization: `Bearer ${stored}` } })
+          .then(r => r.ok ? r.json() : null)
+          .then(u => { if (u) { setUser(u); setTokenState(stored); } else clearToken(); });
+      })
+      .catch(() => { if (stored) clearToken(); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -215,34 +233,44 @@ export default function Admin() {
     </ToastProvider>
   );
 
+  if (needsSetup) return (
+    <ToastProvider>
+      <Suspense fallback={<div className="d-flex align-items-center justify-content-center vh-100 bg-dark"><div className="spinner-border text-danger" /></div>}>
+        <AdminSetup onComplete={(t) => {
+          setToken(t); setTokenState(t); setNeedsSetup(false);
+          fetch('/api/auth/me', { headers: { Authorization: `Bearer ${t}` } })
+            .then(r => r.ok ? r.json() : null)
+            .then(u => { if (u) setUser(u); });
+        }} />
+      </Suspense>
+    </ToastProvider>
+  );
+
   if (!user) return <ToastProvider><LoginScreen onLogin={handleLogin} /></ToastProvider>;
 
   const isAdmin = user.role === 'admin';
   const newLeads = leads.filter(l => l.status === 'new').length;
   const contentSection = CONTENT_TABS.find(c => c.id === tab)?.section;
 
-  const NAV_ITEMS: NavItemDef[] = [
+  const DATA_NAV: NavItemDef[] = [
     { id: 'dashboard',        label: 'Dashboard',    Icon: LayoutDashboard },
     { id: 'orders',           label: 'Sifarişlər',   Icon: ShoppingCart },
     { id: 'leads',            label: 'Sorğular',     Icon: MessageSquare, badge: newLeads || undefined },
     { id: 'products',         label: 'Məhsullar',    Icon: Package },
     { id: 'teambuilding',     label: 'Teambuilding', Icon: Users },
     { id: 'support',          label: 'Dəstək',       Icon: MessageSquare },
-    ...(isAdmin ? [
-      { id: 'content-home'     as Tab, label: 'Ana Səhifə',  Icon: Home },
-      { id: 'content-about'    as Tab, label: 'Haqqımızda',  Icon: Info },
-      { id: 'content-services' as Tab, label: 'Xidmətlər',   Icon: Settings },
-      { id: 'content-contact'  as Tab, label: 'Əlaqə',       Icon: Phone },
-      { id: 'content-footer'   as Tab, label: 'Footer',      Icon: AlignJustify },
-      { id: 'media'            as Tab, label: 'Media',       Icon: ImageIcon },
-      { id: 'smtp'             as Tab, label: 'SMTP',         Icon: Mail },
-      { id: 'users'            as Tab, label: 'İstifadəçilər', Icon: UserCog },
-    ] : []),
+    { id: 'catering'          as Tab, label: 'Ketrinq',   Icon: AlignJustify },
+    { id: 'reels'             as Tab, label: 'Portfolio', Icon: ImageIcon },
+    { id: 'whatsapp'          as Tab, label: 'WhatsApp',  Icon: MessageSquare },
   ];
+  const SYSTEM_NAV: NavItemDef[] = [
+    { id: 'media'  as Tab, label: 'Media',        Icon: ImageIcon },
+    { id: 'smtp'   as Tab, label: 'SMTP',          Icon: Mail },
+    { id: 'users'  as Tab, label: 'İstifadəçilər', Icon: UserCog },
+  ];
+  const NAV_ITEMS = [...DATA_NAV, ...SYSTEM_NAV];
 
-const dataNavCount  = 5;
-          const contentNavCount = isAdmin ? 5 : 0;
-          const systemNavCount  = isAdmin ? 3 : 0;
+
 
   const activeItem = NAV_ITEMS.find(n => n.id === tab);
 
@@ -253,6 +281,8 @@ const dataNavCount  = 5;
     { label: 'Məhsullar', tab: 'products' as Tab, icon: Package, desc: 'Kataloq məhsulları, CRUD' },
     { label: 'Teambuilding', tab: 'teambuilding' as Tab, icon: Users, desc: 'Oyunlar, konsepsiyalar' },
     { label: 'Dəstək', tab: 'support' as Tab, icon: MessageSquare, desc: 'Support ticketlər, cavab ver' },
+    { label: 'Portfolio / Reels', tab: 'reels' as Tab, icon: ImageIcon, desc: 'YouTube, Instagram, video, şəkil əlavə et' },
+    { label: 'WhatsApp', tab: 'whatsapp' as Tab, icon: MessageSquare, desc: 'Baileys bağlantısı, OTP, başvurular, mesaj logları' },
     { label: 'Ana Səhifə Məzmunu', tab: 'content-home' as Tab, icon: Home, desc: 'Hero, metrics, CTA, clients, team, navbar' },
     { label: 'Haqqımızda Məzmunu', tab: 'content-about' as Tab, icon: Info, desc: 'Vision, mission, team, values, approach' },
     { label: 'Xidmətlər Məzmunu', tab: 'content-services' as Tab, icon: Settings, desc: 'Showcase, grid, kateqoriyalar' },
@@ -298,25 +328,25 @@ const dataNavCount  = 5;
         {/* Nav */}
         <nav style={{ flex: 1, overflowY: 'auto', padding: '8px 6px' }}>
           {sideOpen && <SectionLabel>Əsas</SectionLabel>}
-          {NAV_ITEMS.slice(0, dataNavCount).map(item => <NavBtn key={item.id} item={item} active={tab === item.id} open={sideOpen} onClick={() => setTab(item.id)} />)}
+          {DATA_NAV.map(item => <NavBtn key={item.id} item={item} active={tab === item.id} open={sideOpen} onClick={() => setTab(item.id)} />)}
 
-          {isAdmin && (
-            <>
+          <>
               {sideOpen && <SectionLabel>Məzmun</SectionLabel>}
               {!sideOpen && <div style={{ height: 6 }} />}
-              {NAV_ITEMS.slice(dataNavCount, dataNavCount + contentNavCount).map(item => <NavBtn key={item.id} item={item} active={tab === item.id} open={sideOpen} onClick={() => setTab(item.id)} />)}
+              {CONTENT_TABS.map(ct => (
+                <NavBtn key={ct.id} item={{ id: ct.id, label: ct.label, Icon: FileText }} active={tab === ct.id} open={sideOpen} onClick={() => setTab(ct.id)} />
+              ))}
 
               {sideOpen && <SectionLabel>Sistem</SectionLabel>}
               {!sideOpen && <div style={{ height: 6 }} />}
-              {NAV_ITEMS.slice(dataNavCount + contentNavCount).map(item => <NavBtn key={item.id} item={item} active={tab === item.id} open={sideOpen} onClick={() => setTab(item.id)} />)}
+              {SYSTEM_NAV.map(item => <NavBtn key={item.id} item={item} active={tab === item.id} open={sideOpen} onClick={() => setTab(item.id)} />)}
             </>
-          )}
         </nav>
 
         {/* User */}
         <div style={{ padding: '10px 8px', borderTop: '1px solid #f1f3f5', display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: '#fff0f0', border: '1px solid #ffd6d6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email)[0].toUpperCase()}</span>
+            <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toUpperCase()}</span>
           </div>
           {sideOpen && (
             <>
@@ -426,16 +456,21 @@ const dataNavCount  = 5;
 
         {/* Content */}
         <main style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
-          {tab === 'dashboard'        && <DashboardTab token={token} onNavigate={(t) => setTab(t as Tab)} isAdmin={isAdmin} />}
-          {tab === 'orders'           && <AdminOrders token={token} />}
-          {tab === 'leads'            && <AdminLeads leads={leads} products={[]} token={token} onReload={() => fetch('/api/leads', { headers: authHeaders }).then(r => r.json()).then(setLeads).catch(() => {})} />}
-          {tab === 'products'         && <AdminProducts token={token} />}
-          {tab === 'teambuilding'     && <AdminTeambuilding token={token} />}
-          {tab === 'support'          && <AdminSupport token={token} />}
-          {tab === 'media'   && isAdmin && <AdminMedia token={token} />}
-          {tab === 'smtp'    && isAdmin && <AdminSmtp token={token} />}
-          {tab === 'users'   && isAdmin && <AdminUsers token={token} currentUserId={user.id} />}
-          {contentSection   && isAdmin && <AdminContent section={contentSection} />}
+          <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#999', fontSize: 14 }}>Yüklənir...</div>}>
+            {tab === 'dashboard'        && <DashboardTab token={token} onNavigate={(t) => setTab(t as Tab)} isAdmin={isAdmin} />}
+            {tab === 'orders'           && <AdminOrders token={token} />}
+            {tab === 'leads'            && <AdminLeads leads={leads} products={[]} token={token} onReload={() => fetch('/api/leads', { headers: authHeaders }).then(r => r.json()).then(setLeads).catch(() => {})} />}
+            {tab === 'products'         && <AdminProducts token={token} />}
+            {tab === 'teambuilding'     && <AdminTeambuilding token={token} />}
+            {tab === 'support'          && <AdminSupport token={token} />}
+            {tab === 'catering'         && <AdminCatering token={token} />}
+            {tab === 'reels'            && <AdminReels />}
+            {tab === 'whatsapp'         && <AdminWhatsApp />}
+            {tab === 'media'   && isAdmin && <AdminMedia token={token} />}
+            {tab === 'smtp'    && isAdmin && <AdminSmtp token={token} />}
+            {tab === 'users'   && isAdmin && <AdminUsers token={token} currentUserId={user.id} />}
+            {contentSection   && !!token  && <AdminContent section={contentSection} />}
+          </Suspense>
         </main>
       </div>
     </div>

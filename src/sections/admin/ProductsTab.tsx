@@ -33,7 +33,7 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
               <div className="row g-2">
                 {files.map(f => (
                   <div key={f.filename} className="col-4 col-md-3">
-                    <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer' }} onClick={() => { onPick(window.location.origin + f.url); onClose(); }}>
+                    <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer' }} onClick={() => { onPick(f.url); onClose(); }}>
                       <div style={{ height: 80, overflow: 'hidden' }}><img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div>
                       <div style={{ padding: '4px 6px', fontSize: 9, color: '#6c757d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     </div>
@@ -61,8 +61,31 @@ export default function ProductsTab({ token }: { token: string }) {
   const [specVal, setSpecVal]   = useState('');
   const [mediaPicker, setMediaPicker] = useState<number | null>(null);
   const [imgPreviews, setImgPreviews] = useState<boolean[]>([]);
+  const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
   const toast = useToast();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+
+  const uploadImage = async (file: File, idx: number) => {
+    setUploadingIdx(idx);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const r = await fetch('/api/media/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      if (!r.ok) throw new Error('Upload xətası');
+      const d = await r.json();
+      const url = d.url || d.filename || '';
+      if (!url) throw new Error('URL yoxdur');
+      setImage(idx, url);
+      setTimeout(() => {
+        setImgPreviews(p => { const n = [...p]; n[idx] = true; return n; });
+      }, 100);
+      toast.success('Şəkil yükləndi ✓');
+    } catch {
+      toast.error('Şəkil yüklənmədi');
+    } finally {
+      setUploadingIdx(null);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -222,50 +245,120 @@ export default function ProductsTab({ token }: { token: string }) {
                       </div>
                       <div>
                         <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Təsvir</label>
-                        <textarea className="form-control form-control-sm" style={{ borderRadius: 9, resize: 'none' }} rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Məhsul haqqında məlumat..." />
+                        <textarea className="form-control form-control-sm" style={{ borderRadius: 9, resize: 'none' }} rows={5} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Məhsul haqqında ətraflı məlumat yazın..." />
                       </div>
-                      <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 align-self-start" style={{ borderRadius: 8, fontSize: 11 }} onClick={() => setActiveTab('images')}>
-                        Şəkillərə keç <ChevronRight size={12} />
-                      </button>
+                      {/* Növbəti addım göstəricisi */}
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('images')}>
+                          <ImageIcon size={12} /> Şəkillər <ChevronRight size={11} />
+                        </button>
+                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('specs')}>
+                          Texniki <ChevronRight size={11} />
+                        </button>
+                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('tags')}>
+                          <Tag size={12} /> Teqlər <ChevronRight size={11} />
+                        </button>
+                      </div>
                     </div>
                   )}
 
                   {activeTab === 'images' && (
                     <div className="d-flex flex-column gap-3">
-                      {form.images.map((img, idx) => (
-                        <div key={idx} className="card border-0 bg-light p-3" style={{ borderRadius: 12 }}>
-                          <div className="d-flex align-items-center justify-content-between mb-2">
-                            <label className="form-label fw-semibold mb-0" style={{ fontSize: 12 }}>Şəkil {idx + 1}</label>
-                            <div className="d-flex gap-1">
-                              <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '2px 8px' }} onClick={() => setMediaPicker(idx)}><ImageIcon size={12} /></button>
-                              <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '2px 8px' }} onClick={() => setImgPreviews(p => { const n = [...p]; n[idx] = !n[idx]; return n; })}>{imgPreviews[idx] ? <EyeOff size={12} /> : <Eye size={12} />}</button>
-                              {form.images.length > 1 && <button type="button" className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '2px 8px' }} onClick={() => rmImage(idx)}><X size={12} /></button>}
+                      <div className="row g-3">
+                        {form.images.map((img, idx) => (
+                          <div key={idx} className="col-12 col-md-6">
+                            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden' }}>
+                              {/* Preview sahəsi */}
+                              <div style={{ height: 160, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
+                                {img ? (
+                                  <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => (e.currentTarget.style.display='none')} />
+                                ) : (
+                                  <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted" style={{ gap: 6 }}>
+                                    <ImageIcon size={28} opacity={0.3} />
+                                    <span style={{ fontSize: 11 }}>Şəkil yoxdur</span>
+                                  </div>
+                                )}
+                                {/* Sil düyməsi */}
+                                {form.images.length > 1 && (
+                                  <button type="button" onClick={() => rmImage(idx)}
+                                    style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                                    <X size={12} />
+                                  </button>
+                                )}
+                                {/* Sıra nömrəsi */}
+                                <span style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 6, padding: '2px 7px' }}>#{idx + 1}</span>
+                              </div>
+
+                              {/* Upload + URL */}
+                              <div className="p-3 d-flex flex-column gap-2">
+                                {/* Drag & drop */}
+                                <label
+                                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1.5px dashed', borderColor: uploadingIdx === idx ? '#e30613' : '#dee2e6', borderRadius: 9, padding: '10px 12px', textAlign: 'center', cursor: 'pointer', background: uploadingIdx === idx ? '#fff5f5' : '#fafafa', transition: '0.15s' }}
+                                  onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#e30613'; e.currentTarget.style.background = '#fff5f5'; }}
+                                  onDragLeave={e => { e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; }}
+                                  onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f) uploadImage(f, idx); }}
+                                >
+                                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadImage(f, idx); e.target.value = ''; }} />
+                                  {uploadingIdx === idx ? (
+                                    <><div className="spinner-border spinner-border-sm text-danger" style={{ width: 14, height: 14 }} /><span style={{ fontSize: 11, color: '#e30613', fontWeight: 600 }}>Yüklənir...</span></>
+                                  ) : (
+                                    <><ImageIcon size={13} color="#adb5bd" /><span style={{ fontSize: 11, color: '#6c757d' }}>Sürüklə və burax və ya <span style={{ color: '#e30613', fontWeight: 600 }}>seç</span></span></>
+                                  )}
+                                </label>
+                                {/* Media picker + URL input */}
+                                <div className="d-flex gap-1">
+                                  <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 1 }} value={img} onChange={e => setImage(idx, e.target.value)} placeholder="https://..." />
+                                  <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 9px', flexShrink: 0 }} title="Mediadan seç" onClick={() => setMediaPicker(idx)}>
+                                    <ImageIcon size={12} />
+                                  </button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          <input className={inputCls} style={{ borderRadius: 9 }} value={img} onChange={e => setImage(idx, e.target.value)} placeholder="https://..." />
-                          {imgPreviews[idx] && img && <div style={{ height: 120, borderRadius: 9, overflow: 'hidden', marginTop: 8, border: '1px solid #dee2e6' }}><img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => (e.currentTarget.style.display='none')} /></div>}
+                        ))}
+                        {/* Yeni şəkil əlavə et */}
+                        <div className="col-12 col-md-6">
+                          <button type="button" onClick={addImage}
+                            style={{ width: '100%', height: '100%', minHeight: 240, border: '2px dashed #dee2e6', borderRadius: 14, background: '#fafafa', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: '#adb5bd', transition: '0.15s' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#e30613'; (e.currentTarget as HTMLElement).style.color = '#e30613'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#dee2e6'; (e.currentTarget as HTMLElement).style.color = '#adb5bd'; }}>
+                            <Plus size={24} />
+                            <span style={{ fontSize: 12, fontWeight: 600 }}>Şəkil əlavə et</span>
+                          </button>
                         </div>
-                      ))}
-                      <button type="button" onClick={addImage} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 align-self-start" style={{ borderRadius: 9, fontSize: 11 }}><Plus size={12} /> Şəkil əlavə et</button>
+                      </div>
                     </div>
                   )}
 
                   {activeTab === 'specs' && (
-                    <div>
-                      <div className="row g-2 mb-3">
-                        <div className="col-5"><input className={inputCls} style={{ borderRadius: 9 }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Xüsusiyyət (məs: Güc)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} /></div>
-                        <div className="col-5"><input className={inputCls} style={{ borderRadius: 9 }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (məs: 1000W)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} /></div>
-                        <div className="col-2"><button type="button" onClick={addSpec} className="btn btn-sm btn-danger w-100 d-flex align-items-center justify-content-center" style={{ borderRadius: 9 }}><Plus size={13} /></button></div>
+                    <div className="d-flex flex-column gap-3">
+                      {/* Əlavə et */}
+                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '16px' }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', marginBottom: 10 }}>Yeni xüsusiyyət əlavə et</div>
+                        <div className="d-flex gap-2">
+                          <input className={inputCls} style={{ borderRadius: 9, flex: 1 }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Xüsusiyyət (məs: Güc, Ölçü, Çəki...)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                          <input className={inputCls} style={{ borderRadius: 9, flex: 1 }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (məs: 1000W, 3×4m, 25kg)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                          <button type="button" onClick={addSpec} className="btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}>
+                            <Plus size={13} /> Əlavə et
+                          </button>
+                        </div>
+                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>İpucu: Enter ilə də əlavə edə bilərsiniz</div>
                       </div>
+                      {/* Siyahı */}
                       {Object.entries(form.technicalSpecs).length === 0 ? (
-                        <div className="text-muted text-center py-4" style={{ fontSize: 12 }}>Texniki xüsusiyyət yoxdur. Yuxarıdan əlavə edin.</div>
+                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
+                          <div style={{ fontSize: 32, marginBottom: 8 }}>⚙️</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ xüsusiyyət yoxdur</div>
+                          <div style={{ fontSize: 11 }}>Yuxarıdan əlavə edin — Güc, Ölçü, Material və s.</div>
+                        </div>
                       ) : (
                         <div className="d-flex flex-column gap-2">
-                          {Object.entries(form.technicalSpecs).map(([k, v]) => (
-                            <div key={k} className="d-flex align-items-center gap-2 p-2 bg-light rounded" style={{ borderRadius: 9 }}>
+                          {Object.entries(form.technicalSpecs).map(([k, v], i) => (
+                            <div key={k} className="d-flex align-items-center gap-2" style={{ background: '#fff', border: '1px solid #e9ecef', borderRadius: 10, padding: '8px 12px' }}>
+                              <span style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', minWidth: 20 }}>#{i+1}</span>
                               <input
                                 className="form-control form-control-sm fw-semibold"
-                                style={{ borderRadius: 8, fontSize: 12, minWidth: 0, flex: '0 0 40%', border: '1px solid #dee2e6' }}
+                                style={{ borderRadius: 8, fontSize: 12, flex: '0 0 38%', border: '1px solid #dee2e6', background: '#f8f9fa' }}
                                 value={k}
                                 onChange={e => {
                                   const newKey = e.target.value;
@@ -277,13 +370,14 @@ export default function ProductsTab({ token }: { token: string }) {
                                   });
                                 }}
                               />
+                              <span style={{ color: '#dee2e6', fontSize: 14 }}>:</span>
                               <input
                                 className="form-control form-control-sm"
                                 style={{ borderRadius: 8, fontSize: 12, flex: 1, border: '1px solid #dee2e6' }}
                                 value={v}
                                 onChange={e => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: e.target.value } }))}
                               />
-                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '2px 6px' }}><X size={11} /></button>
+                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 8px', flexShrink: 0 }}><X size={11} /></button>
                             </div>
                           ))}
                         </div>
@@ -292,17 +386,60 @@ export default function ProductsTab({ token }: { token: string }) {
                   )}
 
                   {activeTab === 'tags' && (
-                    <div>
-                      <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Teqlər (vergüllə ayır, Enter ilə əlavə et)</label>
-                      <input className={inputCls} style={{ borderRadius: 9 }} value={form.tags.join(', ')} onChange={e => setForm({ ...form, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })} placeholder="LED, Outdoor, Kiçik ölçü..." />
-                      {form.tags.length > 0 && (
-                        <div className="d-flex flex-wrap gap-2 mt-3">
-                          {form.tags.map((tag, i) => (
-                            <span key={i} className="badge d-flex align-items-center gap-1" style={{ background: '#fff0f0', color: '#e30613', borderRadius: 20, padding: '6px 12px', fontSize: 11, fontWeight: 600 }}>
-                              {tag}
-                              <button type="button" onClick={() => setForm(f => ({ ...f, tags: f.tags.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#e30613', display: 'flex', alignItems: 'center' }}><X size={10} /></button>
-                            </span>
-                          ))}
+                    <div className="d-flex flex-column gap-3">
+                      {/* Input */}
+                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '16px' }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', marginBottom: 10 }}>Teq əlavə et</div>
+                        <div className="d-flex gap-2">
+                          <input
+                            className={inputCls}
+                            style={{ borderRadius: 9, flex: 1 }}
+                            placeholder="Teq yazın (Enter ilə əlavə edin)"
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const val = (e.target as HTMLInputElement).value.trim();
+                                if (val && !form.tags.includes(val)) {
+                                  setForm(f => ({ ...f, tags: [...f.tags, val] }));
+                                  (e.target as HTMLInputElement).value = '';
+                                }
+                              }
+                            }}
+                          />
+                          <button type="button"
+                            className="btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold"
+                            style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}
+                            onClick={e => {
+                              const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                              const val = input?.value.trim();
+                              if (val && !form.tags.includes(val)) {
+                                setForm(f => ({ ...f, tags: [...f.tags, val] }));
+                                if (input) input.value = '';
+                              }
+                            }}>
+                            <Plus size={13} /> Əlavə et
+                          </button>
+                        </div>
+                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>İpucu: Enter ilə sürətli əlavə edin</div>
+                      </div>
+                      {/* Teqlər */}
+                      {form.tags.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
+                          <div style={{ fontSize: 32, marginBottom: 8 }}>🏷️</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ teq yoxdur</div>
+                          <div style={{ fontSize: 11 }}>Teqlər məhsulun axtarışını asanlaşdırır</div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div style={{ fontSize: 11, color: '#6c757d', marginBottom: 8 }}>{form.tags.length} teq</div>
+                          <div className="d-flex flex-wrap gap-2">
+                            {form.tags.map((tag, i) => (
+                              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff0f0', color: '#e30613', borderRadius: 20, padding: '5px 12px', fontSize: 12, fontWeight: 600, border: '1px solid #ffd6d6' }}>
+                                {tag}
+                                <button type="button" onClick={() => setForm(f => ({ ...f, tags: f.tags.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#e30613', display: 'flex', alignItems: 'center', opacity: 0.7 }}><X size={11} /></button>
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

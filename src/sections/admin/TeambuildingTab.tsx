@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, RefreshCw, Check, X, Image as ImageIcon, Search, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, RefreshCw, Check, X, Image as ImageIcon, Search, Eye, Upload } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
 interface TBGame {
@@ -14,10 +14,10 @@ interface TBConcept {
 
 const EMPTY_GAME: Omit<TBGame, 'id' | 'active'> = { name: '', category: 'Indoor', image: '', description: '', details: '', sort_order: 0 };
 const EMPTY_CONCEPT: Omit<TBConcept, 'id' | 'active'> = { name: '', image: '', sort_order: 0 };
-
 const inputCls = 'form-control form-control-sm';
 const CATS = ['Indoor', 'Outdoor'] as const;
 
+/* ── Media Picker Modal ── */
 function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: string) => void; onClose: () => void }) {
   const [files, setFiles] = useState<{ filename: string; url: string }[]>([]);
   useEffect(() => {
@@ -25,22 +25,27 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
       .then(r => r.ok ? r.json() : []).then(setFiles).catch(() => {});
   }, []);
   return (
-    <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
+    <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.6)', zIndex: 1060 }} onClick={onClose}>
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" onClick={e => e.stopPropagation()}>
         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 16 }}>
           <div className="modal-header border-0 px-4 pt-4 pb-2">
-            <h6 className="modal-title fw-bold">Media Seç</h6>
+            <h6 className="modal-title fw-bold">Media Kitabxanası</h6>
             <button className="btn-close" onClick={onClose} />
           </div>
           <div className="modal-body px-4 pb-4">
             {files.length === 0 ? (
-              <div className="text-center py-4 text-muted" style={{ fontSize: 13 }}>Media yoxdur. Əvvəlcə Media tabında fayl yükləyin.</div>
+              <div className="text-center py-5 text-muted">
+                <ImageIcon size={32} style={{ opacity: 0.3, marginBottom: 10 }} />
+                <div style={{ fontSize: 13 }}>Media yoxdur. Əvvəlcə Media tabında fayl yükləyin.</div>
+              </div>
             ) : (
               <div className="row g-2">
                 {files.map(f => (
                   <div key={f.filename} className="col-4 col-md-3">
-                    <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer' }}
-                      onClick={() => { onPick(window.location.origin + f.url); onClose(); }}>
+                    <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer', transition: '0.15s' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}
+                      onClick={() => { onPick(f.url); onClose(); }}>
                       <div style={{ height: 80, background: '#f8f9fa', overflow: 'hidden' }}>
                         <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
@@ -57,22 +62,59 @@ function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: 
   );
 }
 
+/* ── Smart Image Input: drag&drop + fayl seç + URL + media picker ── */
 function ImgInput({ value, onChange, token }: { value: string; onChange: (v: string) => void; token: string }) {
   const [picker, setPicker] = useState(false);
-  const [show, setShow] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const toast = useToast();
+
+  const upload = async (file: File) => {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const r = await fetch('/api/media/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      onChange(d.url || '');
+      toast.success('Şəkil yükləndi ✓');
+    } catch { toast.error('Şəkil yüklənmədi'); }
+    finally { setUploading(false); }
+  };
+
   return (
-    <div>
-      <div className="d-flex gap-2">
-        <input className={inputCls} style={{ borderRadius: 9 }} value={value} onChange={e => onChange(e.target.value)} placeholder="https://... və ya media seç" />
-        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 9 }} onClick={() => setPicker(true)} title="Media seç"><ImageIcon size={13} /></button>
-        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 9 }} onClick={() => setShow(v => !v)}>{show ? <EyeOff size={13} /> : <Eye size={13} />}</button>
-      </div>
-      {show && value && (
-        <div style={{ height: 100, borderRadius: 9, overflow: 'hidden', marginTop: 6, border: '1px solid #dee2e6' }}>
+    <div className="d-flex flex-column gap-2">
+      {/* Preview */}
+      {value && (
+        <div style={{ position: 'relative', height: 160, borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef' }}>
           <img src={value} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => (e.currentTarget.style.display = 'none')} />
+          <button type="button" onClick={() => onChange('')}
+            style={{ position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <X size={13} />
+          </button>
         </div>
       )}
-      {picker && <MediaPicker token={token} onPick={onChange} onClose={() => setPicker(false)} />}
+      {/* Drag & drop / klik */}
+      <label
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1.5px dashed', borderColor: uploading ? '#e30613' : '#dee2e6', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', background: uploading ? '#fff5f5' : '#fafafa', transition: '0.15s' }}
+        onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#e30613'; e.currentTarget.style.background = '#fff5f5'; }}
+        onDragLeave={e => { e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; }}
+        onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f) upload(f); }}
+      >
+        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ''; }} />
+        {uploading
+          ? <><div className="spinner-border spinner-border-sm text-danger" style={{ width: 14, height: 14 }} /><span style={{ fontSize: 11, color: '#e30613', fontWeight: 600 }}>Yüklənir...</span></>
+          : <><Upload size={14} color="#adb5bd" /><span style={{ fontSize: 11, color: '#6c757d' }}>Şəkil sürüklə və burax və ya <span style={{ color: '#e30613', fontWeight: 600 }}>seç</span></span></>
+        }
+      </label>
+      {/* URL + Media picker */}
+      <div className="d-flex gap-2">
+        <input className={inputCls} style={{ borderRadius: 9, fontSize: 11 }} value={value} onChange={e => onChange(e.target.value)} placeholder="https://..." />
+        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, padding: '4px 10px', flexShrink: 0, fontSize: 11 }} onClick={() => setPicker(true)} title="Mediadan seç">
+          <ImageIcon size={12} /> Seç
+        </button>
+      </div>
+      {picker && <MediaPicker token={token} onPick={v => { onChange(v); setPicker(false); }} onClose={() => setPicker(false)} />}
     </div>
   );
 }
@@ -100,13 +142,15 @@ export default function TeambuildingTab({ token }: { token: string }) {
 
   const load = async () => {
     setLoading(true);
-    const [gRes, cRes] = await Promise.all([
-      fetch('/api/tb/games').then(r => r.json()),
-      fetch('/api/tb/concepts').then(r => r.json()),
-    ]);
-    setGames(Array.isArray(gRes) ? gRes : []);
-    setConcepts(Array.isArray(cRes) ? cRes : []);
-    setLoading(false);
+    try {
+      const [gRes, cRes] = await Promise.all([
+        fetch('/api/tb/games').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('/api/tb/concepts').then(r => r.ok ? r.json() : []).catch(() => []),
+      ]);
+      setGames(Array.isArray(gRes) ? gRes : []);
+      setConcepts(Array.isArray(cRes) ? cRes : []);
+    } catch { setGames([]); setConcepts([]); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { load(); }, []);
@@ -117,14 +161,13 @@ export default function TeambuildingTab({ token }: { token: string }) {
   const closeGameModal = () => { setShowGameModal(false); setEditGame(null); };
 
   const handleGameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setGameSaving(true);
+    e.preventDefault(); setGameSaving(true);
     try {
       const res = await fetch(editGame ? `/api/tb/games/${editGame.id}` : '/api/tb/games', {
         method: editGame ? 'PUT' : 'POST', headers: h, body: JSON.stringify({ ...gameForm, active: editGame?.active ?? 1 }),
       });
       if (!res.ok) { toast.error((await res.json()).error); return; }
-      toast.success(editGame ? 'Oyun yeniləndi.' : 'Oyun əlavə edildi.');
+      toast.success(editGame ? 'Oyun yeniləndi ✓' : 'Oyun əlavə edildi ✓');
       await load(); closeGameModal();
     } finally { setGameSaving(false); }
   };
@@ -147,14 +190,13 @@ export default function TeambuildingTab({ token }: { token: string }) {
   const closeConceptModal = () => { setShowConceptModal(false); setEditConcept(null); };
 
   const handleConceptSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setConceptSaving(true);
+    e.preventDefault(); setConceptSaving(true);
     try {
       const res = await fetch(editConcept ? `/api/tb/concepts/${editConcept.id}` : '/api/tb/concepts', {
         method: editConcept ? 'PUT' : 'POST', headers: h, body: JSON.stringify({ ...conceptForm, active: editConcept?.active ?? 1 }),
       });
       if (!res.ok) { toast.error((await res.json()).error); return; }
-      toast.success(editConcept ? 'Konsepsiya yeniləndi.' : 'Konsepsiya əlavə edildi.');
+      toast.success(editConcept ? 'Konsepsiya yeniləndi ✓' : 'Konsepsiya əlavə edildi ✓');
       await load(); closeConceptModal();
     } finally { setConceptSaving(false); }
   };
@@ -173,15 +215,14 @@ export default function TeambuildingTab({ token }: { token: string }) {
 
   const filteredGames = games.filter(g => {
     const q = search.toLowerCase();
-    const matchSearch = !q || g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q);
-    const matchCat = filterCat === 'all' || g.category === filterCat;
-    return matchSearch && matchCat;
+    return (!q || g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)) &&
+           (filterCat === 'all' || g.category === filterCat);
   });
-
   const filteredConcepts = concepts.filter(c => !search || c.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
+      {/* Header */}
       <div className="d-flex align-items-center justify-content-between mb-4">
         <div>
           <h5 className="mb-0 fw-bold">Teambuilding</h5>
@@ -229,7 +270,6 @@ export default function TeambuildingTab({ token }: { token: string }) {
       {loading ? (
         <div className="text-center py-5"><div className="spinner-border text-danger" style={{ width: 28, height: 28 }} /></div>
       ) : activeTab === 'games' ? (
-        /* ── Games Grid ── */
         <div className="row g-3">
           {filteredGames.map(game => (
             <div key={game.id} className="col-6 col-md-4 col-lg-3">
@@ -237,8 +277,8 @@ export default function TeambuildingTab({ token }: { token: string }) {
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
                 <div style={{ height: 130, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
-                  {game.image ? <img src={game.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} /></div>}
-                  <span style={{ position: 'absolute', top: 8, left: 8, background: game.category === 'Indoor' ? '#0d6efd' : '#198754', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{game.category}</span>
+                  {game.image ? <img src={game.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
+                  <span style={{ position: 'absolute', top: 8, left: 8, background: game.category === 'Indoor' ? '#0d6efd' : '#198754', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>{game.category}</span>
                   {!game.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
                 </div>
                 <div className="p-3">
@@ -253,18 +293,17 @@ export default function TeambuildingTab({ token }: { token: string }) {
               </div>
             </div>
           ))}
-          {filteredGames.length === 0 && <div className="col-12 text-center py-5 text-muted">Oyun tapılmadı</div>}
+          {filteredGames.length === 0 && <div className="col-12 text-center py-5 text-muted"><ImageIcon size={36} style={{ opacity: 0.2, marginBottom: 10 }} /><div>Oyun tapılmadı</div></div>}
         </div>
       ) : (
-        /* ── Concepts Grid ── */
         <div className="row g-3">
           {filteredConcepts.map(concept => (
             <div key={concept.id} className="col-6 col-md-4 col-lg-3">
-              <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: concept.active ? 1 : 0.5 }}
+              <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: concept.active ? 1 : 0.5, transition: 'transform 0.15s' }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
                 <div style={{ height: 130, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
-                  {concept.image ? <img src={concept.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} /></div>}
+                  {concept.image ? <img src={concept.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><ImageIcon size={32} opacity={0.3} /></div>}
                   {!concept.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
                 </div>
                 <div className="p-3">
@@ -282,19 +321,19 @@ export default function TeambuildingTab({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Game Modal */}
+      {/* ── Game Modal ── */}
       {showGameModal && (
         <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 18 }}>
-              <div className="modal-header border-0 px-4 pt-4 pb-2">
+              <div className="modal-header border-0 px-4 pt-4 pb-0">
                 <div className="d-flex align-items-center gap-3">
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: editGame ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: editGame ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {editGame ? <Pencil size={18} color="#664d03" /> : <Plus size={18} color="#e30613" />}
                   </div>
                   <div>
                     <h6 className="mb-0 fw-bold">{editGame ? 'Oyunu Düzəlt' : 'Yeni Oyun'}</h6>
-                    <div style={{ fontSize: 11, color: '#adb5bd' }}>{editGame?.id}</div>
+                    <div style={{ fontSize: 11, color: '#adb5bd' }}>{editGame ? editGame.id : 'Teambuilding oyunu əlavə et'}</div>
                   </div>
                 </div>
                 <button className="btn-close" onClick={closeGameModal} />
@@ -302,42 +341,52 @@ export default function TeambuildingTab({ token }: { token: string }) {
               <form onSubmit={handleGameSubmit}>
                 <div className="modal-body px-4 py-3">
                   <div className="row g-3">
-                    <div className="col-md-8">
+                    {/* Ad + Kateqoriya */}
+                    <div className="col-md-7">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Oyun adı *</label>
-                      <input required className={inputCls} style={{ borderRadius: 9 }} value={gameForm.name} onChange={e => setGameForm({ ...gameForm, name: e.target.value })} placeholder="Oyun adı" />
+                      <input required className={inputCls} style={{ borderRadius: 9 }} value={gameForm.name} onChange={e => setGameForm({ ...gameForm, name: e.target.value })} placeholder="Oyun adı daxil edin..." autoFocus />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-5">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Kateqoriya</label>
                       <div className="d-flex gap-2">
                         {CATS.map(cat => (
                           <div key={cat} onClick={() => setGameForm({ ...gameForm, category: cat })}
-                            style={{ flex: 1, padding: '8px', borderRadius: 9, cursor: 'pointer', border: `2px solid ${gameForm.category === cat ? (cat === 'Indoor' ? '#0d6efd' : '#198754') : '#dee2e6'}`, background: gameForm.category === cat ? (cat === 'Indoor' ? '#cfe2ff' : '#d1e7dd') : '#fff', textAlign: 'center', fontSize: 12, fontWeight: 700, color: gameForm.category === cat ? (cat === 'Indoor' ? '#0d6efd' : '#198754') : '#495057' }}>
-                            {cat}
+                            style={{ flex: 1, padding: '8px', borderRadius: 10, cursor: 'pointer', border: `2px solid ${gameForm.category === cat ? (cat === 'Indoor' ? '#0d6efd' : '#198754') : '#dee2e6'}`, background: gameForm.category === cat ? (cat === 'Indoor' ? '#e7f0ff' : '#d1f0e0') : '#fff', textAlign: 'center', fontSize: 12, fontWeight: 700, color: gameForm.category === cat ? (cat === 'Indoor' ? '#0d6efd' : '#198754') : '#6c757d', transition: '0.15s' }}>
+                            {cat === 'Indoor' ? '🏠 Indoor' : '🌿 Outdoor'}
                           </div>
                         ))}
                       </div>
                     </div>
+
+                    {/* Şəkil */}
                     <div className="col-12">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Şəkil</label>
                       <ImgInput value={gameForm.image} onChange={v => setGameForm({ ...gameForm, image: v })} token={token} />
                     </div>
+
+                    {/* Qısa açıqlama */}
                     <div className="col-12">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Qısa açıqlama</label>
-                      <input className={inputCls} style={{ borderRadius: 9 }} value={gameForm.description} onChange={e => setGameForm({ ...gameForm, description: e.target.value })} placeholder="Qısa açıqlama" />
+                      <input className={inputCls} style={{ borderRadius: 9 }} value={gameForm.description} onChange={e => setGameForm({ ...gameForm, description: e.target.value })} placeholder="Kartda görünəcək qısa mətn..." />
                     </div>
+
+                    {/* Ətraflı */}
                     <div className="col-12">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Ətraflı məlumat</label>
-                      <textarea className="form-control form-control-sm" style={{ borderRadius: 9 }} rows={3} value={gameForm.details} onChange={e => setGameForm({ ...gameForm, details: e.target.value })} placeholder="Ətraflı məlumat..." />
+                      <textarea className="form-control form-control-sm" style={{ borderRadius: 9, resize: 'none' }} rows={4} value={gameForm.details} onChange={e => setGameForm({ ...gameForm, details: e.target.value })} placeholder="Oyunun qaydaları, müddəti, iştirakçı sayı..." />
                     </div>
+
+                    {/* Sıra */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Sıra nömrəsi</label>
                       <input type="number" className={inputCls} style={{ borderRadius: 9 }} value={gameForm.sort_order} onChange={e => setGameForm({ ...gameForm, sort_order: Number(e.target.value) })} />
+                      <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 4 }}>Kiçik rəqəm öncə göstərilir</div>
                     </div>
                   </div>
                 </div>
                 <div className="modal-footer border-top py-3 px-4 gap-2">
                   <button type="button" onClick={closeGameModal} className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9 }}>Ləğv Et</button>
-                  <button type="submit" disabled={gameSaving} className="btn btn-sm btn-danger fw-semibold d-flex align-items-center gap-1" style={{ borderRadius: 9 }}>
+                  <button type="submit" disabled={gameSaving} className="btn btn-danger btn-sm fw-semibold d-flex align-items-center gap-1" style={{ borderRadius: 9, padding: '7px 18px' }}>
                     <Check size={13} /> {gameSaving ? 'Saxlanır...' : editGame ? 'Yenilə' : 'Əlavə et'}
                   </button>
                 </div>
@@ -347,19 +396,19 @@ export default function TeambuildingTab({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Concept Modal */}
+      {/* ── Concept Modal ── */}
       {showConceptModal && (
         <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 500 }}>
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ maxWidth: 520 }}>
             <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 18 }}>
-              <div className="modal-header border-0 px-4 pt-4 pb-2">
+              <div className="modal-header border-0 px-4 pt-4 pb-0">
                 <div className="d-flex align-items-center gap-3">
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: editConcept ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: editConcept ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {editConcept ? <Pencil size={18} color="#664d03" /> : <Plus size={18} color="#e30613" />}
                   </div>
                   <div>
                     <h6 className="mb-0 fw-bold">{editConcept ? 'Konsepsiya Düzəlt' : 'Yeni Konsepsiya'}</h6>
-                    <div style={{ fontSize: 11, color: '#adb5bd' }}>{editConcept?.id}</div>
+                    <div style={{ fontSize: 11, color: '#adb5bd' }}>{editConcept ? editConcept.id : 'Yeni konsepsiya əlavə et'}</div>
                   </div>
                 </div>
                 <button className="btn-close" onClick={closeConceptModal} />
@@ -369,7 +418,7 @@ export default function TeambuildingTab({ token }: { token: string }) {
                   <div className="d-flex flex-column gap-3">
                     <div>
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Konsepsiya adı *</label>
-                      <input required className={inputCls} style={{ borderRadius: 9 }} value={conceptForm.name} onChange={e => setConceptForm({ ...conceptForm, name: e.target.value })} placeholder="Konsepsiya adı" />
+                      <input required className={inputCls} style={{ borderRadius: 9 }} value={conceptForm.name} onChange={e => setConceptForm({ ...conceptForm, name: e.target.value })} placeholder="Konsepsiya adı daxil edin..." autoFocus />
                     </div>
                     <div>
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Şəkil</label>
@@ -378,12 +427,13 @@ export default function TeambuildingTab({ token }: { token: string }) {
                     <div>
                       <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Sıra nömrəsi</label>
                       <input type="number" className={inputCls} style={{ borderRadius: 9 }} value={conceptForm.sort_order} onChange={e => setConceptForm({ ...conceptForm, sort_order: Number(e.target.value) })} />
+                      <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 4 }}>Kiçik rəqəm öncə göstərilir</div>
                     </div>
                   </div>
                 </div>
                 <div className="modal-footer border-top py-3 px-4 gap-2">
                   <button type="button" onClick={closeConceptModal} className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9 }}>Ləğv Et</button>
-                  <button type="submit" disabled={conceptSaving} className="btn btn-sm btn-danger fw-semibold d-flex align-items-center gap-1" style={{ borderRadius: 9 }}>
+                  <button type="submit" disabled={conceptSaving} className="btn btn-danger btn-sm fw-semibold d-flex align-items-center gap-1" style={{ borderRadius: 9, padding: '7px 18px' }}>
                     <Check size={13} /> {conceptSaving ? 'Saxlanır...' : editConcept ? 'Yenilə' : 'Əlavə et'}
                   </button>
                 </div>
