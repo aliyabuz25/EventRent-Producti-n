@@ -1,15 +1,5 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
-RUN apk add --no-cache python3 make g++
-COPY package.frontend.json ./package.json
-RUN npm install --legacy-peer-deps
-COPY vite.config.docker.ts ./vite.config.ts
-COPY tsconfig*.json ./
-COPY src/ ./src/
-RUN npx vite build
-
 FROM nginx:alpine
 RUN mkdir -p /app/nginx-logs
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY dist/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
