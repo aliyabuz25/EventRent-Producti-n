@@ -708,158 +708,182 @@ export default function ProductsTab({ token }: { token: string }) {
       {showTemplateManager && (
         <>
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 1040 }} onClick={() => setShowTemplateManager(false)} />
-          <div style={{ position: 'fixed', top: 0, right: 0, width: 420, height: '100vh', background: '#fff', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'hidden' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'hidden' }}>
+            
             {/* Header */}
-            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff' }}>
+            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ fontWeight: 700, fontSize: 16 }}>Metrik Şablonları</div>
-                <div style={{ fontSize: 12, color: '#6c757d', marginTop: 2 }}>Məhsullara tətbiq edilə bilən xüsusiyyət şablonları</div>
+                <h5 style={{ margin: 0, fontWeight: 800, color: '#212529', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Tag size={18} color="#e30613" /> Metrik Şablonları
+                </h5>
+                <div style={{ fontSize: 12, color: '#6c757d', marginTop: 4 }}>Bütün məhsullar üçün ortaq xüsusiyyətlər yaradın</div>
               </div>
               <button onClick={() => { setShowTemplateManager(false); setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }}
-                style={{ border: 'none', background: '#f8f9fa', borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <X size={16} />
+                style={{ border: 'none', background: '#f1f3f5', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#e9ecef')} onMouseLeave={e => (e.currentTarget.style.background = '#f1f3f5')}>
+                <X size={16} color="#495057" />
               </button>
             </div>
 
-            {/* Yeni metrik formu */}
-            <div style={{ padding: '16px 24px', borderBottom: '1px solid #f1f3f5', background: '#f8f9ff', overflowY: 'auto', maxHeight: '55vh' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bdb', marginBottom: 12 }}>
-                {tmplEditId ? '✏️ Metrikin Redaktəsi' : '+ Yeni Metrik'}
-              </div>
-
-              {/* Tip seçimi */}
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 6 }}>Tip seç *</div>
-                <div className="d-flex flex-wrap gap-2">
-                  {FIELD_TYPES.map(ft => (
-                    <button key={ft.value} type="button" onClick={() => setTmplForm(f => ({ ...f, field_type: ft.value, options: [] }))}
-                      style={{ border: tmplForm.field_type === ft.value ? '2px solid #3b5bdb' : '1px solid #dee2e6', background: tmplForm.field_type === ft.value ? '#e8edff' : '#fff', borderRadius: 10, padding: '6px 10px', cursor: 'pointer', fontSize: 11, fontWeight: 600, color: tmplForm.field_type === ft.value ? '#3b5bdb' : '#495057', transition: '0.12s', textAlign: 'center', minWidth: 80 }}>
-                      <div style={{ fontSize: 16, marginBottom: 2 }}>{ft.icon}</div>
-                      <div>{ft.label}</div>
-                      <div style={{ fontSize: 9, color: '#adb5bd', fontWeight: 400 }}>{ft.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Ad + Vahid */}
-              <div className="d-flex gap-2 mb-2">
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Metrik adı *</div>
-                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.name} onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))} placeholder="məs: Güc, Rəng, Material" />
-                </div>
-                {(tmplForm.field_type === 'number' || tmplForm.field_type === 'dimensions') && (
-                  <div style={{ width: 90 }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Vahid</div>
-                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.unit} onChange={e => setTmplForm(f => ({ ...f, unit: e.target.value }))} placeholder="W, m, kg" />
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+              
+              {/* Form Sahəsi (Edit və ya Yeni yaradıldıqda görünür) */}
+              <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e9ecef', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                {/* Form Toggle Header */}
+                <div 
+                  style={{ padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: tmplEditId ? '#fff5f5' : '#fff' }}
+                  onClick={() => { if (!tmplEditId) { setTmplForm(TMPL_EMPTY); setTmplEditId(tmplEditId === 'new' ? null : 'new'); } }}
+                >
+                  <div style={{ fontWeight: 700, fontSize: 13, color: tmplEditId ? '#e30613' : '#495057', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {tmplEditId === 'new' ? <><Plus size={15} /> Yeni Metrik Yarat</> : tmplEditId ? <><Pencil size={15} /> Şablonu Redaktə Et</> : <><Plus size={15} /> Yeni Metrik Yarat</>}
                   </div>
-                )}
-              </div>
-
-              {/* Qrup + Açıqlama */}
-              <div className="d-flex gap-2 mb-2">
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Qrup</div>
-                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.category} onChange={e => setTmplForm(f => ({ ...f, category: e.target.value }))} placeholder="Elektrik, Ölçü, Görünüş..." list="cat-list" />
-                  <datalist id="cat-list">
-                    {Array.from(new Set(templates.map(t => t.category).filter(Boolean))).map(c => <option key={c} value={c} />)}
-                  </datalist>
+                  {!tmplEditId && <ChevronRight size={16} color="#adb5bd" style={{ transform: tmplEditId === 'new' ? 'rotate(90deg)' : 'none', transition: '0.2s' }} />}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 3 }}>Açıqlama</div>
-                  <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplForm.description} onChange={e => setTmplForm(f => ({ ...f, description: e.target.value }))} placeholder="İstəyə bağlı..." />
-                </div>
-              </div>
 
-              {/* Seçim dəyərləri (select/multiselect/color) */}
-              {(tmplForm.field_type === 'select' || tmplForm.field_type === 'multiselect' || tmplForm.field_type === 'color') && (
-                <div style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#6c757d', marginBottom: 6 }}>
-                    {tmplForm.field_type === 'color' ? 'Rəng variantları' : 'Seçim variantları'}
-                  </div>
-                  <div className="d-flex gap-2 mb-2">
-                    <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplOptionInput} onChange={e => setTmplOptionInput(e.target.value)}
-                      placeholder={tmplForm.field_type === 'color' ? 'Qırmızı, #FF0000' : 'Variant əlavə et...'}
-                      onKeyDown={e => { if (e.key === 'Enter' && tmplOptionInput.trim()) { e.preventDefault(); setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}} />
-                    <button type="button" onClick={() => { if (tmplOptionInput.trim()) { setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}}
-                      className="btn btn-sm btn-outline-primary d-flex align-items-center" style={{ borderRadius: 8, padding: '4px 10px' }}><Plus size={12} /></button>
-                  </div>
-                  {tmplForm.options.length > 0 && (
-                    <div className="d-flex flex-wrap gap-1">
-                      {tmplForm.options.map((opt, i) => (
-                        <span key={i} style={{ background: '#e8edff', color: '#3b5bdb', borderRadius: 20, padding: '3px 10px', fontSize: 11, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          {tmplForm.field_type === 'color' && <span style={{ width: 10, height: 10, borderRadius: '50%', background: opt.includes('#') ? opt.split(',')[1]?.trim() || opt : '#ccc', border: '1px solid rgba(0,0,0,0.1)', display: 'inline-block' }} />}
-                          {opt}
-                          <button type="button" onClick={() => setTmplForm(f => ({ ...f, options: f.options.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#3b5bdb', lineHeight: 1 }}><X size={9} /></button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Saxla */}
-              <div className="d-flex gap-2 mt-3">
-                <button onClick={saveTmpl} className="btn btn-sm btn-primary fw-semibold d-flex align-items-center gap-1 flex-grow-1" style={{ borderRadius: 8 }}>
-                  <Check size={13} /> {tmplEditId ? 'Yenilə' : 'Metrik Yarat'}
-                </button>
-                {tmplEditId && (
-                  <button onClick={() => { setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 8 }}>
-                    <X size={12} /> Ləğv
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Şablon siyahısı */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
-              {templates.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '48px 0', color: '#adb5bd' }}>
-                  <Tag size={36} style={{ opacity: 0.3, marginBottom: 12 }} />
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>Hələ şablon yoxdur</div>
-                  <div style={{ fontSize: 11, marginTop: 4 }}>Yuxarıdan ilk şablonu yaradın</div>
-                </div>
-              ) : (
-                <>
-                  {/* Qruplara görə */}
-                  {Array.from(new Set(templates.map(t => t.category || 'Digər'))).map(cat => (
-                    <div key={cat} style={{ marginBottom: 20 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{cat}</div>
-                      <div className="d-flex flex-column gap-2">
-                        {templates.filter(t => (t.category || 'Digər') === cat).map(t => (
-                          <div key={t.id} style={{ background: '#f8f9fa', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, border: '1px solid #e9ecef' }}>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span style={{ fontSize: 14 }}>{FIELD_TYPES.find(f => f.value === t.field_type)?.icon || '✍️'}</span>
-                                <span style={{ fontWeight: 600, fontSize: 13 }}>{t.name}</span>
-                                {t.unit && <span style={{ background: '#e9ecef', borderRadius: 4, padding: '1px 6px', fontSize: 10, color: '#6c757d' }}>{t.unit}</span>}
-                              </div>
-                              <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 2, display: 'flex', gap: 6, alignItems: 'center' }}>
-                                <span style={{ background: '#f1f3f5', borderRadius: 4, padding: '1px 6px' }}>{FIELD_TYPES.find(f => f.value === t.field_type)?.label || 'Mətn'}</span>
-                                {t.options?.length > 0 && <span>{t.options.length} variant</span>}
-                                {t.description && <span>{t.description}</span>}
-                              </div>
-                            </div>
-                            <button onClick={() => { setTmplEditId(t.id); setTmplForm({ name: t.name, unit: t.unit, category: t.category, description: t.description, field_type: t.field_type, options: t.options }); setTmplOptionInput(''); }}
-                              style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 7, padding: '4px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Redaktə et">
-                              <Pencil size={12} color="#6c757d" />
-                            </button>
-                            <button onClick={() => deleteTmpl(t.id)}
-                              style={{ border: '1px solid #fee2e2', background: '#fff5f5', borderRadius: 7, padding: '4px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Sil">
-                              <Trash2 size={12} color="#dc3545" />
-                            </button>
-                          </div>
+                {/* Form İçəriyi */}
+                {(tmplEditId) && (
+                  <div style={{ padding: '0 20px 20px', borderTop: '1px solid #f1f3f5' }}>
+                    
+                    {/* Tip seçimi */}
+                    <div style={{ marginTop: 16, marginBottom: 16 }}>
+                      <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 8, display: 'block' }}>Giriş Tipi *</label>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                        {FIELD_TYPES.map(ft => (
+                          <button key={ft.value} type="button" onClick={() => setTmplForm(f => ({ ...f, field_type: ft.value, options: [] }))}
+                            style={{ 
+                              border: tmplForm.field_type === ft.value ? '2px solid #e30613' : '1px solid #dee2e6', 
+                              background: tmplForm.field_type === ft.value ? '#fff5f5' : '#fff', 
+                              borderRadius: 12, padding: '10px 6px', cursor: 'pointer', transition: 'all 0.15s', 
+                              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+                            }}>
+                            <span style={{ fontSize: 18, marginBottom: 4 }}>{ft.icon}</span>
+                            <span style={{ fontSize: 11, fontWeight: tmplForm.field_type === ft.value ? 700 : 500, color: tmplForm.field_type === ft.value ? '#e30613' : '#495057' }}>{ft.label}</span>
+                          </button>
                         ))}
                       </div>
                     </div>
-                  ))}
-                </>
-              )}
-            </div>
 
-            {/* Footer */}
-            <div style={{ padding: '12px 24px', borderTop: '1px solid #f1f3f5', background: '#f8f9fa', fontSize: 11, color: '#adb5bd', textAlign: 'center' }}>
-              {templates.length} şablon · Məhsul redaktəsindən tətbiq edin
+                    <div className="row g-3 mb-3">
+                      <div className="col-8">
+                        <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 4 }}>Ad (məs: Rəng, Çəki) *</label>
+                        <input className="form-control form-control-sm" style={{ borderRadius: 8, padding: '8px 12px' }} value={tmplForm.name} onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))} placeholder="Metrik adı" />
+                      </div>
+                      {(tmplForm.field_type === 'number' || tmplForm.field_type === 'dimensions') && (
+                        <div className="col-4">
+                          <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 4 }}>Vahid</label>
+                          <input className="form-control form-control-sm" style={{ borderRadius: 8, padding: '8px 12px' }} value={tmplForm.unit} onChange={e => setTmplForm(f => ({ ...f, unit: e.target.value }))} placeholder="m, kg, W" />
+                        </div>
+                      )}
+                      
+                      <div className="col-6">
+                        <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 4 }}>Qrup</label>
+                        <input className="form-control form-control-sm" style={{ borderRadius: 8, padding: '8px 12px' }} value={tmplForm.category} onChange={e => setTmplForm(f => ({ ...f, category: e.target.value }))} placeholder="Ölçü, Səs..." list="cat-list" />
+                        <datalist id="cat-list">
+                          {Array.from(new Set(templates.map(t => t.category).filter(Boolean))).map(c => <option key={c} value={c} />)}
+                        </datalist>
+                      </div>
+                      <div className="col-6">
+                        <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 4 }}>Açıqlama (opt.)</label>
+                        <input className="form-control form-control-sm" style={{ borderRadius: 8, padding: '8px 12px' }} value={tmplForm.description} onChange={e => setTmplForm(f => ({ ...f, description: e.target.value }))} placeholder="İzah..." />
+                      </div>
+                    </div>
+
+                    {/* Seçim dəyərləri (select/multiselect/color) */}
+                    {(tmplForm.field_type === 'select' || tmplForm.field_type === 'multiselect' || tmplForm.field_type === 'color') && (
+                      <div style={{ background: '#f8f9fa', borderRadius: 10, padding: 12, marginBottom: 16 }}>
+                        <label style={{ fontSize: 11, fontWeight: 600, color: '#495057', marginBottom: 8, display: 'block' }}>
+                          {tmplForm.field_type === 'color' ? 'Rəng Variantları' : 'Seçim Variantları'}
+                        </label>
+                        <div className="d-flex gap-2 mb-3">
+                          <input className="form-control form-control-sm" style={{ borderRadius: 8 }} value={tmplOptionInput} onChange={e => setTmplOptionInput(e.target.value)}
+                            placeholder={tmplForm.field_type === 'color' ? 'Ad, Hex (məs: Qırmızı, #FF0000)' : 'Yeni variant yaz və Enter-ə bas...'}
+                            onKeyDown={e => { if (e.key === 'Enter' && tmplOptionInput.trim()) { e.preventDefault(); setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}} />
+                          <button type="button" onClick={() => { if (tmplOptionInput.trim()) { setTmplForm(f => ({ ...f, options: [...f.options, tmplOptionInput.trim()] })); setTmplOptionInput(''); }}}
+                            className="btn btn-sm btn-dark d-flex align-items-center" style={{ borderRadius: 8, padding: '0 12px' }}><Plus size={14} /></button>
+                        </div>
+                        {tmplForm.options.length > 0 ? (
+                          <div className="d-flex flex-wrap gap-2">
+                            {tmplForm.options.map((opt, i) => (
+                              <span key={i} style={{ background: '#fff', border: '1px solid #dee2e6', color: '#495057', borderRadius: 20, padding: '4px 10px', fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                                {tmplForm.field_type === 'color' && <span style={{ width: 10, height: 10, borderRadius: '50%', background: opt.includes('#') ? opt.split(',')[1]?.trim() || opt : '#ccc', border: '1px solid rgba(0,0,0,0.1)' }} />}
+                                {opt}
+                                <button type="button" onClick={() => setTmplForm(f => ({ ...f, options: f.options.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#adb5bd', display: 'flex', alignItems: 'center' }}><X size={12} /></button>
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 11, color: '#adb5bd', fontStyle: 'italic' }}>Hələ heç bir variant əlavə edilməyib.</div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="d-flex gap-2 pt-3 border-top">
+                      <button onClick={saveTmpl} className="btn btn-danger fw-bold flex-grow-1 d-flex align-items-center justify-content-center gap-2" style={{ borderRadius: 10, padding: '10px' }}>
+                        <Check size={16} /> {tmplEditId && tmplEditId !== 'new' ? 'Yenilə və Saxla' : 'Şablonu Yarat'}
+                      </button>
+                      <button onClick={() => { setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }} className="btn btn-light fw-semibold" style={{ borderRadius: 10, padding: '10px 16px', color: '#495057' }}>
+                        Ləğv
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Siyahı Sahəsi */}
+              <div style={{ flex: 1 }}>
+                <h6 style={{ fontSize: 14, fontWeight: 800, color: '#212529', marginBottom: 16 }}>Mövcud Şablonlar</h6>
+                {templates.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', background: '#fff', borderRadius: 16, border: '1px dashed #dee2e6' }}>
+                    <Tag size={32} color="#adb5bd" style={{ opacity: 0.5, marginBottom: 12 }} />
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#495057' }}>Siyahı boşdur</div>
+                    <div style={{ fontSize: 12, color: '#adb5bd', marginTop: 4 }}>Yeni metrik yaradaraq siyahını doldurun.</div>
+                  </div>
+                ) : (
+                  <div className="d-flex flex-column gap-4">
+                    {Array.from(new Set(templates.map(t => t.category || 'Ümumi'))).map(cat => (
+                      <div key={cat}>
+                        <div style={{ fontSize: 11, fontWeight: 800, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, paddingLeft: 4 }}>{cat}</div>
+                        <div className="d-flex flex-column gap-2">
+                          {templates.filter(t => (t.category || 'Ümumi') === cat).map(t => (
+                            <div key={t.id} style={{ background: '#fff', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                              <div style={{ width: 36, height: 36, borderRadius: 10, background: '#f8f9fa', border: '1px solid #f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
+                                {FIELD_TYPES.find(f => f.value === t.field_type)?.icon || '✍️'}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                                  <span style={{ fontWeight: 700, fontSize: 13, color: '#212529', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</span>
+                                  {t.unit && <span style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 6, padding: '1px 6px', fontSize: 10, color: '#6c757d', fontWeight: 600 }}>{t.unit}</span>}
+                                </div>
+                                <div style={{ fontSize: 11, color: '#adb5bd', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span>{FIELD_TYPES.find(f => f.value === t.field_type)?.label}</span>
+                                  {t.options?.length > 0 && <span>• {t.options.length} variant</span>}
+                                </div>
+                              </div>
+                              <div className="d-flex gap-1 flex-shrink-0">
+                                <button onClick={() => { setTmplEditId(t.id); setTmplForm({ name: t.name, unit: t.unit, category: t.category, description: t.description, field_type: t.field_type, options: t.options }); setTmplOptionInput(''); }}
+                                  style={{ border: 'none', background: '#f8f9fa', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.15s' }} title="Redaktə et"
+                                  onMouseEnter={e => (e.currentTarget.style.background = '#e9ecef')} onMouseLeave={e => (e.currentTarget.style.background = '#f8f9fa')}>
+                                  <Pencil size={14} color="#495057" />
+                                </button>
+                                <button onClick={() => deleteTmpl(t.id)}
+                                  style={{ border: 'none', background: '#fff5f5', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.15s' }} title="Sil"
+                                  onMouseEnter={e => (e.currentTarget.style.background = '#fee2e2')} onMouseLeave={e => (e.currentTarget.style.background = '#fff5f5')}>
+                                  <Trash2 size={14} color="#dc3545" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Footer Summary */}
+            <div style={{ padding: '12px 24px', background: '#fff', borderTop: '1px solid #e9ecef', fontSize: 12, color: '#6c757d', fontWeight: 500, textAlign: 'center' }}>
+              Toplam {templates.length} metrik şablonu
             </div>
           </div>
         </>
