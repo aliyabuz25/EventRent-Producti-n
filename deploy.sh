@@ -35,31 +35,22 @@ fi
 
 cd "${APP_DIR}"
 
-# 4) npm install (backend deps)
-echo "→ npm install..."
-npm ci --omit=dev
-
-# 5) Frontend build (əgər dist yoxdursa)
-if [ ! -d "dist" ]; then
-  echo "→ Frontend build..."
-  npm ci
-  npm run build
-fi
-
-# 6) Docker image-ları build et
-echo "→ Backend image build..."
-docker build -t eventrent-backend:latest -f Dockerfile.backend "${APP_DIR}"
-
-echo "→ Frontend image build..."
-docker build -t eventrent-frontend:latest -f Dockerfile.frontend "${APP_DIR}"
-
-# 7) /datastore/eventrent/data içinə DB kopyala (ilk deploy)
+# 4) /datastore/eventrent/data içinə DB kopyala (ilk deploy)
 if [ ! -f "${DATASTORE}/data/eventrent.db" ] && [ -f "${APP_DIR}/data/eventrent.db" ]; then
   cp "${APP_DIR}/data/eventrent.db" "${DATASTORE}/data/eventrent.db"
   echo "→ DB kopyalandı"
 fi
 
+# 5) Docker image-ları hostta build et (Portainer build context görməz)
+echo "→ Backend image build..."
+docker build -t eventrent-backend:latest -f "${APP_DIR}/Dockerfile.backend" "${APP_DIR}"
+
+echo "→ Frontend image build..."
+docker build -t eventrent-frontend:latest -f "${APP_DIR}/Dockerfile.frontend" "${APP_DIR}"
+
 echo ""
 echo "=== Build tamamlandı ==="
-echo "Portainer-dən stack deploy edin: docker-compose.yml"
-echo "Və ya: docker compose -f ${APP_DIR}/docker-compose.yml up -d"
+echo "İndi Portainer-dən portainer-stack.yml məzmununu deploy edin."
+echo ""
+echo "Və ya birbaşa:"
+echo "  docker compose -f ${APP_DIR}/portainer-stack.yml up -d"

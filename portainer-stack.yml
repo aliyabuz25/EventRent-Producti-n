@@ -1,8 +1,5 @@
 services:
   eventrent-backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
     image: eventrent-backend:latest
     restart: unless-stopped
     environment:
@@ -27,9 +24,6 @@ services:
       - 'traefik.http.services.eventrent-api.loadbalancer.server.port=4320'
 
   eventrent-frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
     image: eventrent-frontend:latest
     restart: unless-stopped
     volumes:
