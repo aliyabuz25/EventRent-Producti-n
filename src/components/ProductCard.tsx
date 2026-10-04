@@ -81,6 +81,7 @@ export default function ProductCard({ product }: { product: Product }) {
         onConfirm={handleAddToCart}
         productName={product.name}
         category={product.category}
+        technicalSpecs={product.technicalSpecs || {}}
       />
     </>
   );

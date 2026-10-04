@@ -89,6 +89,7 @@ export default function ProductDetail() {
         onConfirm={handleAddToCart}
         productName={product.name}
         category={product.category}
+        technicalSpecs={product.technicalSpecs || {}}
       />
     </div>
   );
