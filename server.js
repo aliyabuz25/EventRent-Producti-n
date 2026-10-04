@@ -906,7 +906,7 @@ app.delete('/api/reels/:id', authMiddleware, adminOnly, (req, res) => {
 /* ══════════════════════════════════════════
    SPEC TEMPLATES
 ══════════════════════════════════════════ */
-app.get('/api/spec-templates', authMiddleware, adminOnly, (_req, res) => {
+app.get('/api/spec-templates', (_req, res) => {
   const rows = db.prepare('SELECT * FROM spec_templates ORDER BY sort_order ASC, created_at ASC').all();
   res.json(rows.map(r => ({ ...r, options: JSON.parse(r.options || '[]') })));
 });
