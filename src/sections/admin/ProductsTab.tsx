@@ -406,17 +406,17 @@ export default function ProductsTab({ token }: { token: string }) {
                 <button className="btn-close" onClick={closeModal} />
               </div>
 
-              <div className="d-flex gap-2 px-4 pt-2 pb-0">
-                {tabBtn('info', 'Məlumat')}
-                {tabBtn('images', `Şəkillər (${form.images.filter(Boolean).length})`)}
-                {tabBtn('specs', `Texniki (${Object.keys(form.technicalSpecs).length})`)}
-                {tabBtn('tags', `Teqlər (${form.tags.length})`)}
-              </div>
+// Silinmiş hissələr
+                <div className="d-flex gap-2 px-4 pt-2 pb-0">
+                  {/* Tabs removed */}
+                </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="modal-body px-4 py-3" style={{ minHeight: 320 }}>
-                  {activeTab === 'info' && (
-                    <div className="d-flex flex-column gap-3">
+                <form onSubmit={handleSubmit}>
+                  <div className="modal-body px-4 py-3" style={{ minHeight: 320 }}>
+                    
+                    {/* Basic Info */}
+                    <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: 12, marginBottom: 20 }}>
+                      <h6 style={{ fontSize: 13, fontWeight: 700, color: '#495057', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Package size={14} /> Məhsul Məlumatları</h6>
                       <div className="row g-3">
                         <div className="col-md-8">
                           <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Məhsul Adı *</label>
@@ -426,49 +426,31 @@ export default function ProductsTab({ token }: { token: string }) {
                           <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Kateqoriya *</label>
                           <input required className={inputCls} style={{ borderRadius: 9 }} value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} placeholder="LED, Səs, Səhnə..." />
                         </div>
-                      </div>
-                      <div>
-                        <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Təsvir</label>
-                        <textarea className="form-control form-control-sm" style={{ borderRadius: 9, resize: 'none' }} rows={5} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Məhsul haqqında ətraflı məlumat yazın..." />
-                      </div>
-                      {/* Növbəti addım göstəricisi */}
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('images')}>
-                          <ImageIcon size={12} /> Şəkillər <ChevronRight size={11} />
-                        </button>
-                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('specs')}>
-                          Texniki <ChevronRight size={11} />
-                        </button>
-                        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11 }} onClick={() => setActiveTab('tags')}>
-                          <Tag size={12} /> Teqlər <ChevronRight size={11} />
-                        </button>
+                        <div className="col-12">
+                          <label className="form-label fw-semibold" style={{ fontSize: 12 }}>Təsvir</label>
+                          <textarea className="form-control form-control-sm" style={{ borderRadius: 9, resize: 'none' }} rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Məhsul haqqında ətraflı məlumat yazın..." />
+                        </div>
                       </div>
                     </div>
-                  )}
 
-                  {activeTab === 'images' && (
-                    <div className="d-flex flex-column gap-3">
+                    {/* Images */}
+                    <div style={{ padding: '16px', background: '#fff', border: '1px solid #e9ecef', borderRadius: 12, marginBottom: 20 }}>
+                      <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h6 style={{ fontSize: 13, fontWeight: 700, color: '#495057', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><ImageIcon size={14} /> Şəkillər ({form.images.filter(Boolean).length})</h6>
+                      </div>
                       <div className="row g-3">
                         {form.images.map((img, idx) => (
                           <div key={idx} className="col-12 col-md-6">
-                            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden' }}>
-                              {/* Preview sahəsi */}
-                              <div style={{ height: 200, background: '#f0f0f0', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #f1f3f5' }}>
+                              <div style={{ height: 160, background: '#f8f9fa', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 {img ? (
                                   <>
-                                    <img src={img}
-                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }}
-                                      onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex'; }}
-                                    />
+                                    <img src={img} style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', padding: 6 }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex'; }} />
                                     <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: '#adb5bd', position: 'absolute', inset: 0 }}>
                                       <ImageIcon size={28} opacity={0.3} />
                                       <span style={{ fontSize: 11 }}>Şəkil yüklənmədi</span>
                                     </div>
-                                    {/* Tam açmaq üçün link */}
-                                    <a href={img} target="_blank" rel="noreferrer"
-                                      style={{ position: 'absolute', bottom: 8, right: form.images.length > 1 ? 40 : 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '3px 8px', textDecoration: 'none' }}>
-                                      ↗ Tam
-                                    </a>
+                                    <a href={img} target="_blank" rel="noreferrer" style={{ position: 'absolute', bottom: 8, right: form.images.length > 1 ? 40 : 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '3px 8px', textDecoration: 'none' }}>↗ Tam</a>
                                   </>
                                 ) : (
                                   <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted" style={{ gap: 6 }}>
@@ -476,20 +458,14 @@ export default function ProductsTab({ token }: { token: string }) {
                                     <span style={{ fontSize: 11 }}>Şəkil yoxdur</span>
                                   </div>
                                 )}
-                                {/* Sil düyməsi */}
                                 {form.images.length > 1 && (
-                                  <button type="button" onClick={() => rmImage(idx)}
-                                    style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                                  <button type="button" onClick={() => rmImage(idx)} style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                                     <X size={12} />
                                   </button>
                                 )}
-                                {/* Sıra nömrəsi */}
                                 <span style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 6, padding: '2px 7px' }}>#{idx + 1}</span>
                               </div>
-
-                              {/* Upload + URL */}
                               <div className="p-3 d-flex flex-column gap-2">
-                                {/* Drag & drop */}
                                 <label
                                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1.5px dashed', borderColor: uploadingIdx === idx ? '#e30613' : '#dee2e6', borderRadius: 9, padding: '10px 12px', textAlign: 'center', cursor: 'pointer', background: uploadingIdx === idx ? '#fff5f5' : '#fafafa', transition: '0.15s' }}
                                   onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#e30613'; e.currentTarget.style.background = '#fff5f5'; }}
@@ -503,7 +479,6 @@ export default function ProductsTab({ token }: { token: string }) {
                                     <><ImageIcon size={13} color="#adb5bd" /><span style={{ fontSize: 11, color: '#6c757d' }}>Sürüklə və burax və ya <span style={{ color: '#e30613', fontWeight: 600 }}>seç</span></span></>
                                   )}
                                 </label>
-                                {/* Media picker + URL input */}
                                 <div className="d-flex gap-1">
                                   <input className={inputCls} style={{ borderRadius: 8, fontSize: 11, flex: 1 }} value={img} onChange={e => setImage(idx, e.target.value)} placeholder="https://..." />
                                   <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 9px', flexShrink: 0 }} title="Mediadan seç" onClick={() => setMediaPicker(idx)}>
@@ -514,10 +489,9 @@ export default function ProductsTab({ token }: { token: string }) {
                             </div>
                           </div>
                         ))}
-                        {/* Yeni şəkil əlavə et */}
                         <div className="col-12 col-md-6">
                           <button type="button" onClick={addImage}
-                            style={{ width: '100%', height: '100%', minHeight: 240, border: '2px dashed #dee2e6', borderRadius: 14, background: '#fafafa', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: '#adb5bd', transition: '0.15s' }}
+                            style={{ width: '100%', height: '100%', minHeight: 180, border: '2px dashed #dee2e6', borderRadius: 14, background: '#fafafa', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: '#adb5bd', transition: '0.15s' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#e30613'; (e.currentTarget as HTMLElement).style.color = '#e30613'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#dee2e6'; (e.currentTarget as HTMLElement).style.color = '#adb5bd'; }}>
                             <Plus size={24} />
@@ -526,22 +500,27 @@ export default function ProductsTab({ token }: { token: string }) {
                         </div>
                       </div>
                     </div>
-                  )}
 
-                  {activeTab === 'specs' && (
-                    <div className="d-flex flex-column gap-3">
+                    {/* Specs & Metrics */}
+                    <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: 12, marginBottom: 20 }}>
+                      <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h6 style={{ fontSize: 13, fontWeight: 700, color: '#495057', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><ListFilter size={14} /> Metriklər & Texniki Xüsusiyyətlər</h6>
+                        <button type="button" onClick={() => setShowTemplateManager(true)} className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 bg-white" style={{ borderRadius: 8, fontSize: 10, padding: '4px 10px' }}>
+                          <Tag size={10} /> Metrik Şablonları
+                        </button>
+                      </div>
 
-                      {/* Şablon seç */}
+                      {/* Şablondan seç */}
                       {templates.length > 0 && (
-                        <div style={{ background: '#f0f4ff', borderRadius: 12, padding: 14, border: '1px solid #dde3f5' }}>
+                        <div style={{ background: '#fff', borderRadius: 10, padding: 12, border: '1px solid #dee2e6', marginBottom: 12 }}>
                           <div className="d-flex align-items-center justify-content-between mb-2">
-                            <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bdb' }}>Şablondan əlavə et</div>
-                            <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-outline-primary" style={{ borderRadius: 8, fontSize: 10, padding: '2px 10px' }}>Hamısını tətbiq et</button>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6c757d' }}>Şablondan tez əlavə et</div>
+                            <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-light" style={{ borderRadius: 6, fontSize: 10, padding: '2px 8px', color: '#495057' }}>Hamısını əlavə et</button>
                           </div>
                           <div className="d-flex flex-wrap gap-2">
                             {templates.map(t => (
                               <button key={t.id} type="button" onClick={() => applyTemplate(t)}
-                                style={{ border: form.technicalSpecs[t.name] !== undefined ? '1.5px solid #3b5bdb' : '1px solid #c5d0e6', background: form.technicalSpecs[t.name] !== undefined ? '#dde3f5' : '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: form.technicalSpecs[t.name] !== undefined ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                style={{ border: form.technicalSpecs[t.name] !== undefined ? '1.5px solid #3b5bdb' : '1px solid #dee2e6', background: form.technicalSpecs[t.name] !== undefined ? '#e8edff' : '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: form.technicalSpecs[t.name] !== undefined ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 4 }}>
                                 {form.technicalSpecs[t.name] !== undefined ? <Check size={10} /> : <Plus size={10} />}
                                 {t.name}{t.unit ? ` (${t.unit})` : ''}
                                 {t.category && <span style={{ fontSize: 9, color: '#adb5bd', marginLeft: 2 }}>{t.category}</span>}
@@ -552,30 +531,19 @@ export default function ProductsTab({ token }: { token: string }) {
                       )}
 
                       {/* Manual əlavə et */}
-                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '14px' }}>
-                        <div className="d-flex align-items-center justify-content-between mb-2">
-                          <div style={{ fontSize: 12, fontWeight: 700, color: '#495057' }}>Yeni xüsusiyyət əlavə et</div>
-                          <button type="button" onClick={() => setShowTemplateManager(true)} className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 10, padding: '3px 10px' }}>
-                            <Tag size={10} /> Metrik şablonları
-                          </button>
-                        </div>
-                        <div className="d-flex gap-2 flex-wrap">
-                          <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 140px' }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Ad (məs: Güc, Ölçü)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                          <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 120px' }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (məs: 1000, 3×4)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                          <input className={inputCls} style={{ borderRadius: 9, flex: '0 0 80px' }} value={specUnit} onChange={e => setSpecUnit(e.target.value)} placeholder="Vahid (W, m)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                          <button type="button" onClick={addSpec} className="btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}>
-                            <Plus size={13} /> Əlavə et
-                          </button>
-                        </div>
-                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>Enter ilə sürətli əlavə. Vahid avtomatik birləşir.</div>
+                      <div className="d-flex gap-2 flex-wrap mb-3">
+                        <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 140px' }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Xüsusiyyət adı (Güc, Rəng...)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                        <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 120px' }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (1000, Qırmızı)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                        <input className={inputCls} style={{ borderRadius: 9, flex: '0 0 80px' }} value={specUnit} onChange={e => setSpecUnit(e.target.value)} placeholder="Vahid (W)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                        <button type="button" onClick={addSpec} className="btn btn-dark btn-sm d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}>
+                          <Plus size={13} /> Əlavə et
+                        </button>
                       </div>
 
-                      {/* Mövcud xüsusiyyətlər */}
+                      {/* Siyahı */}
                       {Object.entries(form.technicalSpecs).length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
-                          <Tag size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
-                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ xüsusiyyət yoxdur</div>
-                          <div style={{ fontSize: 11 }}>Yuxarıdan əlavə edin və ya şablondan seçin</div>
+                        <div style={{ textAlign: 'center', padding: '24px 0', color: '#adb5bd', background: '#fff', borderRadius: 10, border: '1px dashed #dee2e6' }}>
+                          <div style={{ fontSize: 12, fontWeight: 600 }}>Hələ heç bir metrik yoxdur</div>
                         </div>
                       ) : (
                         <div className="d-flex flex-column gap-2">
@@ -627,76 +595,66 @@ export default function ProductsTab({ token }: { token: string }) {
                         </div>
                       )}
                     </div>
-                  )}
 
-                  {activeTab === 'tags' && (
-                    <div className="d-flex flex-column gap-3">
-                      {/* Input */}
-                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '16px' }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', marginBottom: 10 }}>Teq əlavə et</div>
-                        <div className="d-flex gap-2">
-                          <input
-                            className={inputCls}
-                            style={{ borderRadius: 9, flex: 1 }}
-                            placeholder="Teq yazın (Enter ilə əlavə edin)"
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const val = (e.target as HTMLInputElement).value.trim();
-                                if (val && !form.tags.includes(val)) {
-                                  setForm(f => ({ ...f, tags: [...f.tags, val] }));
-                                  (e.target as HTMLInputElement).value = '';
-                                }
-                              }
-                            }}
-                          />
-                          <button type="button"
-                            className="btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold"
-                            style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}
-                            onClick={e => {
-                              const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
-                              const val = input?.value.trim();
+                    {/* Tags */}
+                    <div style={{ padding: '16px', background: '#fff', border: '1px solid #e9ecef', borderRadius: 12 }}>
+                      <h6 style={{ fontSize: 13, fontWeight: 700, color: '#495057', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Tag size={14} /> Teqlər</h6>
+                      <div className="d-flex gap-2 mb-3">
+                        <input
+                          className={inputCls}
+                          style={{ borderRadius: 9, flex: 1 }}
+                          placeholder="Teq yazın (Enter ilə əlavə edin)"
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const val = (e.target as HTMLInputElement).value.trim();
                               if (val && !form.tags.includes(val)) {
                                 setForm(f => ({ ...f, tags: [...f.tags, val] }));
-                                if (input) input.value = '';
+                                (e.target as HTMLInputElement).value = '';
                               }
-                            }}>
-                            <Plus size={13} /> Əlavə et
-                          </button>
-                        </div>
-                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>İpucu: Enter ilə sürətli əlavə edin</div>
+                            }
+                          }}
+                        />
+                        <button type="button"
+                          className="btn btn-dark btn-sm d-flex align-items-center gap-1 fw-semibold"
+                          style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}
+                          onClick={e => {
+                            const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                            const val = input?.value.trim();
+                            if (val && !form.tags.includes(val)) {
+                              setForm(f => ({ ...f, tags: [...f.tags, val] }));
+                              if (input) input.value = '';
+                            }
+                          }}>
+                          <Plus size={13} /> Əlavə et
+                        </button>
                       </div>
-                      {/* Teqlər */}
-                      {form.tags.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
-                          <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.3 }}><Tag size={32} /></div>
-                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ teq yoxdur</div>
-                          <div style={{ fontSize: 11 }}>Teqlər məhsulun axtarışını asanlaşdırır</div>
-                        </div>
-                      ) : (
-                        <div>
-                          <div style={{ fontSize: 11, color: '#6c757d', marginBottom: 8 }}>{form.tags.length} teq</div>
-                          <div className="d-flex flex-wrap gap-2">
-                            {form.tags.map((tag, i) => (
-                              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff0f0', color: '#e30613', borderRadius: 20, padding: '5px 12px', fontSize: 12, fontWeight: 600, border: '1px solid #ffd6d6' }}>
-                                {tag}
-                                <button type="button" onClick={() => setForm(f => ({ ...f, tags: f.tags.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#e30613', display: 'flex', alignItems: 'center', opacity: 0.7 }}><X size={11} /></button>
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      
+                      <div className="d-flex flex-wrap gap-2">
+                        {form.tags.length === 0 ? (
+                          <div style={{ fontSize: 11, color: '#adb5bd' }}>Teq yoxdur. Axtarış üçün teq əlavə etmək faydalıdır.</div>
+                        ) : (
+                          form.tags.map((tag, i) => (
+                            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff0f0', color: '#e30613', borderRadius: 20, padding: '5px 12px', fontSize: 12, fontWeight: 600, border: '1px solid #ffd6d6' }}>
+                              {tag}
+                              <button type="button" onClick={() => setForm(f => ({ ...f, tags: f.tags.filter((_, j) => j !== i) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#e30613', display: 'flex', alignItems: 'center', opacity: 0.7 }}><X size={11} /></button>
+                            </span>
+                          ))
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="modal-footer border-top py-3 px-4 gap-2">
-                  <button type="button" onClick={closeModal} className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9 }}>Ləğv Et</button>
-                  <button type="submit" disabled={saving} className="btn btn-sm btn-danger fw-semibold d-flex align-items-center gap-1" style={{ borderRadius: 9 }}>
-                    <Check size={13} /> {saving ? 'Saxlanır...' : editId ? 'Yenilə' : 'Əlavə et'}
-                  </button>
-                </div>
-              </form>
+                    
+                  </div>
+                  
+                  {/* Modal Footer */}
+                  <div className="modal-footer border-top py-3 px-4 gap-2" style={{ background: '#f8f9fa', borderRadius: '0 0 18px 18px' }}>
+                    <button type="button" onClick={closeModal} className="btn btn-outline-secondary fw-semibold" style={{ borderRadius: 10, padding: '8px 20px' }}>Ləğv Et</button>
+                    <button type="submit" disabled={saving} className="btn btn-danger fw-bold d-flex align-items-center gap-2" style={{ borderRadius: 10, padding: '8px 24px' }}>
+                      {saving ? <div className="spinner-border spinner-border-sm" /> : <Check size={16} />}
+                      {saving ? 'Saxlanır...' : editId ? 'Dəyişiklikləri Yadda Saxla' : 'Məhsulu Yarat'}
+                    </button>
+                  </div>
+                </form>
             </div>
           </div>
         </div>
