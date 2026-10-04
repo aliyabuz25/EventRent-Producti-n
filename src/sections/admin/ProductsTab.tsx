@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight, LayoutGrid, List } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight, LayoutGrid, List, Type, Hash, ListFilter, CheckSquare, ToggleLeft, Box, Palette } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
@@ -21,14 +21,14 @@ interface SpecTemplate {
   field_type: FieldType; options: string[]; sort_order: number;
 }
 
-const FIELD_TYPES: { value: FieldType; label: string; icon: string; desc: string }[] = [
-  { value: 'text',        label: 'Mətn',       icon: '✍️', desc: 'Sərbəst mətn girişi' },
-  { value: 'number',      label: 'Rəqəm',      icon: '🔢', desc: 'Ədədi dəyər + vahid' },
-  { value: 'select',      label: 'Seçim',       icon: '📋', desc: 'Bir seçim (dropdown)' },
-  { value: 'multiselect', label: 'Çox seçim',   icon: '☑️', desc: 'Bir neçə seçim' },
-  { value: 'boolean',     label: 'Bəli/Xeyr',   icon: '✅', desc: 'Hə/Yox toggle' },
-  { value: 'dimensions',  label: 'Ölçülər',     icon: '📐', desc: 'En × Boy × Hündürlük' },
-  { value: 'color',       label: 'Rəng',         icon: '🎨', desc: 'Rəng seçimi + ad' },
+const FIELD_TYPES: { value: FieldType; label: string; icon: React.ReactNode; desc: string }[] = [
+  { value: 'text',        label: 'Mətn',       icon: <Type size={18} />,        desc: 'Sərbəst mətn girişi' },
+  { value: 'number',      label: 'Rəqəm',      icon: <Hash size={18} />,        desc: 'Ədədi dəyər + vahid' },
+  { value: 'select',      label: 'Seçim',       icon: <ListFilter size={18} />,  desc: 'Bir seçim (dropdown)' },
+  { value: 'multiselect', label: 'Çox seçim',   icon: <CheckSquare size={18} />, desc: 'Bir neçə seçim' },
+  { value: 'boolean',     label: 'Bəli/Xeyr',   icon: <ToggleLeft size={18} />,  desc: 'Hə/Yox toggle' },
+  { value: 'dimensions',  label: 'Ölçülər',     icon: <Box size={18} />,         desc: 'En × Boy × Hündürlük' },
+  { value: 'color',       label: 'Rəng',         icon: <Palette size={18} />,     desc: 'Rəng seçimi + ad' },
 ];
 
 const EMPTY: Omit<Product, 'id' | 'active' | 'sort_order'> = {
@@ -669,7 +669,7 @@ export default function ProductsTab({ token }: { token: string }) {
                       {/* Teqlər */}
                       {form.tags.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
-                          <div style={{ fontSize: 32, marginBottom: 8 }}>🏷️</div>
+                          <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.3 }}><Tag size={32} /></div>
                           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ teq yoxdur</div>
                           <div style={{ fontSize: 11 }}>Teqlər məhsulun axtarışını asanlaşdırır</div>
                         </div>
@@ -847,7 +847,7 @@ export default function ProductsTab({ token }: { token: string }) {
                           {templates.filter(t => (t.category || 'Ümumi') === cat).map(t => (
                             <div key={t.id} style={{ background: '#fff', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, border: '1px solid #e9ecef', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
                               <div style={{ width: 36, height: 36, borderRadius: 10, background: '#f8f9fa', border: '1px solid #f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
-                                {FIELD_TYPES.find(f => f.value === t.field_type)?.icon || '✍️'}
+                                {FIELD_TYPES.find(f => f.value === t.field_type)?.icon || <Type size={18} />}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
