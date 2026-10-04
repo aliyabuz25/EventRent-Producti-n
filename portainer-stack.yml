@@ -1,7 +1,7 @@
 services:
   eventrent-backend:
     build:
-      context: /datastore/eventrent/app
+      context: .
       dockerfile: Dockerfile.backend
     image: localhost/eventrent-backend:latest
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
 
   eventrent-frontend:
     build:
-      context: /datastore/eventrent/app
+      context: .
       dockerfile: Dockerfile.frontend
     image: localhost/eventrent-frontend:latest
     restart: unless-stopped
