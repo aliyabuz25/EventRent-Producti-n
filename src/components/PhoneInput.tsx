@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
-import { CircleFlag } from 'react-circle-flags';
 
 // Əsas ölkələr - ehtiyac olduqca artırıla bilər
 export const COUNTRIES = [
@@ -56,10 +55,7 @@ export default function PhoneInput({ value, onChange, className, theme = 'dark' 
     <div className={`relative flex items-stretch w-full ${className}`} ref={containerRef}>
       {/* Dropdown Toggle */}
       <button type="button" onClick={() => setOpen(!open)}
-        className={`flex items-center gap-2 px-3 flex-shrink-0 transition-colors focus:outline-none border-r ${isLight ? 'border-gray-300 hover:bg-gray-50' : 'border-white/[0.08] hover:bg-white/[0.03]'}`}>
-        <div style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '50%' }}>
-          <CircleFlag countryCode={selectedCountry.code.toLowerCase()} height="16" />
-        </div>
+        className={`flex items-center gap-2 px-4 flex-shrink-0 transition-colors focus:outline-none border-r ${isLight ? 'border-gray-300 hover:bg-gray-50' : 'border-white/[0.08] hover:bg-white/[0.03]'}`}>
         <span className={`text-sm font-semibold ${isLight ? 'text-gray-700' : 'text-white'}`}>{selectedCountry.dialCode}</span>
         <ChevronDown className={`w-3 h-3 transition-transform ${isLight ? 'text-gray-500' : 'text-white/50'} ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -85,12 +81,7 @@ export default function PhoneInput({ value, onChange, className, theme = 'dark' 
               filtered.map(c => (
                 <button key={c.code} type="button" onClick={() => handleCountrySelect(c)}
                   className={`w-full flex items-center justify-between px-3 py-2.5 text-sm transition-colors ${selectedCountry.code === c.code ? (isLight ? 'bg-blue-50 text-blue-600' : 'bg-premium-orange/10 text-premium-orange') : (isLight ? 'text-gray-700 hover:bg-gray-50' : 'text-white/80 hover:bg-white/10')}`}>
-                  <div className="flex items-center gap-3">
-                    <div style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '50%' }}>
-                      <CircleFlag countryCode={c.code.toLowerCase()} height="16" />
-                    </div>
-                    <span className="font-medium text-xs">{c.name}</span>
-                  </div>
+                  <span className="font-medium text-xs">{c.name}</span>
                   <span className={`text-[10px] font-bold ${selectedCountry.code === c.code ? (isLight ? 'text-blue-600' : 'text-premium-orange') : (isLight ? 'text-gray-400' : 'text-white/40')}`}>{c.dialCode}</span>
                 </button>
               ))
