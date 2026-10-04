@@ -37,7 +37,7 @@ function Badge({ status }: { status: string }) {
   return <span style={{ background: s.bg, color: s.color, borderRadius: 20, padding: '3px 10px', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{s.label}</span>;
 }
 
-interface DbProduct { id: string; name: string; category: string; images: string[]; }
+interface DbProduct { id: string; name: string; category: string; images: string[]; description?: string; tags?: string[]; }
 
 export default function OrdersTab({ token }: { token: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -301,25 +301,56 @@ export default function OrdersTab({ token }: { token: string }) {
                       const img  = prod?.images?.[0] || item.image || '';
                       const name = prod?.name || item.name || item.productId || '—';
                       const cat  = prod?.category || item.category || '';
+                      const techAnswers = item.technicalAnswers && typeof item.technicalAnswers === 'object'
+                        ? Object.entries(item.technicalAnswers).filter(([k, v]) => v && k !== 'quantity')
+                        : [];
                       return (
-                        <div key={i} className="d-flex align-items-center gap-3 p-2 rounded-3 mb-2" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
-                          <div style={{ width: 44, height: 44, borderRadius: 9, background: '#e9ecef', overflow: 'hidden', flexShrink: 0 }}>
-                            {img ? <img src={img} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <div className="d-flex align-items-center justify-content-center h-100"><Package size={16} color="#adb5bd" /></div>}
+                        <div key={i} className="rounded-3 mb-3 overflow-hidden" style={{ border: '1px solid #e9ecef' }}>
+                          {/* Product header */}
+                          <div className="d-flex align-items-center gap-3 p-3" style={{ background: '#f8f9fa' }}>
+                            <div style={{ width: 52, height: 52, borderRadius: 10, background: '#e9ecef', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {img ? <img src={img} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <Package size={20} color="#adb5bd" />}
+                            </div>
+                            <div className="flex-grow-1 min-w-0">
+                              <div className="fw-bold" style={{ fontSize: 14 }}>{name}</div>
+                              {cat && <div style={{ fontSize: 11, color: '#6c757d', marginTop: 2 }}>{cat}</div>}
+                              {prod?.description && <div style={{ fontSize: 11, color: '#adb5bd', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{prod.description}</div>}
+                            </div>
+                            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                              <div style={{ fontSize: 18, fontWeight: 800, color: '#212529' }}>{item.quantity}</div>
+                              <div style={{ fontSize: 10, color: '#adb5bd', fontWeight: 600 }}>ədəd</div>
+                            </div>
                           </div>
-                          <div className="flex-grow-1 min-w-0">
-                            <div className="fw-semibold" style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
-                            {cat && <div style={{ fontSize: 10, color: '#adb5bd' }}>{cat}</div>}
-                            {item.technicalAnswers && Object.keys(item.technicalAnswers).filter(k => item.technicalAnswers[k]).length > 0 && (
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
-                                {Object.entries(item.technicalAnswers).filter(([,v]) => v).map(([k, v]) => (
-                                  <span key={k} style={{ background: '#f0f4ff', border: '1px solid #dde3f5', borderRadius: 8, padding: '2px 8px', fontSize: 10, fontWeight: 600, color: '#3b5bdb' }}>
-                                    <span style={{ color: '#adb5bd', fontWeight: 500 }}>{k}: </span>{v as string}
-                                  </span>
+
+                          {/* Technical answers */}
+                          {techAnswers.length > 0 && (
+                            <div className="p-3" style={{ background: '#fff', borderTop: '1px solid #f1f3f5' }}>
+                              <div style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                                Texniki Xüsusiyyətlər
+                              </div>
+                              <div className="row g-2">
+                                {techAnswers.map(([k, v]) => (
+                                  <div key={k} className="col-6 col-md-4">
+                                    <div style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '6px 10px' }}>
+                                      <div style={{ fontSize: 9, fontWeight: 700, color: '#adb5bd', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>{k}</div>
+                                      <div style={{ fontSize: 12, fontWeight: 700, color: '#212529' }}>{v as string}</div>
+                                    </div>
+                                  </div>
                                 ))}
                               </div>
-                            )}
-                          </div>
-                          <span className="badge bg-light text-dark border" style={{ fontSize: 11, borderRadius: 8, flexShrink: 0 }}>{item.quantity} ədəd</span>
+                            </div>
+                          )}
+
+                          {/* Product tags */}
+                          {prod?.tags?.length > 0 && (
+                            <div className="px-3 pb-3" style={{ background: '#fff' }}>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                {prod.tags.map((tag: string) => (
+                                  <span key={tag} style={{ background: '#f1f3f5', color: '#6c757d', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600 }}>{tag}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
