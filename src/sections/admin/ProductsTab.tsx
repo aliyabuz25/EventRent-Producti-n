@@ -145,6 +145,7 @@ export default function ProductsTab({ token }: { token: string }) {
     setEditId(p.id);
     setForm({ name: p.name, category: p.category, description: p.description, technicalSpecs: { ...p.technicalSpecs }, images: p.images.length ? [...p.images] : [''], tags: [...p.tags], relatedProducts: [...p.relatedProducts] });
     setActiveTab('info'); setShowModal(true);
+    setSpecAccordionOpen(true);
   };
   const closeModal = () => { setShowModal(false); setEditId(null); setSpecKey(''); setSpecVal(''); };
 
@@ -405,26 +406,35 @@ export default function ProductsTab({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Offcanvas overlay */}
       {showModal && (
-        <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 18 }}>
-              <div className="modal-header border-0 px-4 pt-4 pb-2">
-                <div className="d-flex align-items-center gap-3">
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: editId ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {editId ? <Pencil size={18} color="#664d03" /> : <Plus size={18} color="#e30613" />}
-                  </div>
-                  <div>
-                    <h6 className="mb-0 fw-bold">{editId ? 'Məhsulu Düzəlt' : 'Yeni Məhsul'}</h6>
-                    <div style={{ fontSize: 11, color: '#adb5bd' }}>{editId || 'Yeni məhsul əlavə et'}</div>
-                  </div>
-                </div>
-                <button className="btn-close" onClick={closeModal} />
-              </div>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1040 }} onClick={closeModal} />
+      )}
 
-              <form onSubmit={handleSubmit}>
-                <div className="modal-body px-4 py-3" style={{ minHeight: 320 }}>
+      {/* Product Offcanvas */}
+      <div style={{
+        position: 'fixed', top: 0, right: 0, width: 580, maxWidth: '95vw', height: '100vh',
+        background: '#fff', zIndex: 1045, boxShadow: '-8px 0 40px rgba(0,0,0,0.18)',
+        display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'hidden',
+        transform: showModal ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+      }}>
+        {/* Header */}
+        <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 42, height: 42, borderRadius: 12, background: editId ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {editId ? <Pencil size={18} color="#664d03" /> : <Plus size={18} color="#e30613" />}
+            </div>
+            <div>
+              <h6 style={{ margin: 0, fontWeight: 800, fontSize: 16 }}>{editId ? 'Məhsulu Düzəlt' : 'Yeni Məhsul'}</h6>
+              <div style={{ fontSize: 11, color: '#adb5bd' }}>{editId || 'Yeni məhsul əlavə et'}</div>
+            </div>
+          </div>
+          <button type="button" className="btn-close" onClick={closeModal} />
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
                   
                   {/* Basic Info */}
                     <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: 12, marginBottom: 20 }}>
@@ -675,23 +685,18 @@ export default function ProductsTab({ token }: { token: string }) {
                           ))
                         )}
                       </div>
-                    </div>
-                    
+</div>
                   </div>
-                  
-                  {/* Modal Footer */}
-                  <div className="modal-footer border-top py-3 px-4 gap-2" style={{ background: '#f8f9fa', borderRadius: '0 0 18px 18px' }}>
-                    <button type="button" onClick={closeModal} className="btn btn-outline-secondary fw-semibold" style={{ borderRadius: 10, padding: '8px 20px' }}>Ləğv Et</button>
-                    <button type="submit" disabled={saving} className="btn btn-danger fw-bold d-flex align-items-center gap-2" style={{ borderRadius: 10, padding: '8px 24px' }}>
-                      {saving ? <div className="spinner-border spinner-border-sm" /> : <Check size={16} />}
-                      {saving ? 'Saxlanır...' : editId ? 'Dəyişiklikləri Yadda Saxla' : 'Məhsulu Yarat'}
-                    </button>
-                  </div>
-                </form>
-            </div>
+          {/* Footer */}
+          <div style={{ padding: '16px 24px', borderTop: '1px solid #e9ecef', background: '#f8f9fa', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0 }}>
+            <button type="button" onClick={closeModal} className="btn btn-outline-secondary fw-semibold" style={{ borderRadius: 10, padding: '8px 20px' }}>Ləğv Et</button>
+            <button type="submit" disabled={saving} className="btn btn-danger fw-bold d-flex align-items-center gap-2" style={{ borderRadius: 10, padding: '8px 24px' }}>
+              {saving ? <div className="spinner-border spinner-border-sm" /> : <Check size={16} />}
+              {saving ? 'Saxlanır...' : editId ? 'Dəyişiklikləri Yadda Saxla' : 'Məhsulu Yarat'}
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+      </div>
 
       {mediaPicker !== null && <MediaPicker token={token} onPick={url => setImage(mediaPicker!, url)} onClose={() => setMediaPicker(null)} />}
 
