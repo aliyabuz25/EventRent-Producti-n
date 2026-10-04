@@ -228,6 +228,16 @@ CREATE TABLE IF NOT EXISTS leads (
       created_at  TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS spec_templates (
+      id          TEXT PRIMARY KEY,
+      name        TEXT NOT NULL,
+      unit        TEXT NOT NULL DEFAULT '',
+      category    TEXT NOT NULL DEFAULT '',
+      description TEXT NOT NULL DEFAULT '',
+      sort_order  INTEGER NOT NULL DEFAULT 0,
+      created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `).run();
 
   console.log('✓ SQLite ready:', DB_PATH);
@@ -879,6 +889,42 @@ app.delete('/api/reels/:id', authMiddleware, adminOnly, (req, res) => {
   const existing = db.prepare('SELECT * FROM reels WHERE id=?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Tapılmadı.' });
   db.prepare('DELETE FROM reels WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* ══════════════════════════════════════════
+   SPEC TEMPLATES
+══════════════════════════════════════════ */
+app.get('/api/spec-templates', authMiddleware, adminOnly, (_req, res) => {
+  const rows = db.prepare('SELECT * FROM spec_templates ORDER BY sort_order ASC, created_at ASC').all();
+  res.json(rows);
+});
+
+app.post('/api/spec-templates', authMiddleware, adminOnly, (req, res) => {
+  const { name, unit = '', category = '', description = '', sort_order = 0 } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Ad tələb olunur.' });
+  const existing = db.prepare('SELECT id FROM spec_templates WHERE name=?').get(name.trim());
+  if (existing) return res.status(409).json({ error: 'Bu adda şablon artıq mövcuddur.' });
+  const id = 'st_' + Date.now();
+  db.prepare('INSERT INTO spec_templates (id,name,unit,category,description,sort_order) VALUES (?,?,?,?,?,?)')
+    .run(id, name.trim(), unit.trim(), category.trim(), description.trim(), sort_order);
+  res.json(db.prepare('SELECT * FROM spec_templates WHERE id=?').get(id));
+});
+
+app.put('/api/spec-templates/:id', authMiddleware, adminOnly, (req, res) => {
+  const existing = db.prepare('SELECT * FROM spec_templates WHERE id=?').get(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Tapılmadı.' });
+  const { name, unit = '', category = '', description = '', sort_order = 0 } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Ad tələb olunur.' });
+  db.prepare('UPDATE spec_templates SET name=?,unit=?,category=?,description=?,sort_order=? WHERE id=?')
+    .run(name.trim(), unit.trim(), category.trim(), description.trim(), sort_order, req.params.id);
+  res.json(db.prepare('SELECT * FROM spec_templates WHERE id=?').get(req.params.id));
+});
+
+app.delete('/api/spec-templates/:id', authMiddleware, adminOnly, (req, res) => {
+  const existing = db.prepare('SELECT * FROM spec_templates WHERE id=?').get(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Tapılmadı.' });
+  db.prepare('DELETE FROM spec_templates WHERE id=?').run(req.params.id);
   res.json({ ok: true });
 });
 

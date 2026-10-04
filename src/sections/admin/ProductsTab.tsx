@@ -14,6 +14,10 @@ interface Product {
   relatedProducts: string[]; active: number; sort_order: number;
 }
 
+interface SpecTemplate {
+  id: string; name: string; unit: string; category: string; description: string; sort_order: number;
+}
+
 const EMPTY: Omit<Product, 'id' | 'active' | 'sort_order'> = {
   name: '', category: '', description: '', technicalSpecs: {}, images: [''], tags: [], relatedProducts: [],
 };
@@ -67,6 +71,11 @@ export default function ProductsTab({ token }: { token: string }) {
   const [saving, setSaving]     = useState(false);
   const [specKey, setSpecKey]   = useState('');
   const [specVal, setSpecVal]   = useState('');
+  const [specUnit, setSpecUnit] = useState('');
+  const [templates, setTemplates] = useState<SpecTemplate[]>([]);
+  const [showTemplateManager, setShowTemplateManager] = useState(false);
+  const [tmplForm, setTmplForm] = useState({ name: '', unit: '', category: '', description: '' });
+  const [tmplEditId, setTmplEditId] = useState<string | null>(null);
   const [mediaPicker, setMediaPicker] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [imgPreviews, setImgPreviews] = useState<boolean[]>([]);
@@ -103,7 +112,12 @@ export default function ProductsTab({ token }: { token: string }) {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  const loadTemplates = async () => {
+    const r = await fetch('/api/spec-templates', { headers: { Authorization: `Bearer ${token}` } });
+    setTemplates(r.ok ? await r.json() : []);
+  };
+
+  useEffect(() => { load(); loadTemplates(); }, []);
 
   const openCreate = () => {
     setEditId(null);
@@ -146,8 +160,41 @@ export default function ProductsTab({ token }: { token: string }) {
   const setImage   = (i: number, v: string) => setForm(f => { const imgs = [...f.images]; imgs[i] = v; return { ...f, images: imgs }; });
   const addImage   = () => setForm(f => ({ ...f, images: [...f.images, ''] }));
   const rmImage    = (i: number) => setForm(f => ({ ...f, images: f.images.filter((_, j) => j !== i) }));
-  const addSpec    = () => { if (!specKey.trim()) return; setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [specKey.trim()]: specVal.trim() } })); setSpecKey(''); setSpecVal(''); };
-  const rmSpec     = (k: string) => setForm(f => { const s = { ...f.technicalSpecs }; delete s[k]; return { ...f, technicalSpecs: s }; });
+  const addSpec = () => {
+    if (!specKey.trim()) return;
+    const valWithUnit = specVal.trim() + (specUnit.trim() ? ' ' + specUnit.trim() : '');
+    setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [specKey.trim()]: valWithUnit } }));
+    setSpecKey(''); setSpecVal(''); setSpecUnit('');
+  };
+  const rmSpec = (k: string) => setForm(f => { const s = { ...f.technicalSpecs }; delete s[k]; return { ...f, technicalSpecs: s }; });
+
+  const applyTemplate = (t: SpecTemplate) => {
+    if (form.technicalSpecs[t.name] !== undefined) return; // artıq var
+    setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [t.name]: t.unit ? '' : '' } }));
+    setSpecKey(t.name); setSpecVal(''); setSpecUnit(t.unit);
+  };
+
+  const saveTmpl = async () => {
+    if (!tmplForm.name.trim()) return;
+    const method = tmplEditId ? 'PUT' : 'POST';
+    const url = tmplEditId ? `/api/spec-templates/${tmplEditId}` : '/api/spec-templates';
+    const r = await fetch(url, { method, headers: h, body: JSON.stringify(tmplForm) });
+    if (r.ok) { toast.success(tmplEditId ? 'Şablon yeniləndi.' : 'Şablon yaradıldı.'); setTmplForm({ name: '', unit: '', category: '', description: '' }); setTmplEditId(null); await loadTemplates(); }
+    else { const d = await r.json(); toast.error(d.error || 'Xəta'); }
+  };
+
+  const deleteTmpl = async (id: string) => {
+    if (!window.confirm('Şablonu silmək istəyirsiniz?')) return;
+    const r = await fetch(`/api/spec-templates/${id}`, { method: 'DELETE', headers: h });
+    if (r.ok) { toast.success('Şablon silindi.'); await loadTemplates(); }
+  };
+
+  const applyAllTemplates = (tList: SpecTemplate[]) => {
+    const newSpecs = { ...form.technicalSpecs };
+    tList.forEach(t => { if (newSpecs[t.name] === undefined) newSpecs[t.name] = ''; });
+    setForm(f => ({ ...f, technicalSpecs: newSpecs }));
+    toast.success(`${tList.length} xüsusiyyət tətbiq edildi.`);
+  };
 
   const filtered = products.filter(p =>
     [p.name, p.category, ...(p.tags||[])].join(' ').toLowerCase().includes(search.toLowerCase())
@@ -463,52 +510,104 @@ export default function ProductsTab({ token }: { token: string }) {
 
                   {activeTab === 'specs' && (
                     <div className="d-flex flex-column gap-3">
-                      {/* Əlavə et */}
-                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '16px' }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', marginBottom: 10 }}>Yeni xüsusiyyət əlavə et</div>
-                        <div className="d-flex gap-2">
-                          <input className={inputCls} style={{ borderRadius: 9, flex: 1 }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Xüsusiyyət (məs: Güc, Ölçü, Çəki...)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
-                          <input className={inputCls} style={{ borderRadius: 9, flex: 1 }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (məs: 1000W, 3×4m, 25kg)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+
+                      {/* Şablon seç */}
+                      {templates.length > 0 && (
+                        <div style={{ background: '#f0f4ff', borderRadius: 12, padding: 14, border: '1px solid #dde3f5' }}>
+                          <div className="d-flex align-items-center justify-content-between mb-2">
+                            <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bdb' }}>Şablondan əlavə et</div>
+                            <button type="button" onClick={() => applyAllTemplates(templates)} className="btn btn-sm btn-outline-primary" style={{ borderRadius: 8, fontSize: 10, padding: '2px 10px' }}>Hamısını tətbiq et</button>
+                          </div>
+                          <div className="d-flex flex-wrap gap-2">
+                            {templates.map(t => (
+                              <button key={t.id} type="button" onClick={() => applyTemplate(t)}
+                                style={{ border: form.technicalSpecs[t.name] !== undefined ? '1.5px solid #3b5bdb' : '1px solid #c5d0e6', background: form.technicalSpecs[t.name] !== undefined ? '#dde3f5' : '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: form.technicalSpecs[t.name] !== undefined ? '#3b5bdb' : '#495057', cursor: 'pointer', transition: '0.15s', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                {form.technicalSpecs[t.name] !== undefined ? <Check size={10} /> : <Plus size={10} />}
+                                {t.name}{t.unit ? ` (${t.unit})` : ''}
+                                {t.category && <span style={{ fontSize: 9, color: '#adb5bd', marginLeft: 2 }}>{t.category}</span>}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Manual əlavə et */}
+                      <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '14px' }}>
+                        <div className="d-flex align-items-center justify-content-between mb-2">
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#495057' }}>Yeni xüsusiyyət</div>
+                          <button type="button" onClick={() => setShowTemplateManager(v => !v)} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 10, padding: '2px 10px' }}>
+                            <Tag size={10} /> Şablonları idarə et
+                          </button>
+                        </div>
+                        <div className="d-flex gap-2 flex-wrap">
+                          <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 140px' }} value={specKey} onChange={e => setSpecKey(e.target.value)} placeholder="Ad (məs: Güc, Ölçü)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                          <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 120px' }} value={specVal} onChange={e => setSpecVal(e.target.value)} placeholder="Dəyər (məs: 1000, 3×4)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
+                          <input className={inputCls} style={{ borderRadius: 9, flex: '0 0 80px' }} value={specUnit} onChange={e => setSpecUnit(e.target.value)} placeholder="Vahid (W, m)" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())} />
                           <button type="button" onClick={addSpec} className="btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px', flexShrink: 0 }}>
                             <Plus size={13} /> Əlavə et
                           </button>
                         </div>
-                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>İpucu: Enter ilə də əlavə edə bilərsiniz</div>
+                        <div style={{ fontSize: 10, color: '#adb5bd', marginTop: 6 }}>Enter ilə də əlavə edə bilərsiniz. Vahid avtomatik dəyərə əlavə olunur.</div>
                       </div>
-                      {/* Siyahı */}
+
+                      {/* Şablon idarəetməsi */}
+                      {showTemplateManager && (
+                        <div style={{ background: '#fff', border: '1px solid #e9ecef', borderRadius: 12, padding: 14 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#495057', marginBottom: 10 }}>Şablon Kitabxanası</div>
+                          <div className="d-flex gap-2 flex-wrap mb-3">
+                            <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 120px' }} value={tmplForm.name} onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))} placeholder="Şablon adı (məs: Güc)" />
+                            <input className={inputCls} style={{ borderRadius: 9, flex: '0 0 80px' }} value={tmplForm.unit} onChange={e => setTmplForm(f => ({ ...f, unit: e.target.value }))} placeholder="Vahid (W)" />
+                            <input className={inputCls} style={{ borderRadius: 9, flex: '1 1 100px' }} value={tmplForm.category} onChange={e => setTmplForm(f => ({ ...f, category: e.target.value }))} placeholder="Qrup (Elektrik)" />
+                            <button type="button" onClick={saveTmpl} className="btn btn-sm btn-dark d-flex align-items-center gap-1 fw-semibold" style={{ borderRadius: 9, padding: '6px 14px' }}>
+                              {tmplEditId ? <><Check size={12} /> Yenilə</> : <><Plus size={12} /> Şablon yarat</>}
+                            </button>
+                            {tmplEditId && <button type="button" onClick={() => { setTmplEditId(null); setTmplForm({ name: '', unit: '', category: '', description: '' }); }} className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9 }}><X size={12} /></button>}
+                          </div>
+                          {templates.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '16px 0', color: '#adb5bd', fontSize: 12 }}>Hələ şablon yoxdur. Yuxarıdan yaradın.</div>
+                          ) : (
+                            <div className="d-flex flex-column gap-1">
+                              {templates.map(t => (
+                                <div key={t.id} className="d-flex align-items-center gap-2" style={{ background: '#f8f9fa', borderRadius: 8, padding: '6px 10px' }}>
+                                  <div style={{ flex: 1 }}>
+                                    <span style={{ fontWeight: 600, fontSize: 12 }}>{t.name}</span>
+                                    {t.unit && <span style={{ fontSize: 10, color: '#6c757d', marginLeft: 4 }}>({t.unit})</span>}
+                                    {t.category && <span style={{ fontSize: 10, color: '#adb5bd', marginLeft: 6 }}>{t.category}</span>}
+                                  </div>
+                                  <button type="button" onClick={() => { setTmplEditId(t.id); setTmplForm({ name: t.name, unit: t.unit, category: t.category, description: t.description }); }} className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 7, padding: '2px 7px' }}><Pencil size={10} /></button>
+                                  <button type="button" onClick={() => deleteTmpl(t.id)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 7, padding: '2px 7px' }}><Trash2 size={10} /></button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Mövcud xüsusiyyətlər */}
                       {Object.entries(form.technicalSpecs).length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '32px 0', color: '#adb5bd' }}>
-                          <div style={{ fontSize: 32, marginBottom: 8 }}>⚙️</div>
+                          <Tag size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
                           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Hələ xüsusiyyət yoxdur</div>
-                          <div style={{ fontSize: 11 }}>Yuxarıdan əlavə edin — Güc, Ölçü, Material və s.</div>
+                          <div style={{ fontSize: 11 }}>Yuxarıdan əlavə edin və ya şablondan seçin</div>
                         </div>
                       ) : (
                         <div className="d-flex flex-column gap-2">
                           {Object.entries(form.technicalSpecs).map(([k, v], i) => (
                             <div key={k} className="d-flex align-items-center gap-2" style={{ background: '#fff', border: '1px solid #e9ecef', borderRadius: 10, padding: '8px 12px' }}>
                               <span style={{ fontSize: 10, fontWeight: 700, color: '#adb5bd', minWidth: 20 }}>#{i+1}</span>
-                              <input
-                                className="form-control form-control-sm fw-semibold"
-                                style={{ borderRadius: 8, fontSize: 12, flex: '0 0 38%', border: '1px solid #dee2e6', background: '#f8f9fa' }}
-                                value={k}
-                                onChange={e => {
-                                  const newKey = e.target.value;
-                                  setForm(f => {
-                                    const entries = Object.entries(f.technicalSpecs);
-                                    const updated: Record<string, string> = {};
-                                    entries.forEach(([ek, ev]) => { updated[ek === k ? newKey : ek] = ev; });
-                                    return { ...f, technicalSpecs: updated };
-                                  });
-                                }}
-                              />
-                              <span style={{ color: '#dee2e6', fontSize: 14 }}>:</span>
-                              <input
-                                className="form-control form-control-sm"
-                                style={{ borderRadius: 8, fontSize: 12, flex: 1, border: '1px solid #dee2e6' }}
-                                value={v}
-                                onChange={e => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: e.target.value } }))}
-                              />
-                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 8px', flexShrink: 0 }}><X size={11} /></button>
+                              <input className="form-control form-control-sm fw-semibold" style={{ borderRadius: 8, fontSize: 12, flex: '0 0 35%', border: '1px solid #dee2e6', background: '#f8f9fa' }} value={k}
+                                onChange={e => { const newKey = e.target.value; setForm(f => { const entries = Object.entries(f.technicalSpecs); const updated: Record<string, string> = {}; entries.forEach(([ek, ev]) => { updated[ek === k ? newKey : ek] = ev; }); return { ...f, technicalSpecs: updated }; }); }} />
+                              <span style={{ color: '#dee2e6' }}>:</span>
+                              <input className="form-control form-control-sm" style={{ borderRadius: 8, fontSize: 12, flex: 1, border: '1px solid #dee2e6' }} value={v}
+                                onChange={e => setForm(f => ({ ...f, technicalSpecs: { ...f.technicalSpecs, [k]: e.target.value } }))} />
+                              <button type="button" onClick={() => {
+                                const t = templates.find(t => t.name === k);
+                                if (!t && window.confirm(`"${k}" şablon kimi yadda saxlansın?`)) {
+                                  fetch('/api/spec-templates', { method: 'POST', headers: h, body: JSON.stringify({ name: k, unit: '', category: '' }) })
+                                    .then(r => r.ok && loadTemplates());
+                                }
+                              }} className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 7px', flexShrink: 0 }} title="Şablon kimi saxla"><Tag size={10} /></button>
+                              <button type="button" onClick={() => rmSpec(k)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '3px 7px', flexShrink: 0 }}><X size={11} /></button>
                             </div>
                           ))}
                         </div>
