@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight } from 'lucide-react';
 import { useToast } from '../../components/Toast';
+import { AgGridReact } from 'ag-grid-react';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface Product {
   id: string; name: string; category: string; description: string;
@@ -175,34 +181,107 @@ export default function ProductsTab({ token }: { token: string }) {
       {loading ? (
         <div className="text-center py-5"><div className="spinner-border text-danger" style={{ width: 28, height: 28 }} /></div>
       ) : (
-        <div className="row g-3">
-          {filtered.map(p => (
-            <div key={p.id} className="col-6 col-md-4 col-lg-3">
-              <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: p.active ? 1 : 0.5 }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}>
-                <div style={{ height: 130, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {p.images?.[0] ? <img src={p.images[0]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '4px' }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><Package size={32} opacity={0.3} /></div>}
-                  {!p.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
-                  {p.category && <span style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>{p.category}</span>}
-                </div>
-                <div className="p-3">
-                  <div className="fw-bold mb-1" style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                  {p.tags?.length > 0 && (
-                    <div className="d-flex flex-wrap gap-1 mb-2">
-                      {p.tags.slice(0, 3).map(tag => <span key={tag} className="badge" style={{ background: '#f1f3f5', color: '#6c757d', fontWeight: 500, fontSize: 9, borderRadius: 20 }}>{tag}</span>)}
-                    </div>
-                  )}
-                  <div className="d-flex gap-1">
-                    <button onClick={() => openEdit(p)} className="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1" style={{ borderRadius: 8, fontSize: 11 }}><Pencil size={11} /> Düzəlt</button>
-                    <button onClick={() => handleToggle(p)} className={`btn btn-sm ${p.active ? 'btn-outline-warning' : 'btn-outline-success'} d-flex align-items-center`} style={{ borderRadius: 8, padding: '4px 8px' }}><Eye size={12} /></button>
-                    <button onClick={() => handleDelete(p.id, p.name)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '4px 8px' }}><Trash2 size={12} /></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-          {filtered.length === 0 && <div className="col-12 text-center py-5 text-muted"><Package size={36} style={{ marginBottom: 12, opacity: 0.3 }} /><div>Məhsul tapılmadı</div></div>}
+        <div className="ag-theme-alpine" style={{ height: 520, width: '100%', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
+          <AgGridReact
+            rowData={filtered}
+            rowHeight={64}
+            headerHeight={42}
+            pagination={true}
+            paginationPageSize={20}
+            suppressCellFocus={true}
+            animateRows={true}
+            defaultColDef={{ resizable: true, sortable: true, filter: true, suppressHeaderMenuButton: true }}
+            columnDefs={[
+              {
+                headerName: '',
+                field: 'images',
+                width: 72,
+                sortable: false,
+                filter: false,
+                resizable: false,
+                cellRenderer: (p: any) => {
+                  const src = p.value?.[0];
+                  return src
+                    ? `<img src="${src}" style="width:48px;height:48px;object-fit:contain;border-radius:8px;border:1px solid #f1f3f5;background:#fff;padding:2px" />`
+                    : `<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #f1f3f5;background:#f8f9fa;color:#adb5bd;font-size:18px">📦</div>`;
+                },
+              },
+              {
+                headerName: 'Ad',
+                field: 'name',
+                flex: 2,
+                minWidth: 160,
+                cellRenderer: (p: any) =>
+                  `<div style="font-weight:600;font-size:13px;line-height:1.3">${p.value}</div>`,
+              },
+              {
+                headerName: 'Kateqoriya',
+                field: 'category',
+                flex: 1,
+                minWidth: 120,
+                cellRenderer: (p: any) =>
+                  p.value ? `<span style="background:#f1f3f5;color:#495057;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">${p.value}</span>` : '',
+              },
+              {
+                headerName: 'Teqlər',
+                field: 'tags',
+                flex: 1,
+                minWidth: 120,
+                sortable: false,
+                cellRenderer: (p: any) =>
+                  (p.value || []).slice(0, 3).map((t: string) =>
+                    `<span style="background:#e9ecef;color:#6c757d;font-size:10px;border-radius:20px;padding:2px 8px;margin-right:4px">${t}</span>`
+                  ).join(''),
+              },
+              {
+                headerName: 'Status',
+                field: 'active',
+                width: 100,
+                filter: false,
+                cellRenderer: (p: any) =>
+                  p.value
+                    ? `<span style="background:#d1e7dd;color:#0a3622;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">Aktiv</span>`
+                    : `<span style="background:#f8d7da;color:#58151c;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px">Deaktiv</span>`,
+              },
+              {
+                headerName: 'Əməliyyat',
+                field: 'id',
+                width: 140,
+                sortable: false,
+                filter: false,
+                resizable: false,
+                cellRenderer: (p: any) => {
+                  const prod = filtered.find(x => x.id === p.value);
+                  if (!prod) return '';
+                  const div = document.createElement('div');
+                  div.style.cssText = 'display:flex;gap:6px;align-items:center;height:100%';
+
+                  const btnEdit = document.createElement('button');
+                  btnEdit.innerHTML = '✏️';
+                  btnEdit.title = 'Düzəlt';
+                  btnEdit.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
+                  btnEdit.onclick = () => openEdit(prod);
+
+                  const btnToggle = document.createElement('button');
+                  btnToggle.innerHTML = prod.active ? '👁️' : '🔕';
+                  btnToggle.title = prod.active ? 'Deaktiv et' : 'Aktiv et';
+                  btnToggle.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
+                  btnToggle.onclick = () => handleToggle(prod);
+
+                  const btnDel = document.createElement('button');
+                  btnDel.innerHTML = '🗑️';
+                  btnDel.title = 'Sil';
+                  btnDel.style.cssText = 'border:1px solid #dee2e6;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px';
+                  btnDel.onclick = () => handleDelete(prod.id, prod.name);
+
+                  div.appendChild(btnEdit);
+                  div.appendChild(btnToggle);
+                  div.appendChild(btnDel);
+                  return div;
+                },
+              },
+            ]}
+          />
         </div>
       )}
 

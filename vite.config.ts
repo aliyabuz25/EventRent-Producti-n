@@ -222,6 +222,10 @@ export default defineConfig(({ mode }) => {
             if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-') || id.includes('node_modules/victory')) {
               return 'vendor-charts';
             }
+            // AG Grid
+            if (id.includes('node_modules/ag-grid')) {
+              return 'vendor-aggrid';
+            }
           },
           // Better asset naming
           chunkFileNames: 'assets/[name]-[hash].js',
