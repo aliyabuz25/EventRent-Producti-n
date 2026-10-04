@@ -3,12 +3,10 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 COPY package.frontend.json ./package.json
 RUN npm install --legacy-peer-deps
-# tsx lazımdır (vite.config.ts-i işlətmək üçün)
-RUN npm install --no-save tsx typescript
-COPY vite.config.ts tsconfig*.json ./
+COPY vite.config.docker.ts ./vite.config.ts
+COPY tsconfig*.json ./
 COPY src/ ./src/
-COPY data/ ./data/
-RUN npm run build
+RUN npx vite build
 
 FROM nginx:alpine
 RUN mkdir -p /app/nginx-logs
