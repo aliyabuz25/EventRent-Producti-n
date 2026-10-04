@@ -86,12 +86,16 @@ function ImgInput({ value, onChange, token }: { value: string; onChange: (v: str
     <div className="d-flex flex-column gap-2">
       {/* Preview */}
       {value && (
-        <div style={{ position: 'relative', height: 160, borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef' }}>
-          <img src={value} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => (e.currentTarget.style.display = 'none')} />
+        <div style={{ position: 'relative', height: 200, borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src={value} style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }} onError={e => (e.currentTarget.style.display = 'none')} />
           <button type="button" onClick={() => onChange('')}
             style={{ position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <X size={13} />
           </button>
+          <a href={value} target="_blank" rel="noreferrer"
+            style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '4px 10px', textDecoration: 'none' }}>
+            ↗ Tam ölçü
+          </a>
         </div>
       )}
       {/* Drag & drop / klik */}

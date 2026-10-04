@@ -1,5 +1,109 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Star, Eye, EyeOff, X, Check, Phone, MapPin, Calendar, Users } from 'lucide-react';
+import { Plus, Edit2, Trash2, Star, Eye, EyeOff, X, Check, Phone, MapPin, Calendar, Users, Image as ImageIcon, Upload } from 'lucide-react';
+import { useToast } from '../../components/Toast';
+
+/* ── Media Picker Modal ── */
+function MediaPicker({ token, onPick, onClose }: { token: string; onPick: (url: string) => void; onClose: () => void }) {
+  const [files, setFiles] = useState<{ filename: string; url: string }[]>([]);
+  useEffect(() => {
+    fetch('/api/media', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : []).then(setFiles).catch(() => {});
+  }, []);
+  return (
+    <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.6)', zIndex: 1060 }} onClick={onClose}>
+      <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" onClick={e => e.stopPropagation()}>
+        <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 16 }}>
+          <div className="modal-header border-0 px-4 pt-4 pb-2">
+            <h6 className="modal-title fw-bold">Media Kitabxanası</h6>
+            <button className="btn-close" onClick={onClose} />
+          </div>
+          <div className="modal-body px-4 pb-4">
+            {files.length === 0 ? (
+              <div className="text-center py-5 text-muted">
+                <ImageIcon size={32} style={{ opacity: 0.3, marginBottom: 10 }} />
+                <div style={{ fontSize: 13 }}>Media yoxdur. Əvvəlcə Media tabında fayl yükləyin.</div>
+              </div>
+            ) : (
+              <div className="row g-2">
+                {files.map(f => (
+                  <div key={f.filename} className="col-4 col-md-3">
+                    <div className="card border-0 shadow-sm" style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer', transition: '0.15s' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = ''}
+                      onClick={() => { onPick(f.url); onClose(); }}>
+                      <div style={{ height: 80, background: '#f8f9fa', overflow: 'hidden' }}>
+                        <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                      <div style={{ padding: '4px 6px', fontSize: 9, color: '#6c757d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Smart Image Input ── */
+function ImgInput({ value, onChange, token }: { value: string; onChange: (v: string) => void; token: string }) {
+  const [picker, setPicker] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const toast = useToast();
+
+  const upload = async (file: File) => {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const r = await fetch('/api/media/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      onChange(d.url || '');
+      toast.success('Şəkil yükləndi ✓');
+    } catch { toast.error('Şəkil yüklənmədi'); }
+    finally { setUploading(false); }
+  };
+
+  return (
+    <div className="d-flex flex-column gap-2">
+      {value && (
+        <div style={{ position: 'relative', height: 200, borderRadius: 12, overflow: 'hidden', border: '1px solid #e9ecef', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src={value} style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }} onError={e => (e.currentTarget.style.display = 'none')} />
+          <button type="button" onClick={() => onChange('')}
+            style={{ position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 8, background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <X size={13} />
+          </button>
+          <a href={value} target="_blank" rel="noreferrer"
+            style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '4px 10px', textDecoration: 'none' }}>
+            ↗ Tam ölçü
+          </a>
+        </div>
+      )}
+      <label
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1.5px dashed', borderColor: uploading ? '#e30613' : '#dee2e6', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', background: uploading ? '#fff5f5' : '#fafafa', transition: '0.15s' }}
+        onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#e30613'; e.currentTarget.style.background = '#fff5f5'; }}
+        onDragLeave={e => { e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; }}
+        onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#dee2e6'; e.currentTarget.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f) upload(f); }}
+      >
+        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ''; }} />
+        {uploading
+          ? <><div className="spinner-border spinner-border-sm text-danger" style={{ width: 14, height: 14 }} /><span style={{ fontSize: 11, color: '#e30613', fontWeight: 600 }}>Yüklənir...</span></>
+          : <><Upload size={14} color="#adb5bd" /><span style={{ fontSize: 11, color: '#6c757d' }}>Şəkil sürüklə və burax və ya <span style={{ color: '#e30613', fontWeight: 600 }}>seç</span></span></>
+        }
+      </label>
+      <div className="d-flex gap-2">
+        <input className="form-control form-control-sm" style={{ borderRadius: 9, fontSize: 11 }} value={value} onChange={e => onChange(e.target.value)} placeholder="https://..." />
+        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" style={{ borderRadius: 9, padding: '4px 10px', flexShrink: 0, fontSize: 11 }} onClick={() => setPicker(true)} title="Mediadan seç">
+          <ImageIcon size={12} /> Seç
+        </button>
+      </div>
+      {picker && <MediaPicker token={token} onPick={v => { onChange(v); setPicker(false); }} onClose={() => setPicker(false)} />}
+    </div>
+  );
+}
 
 interface CateringOrder {
   id: number;
@@ -331,9 +435,8 @@ export default function CateringTab({ token }: { token: string }) {
                   </div>
                   {/* Image */}
                   <div className="col-12">
-                    <label className="form-label small fw-bold">Şəkil URL</label>
-                    <input className="form-control" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} placeholder="https://..." />
-                    {form.image_url && <img src={form.image_url} alt="" className="mt-2 rounded" style={{ height: 80, objectFit: 'cover' }} />}
+                    <label className="form-label small fw-bold">Şəkil</label>
+                    <ImgInput value={form.image_url} onChange={v => setForm(f => ({ ...f, image_url: v }))} token={token} />
                   </div>
                   {/* Features */}
                   <div className="col-12">
