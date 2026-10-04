@@ -14,6 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require   = createRequire(import.meta.url);
 
 const app  = express();
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT || 4320);
 const CONTENT_FILE_PATH = path.resolve('data/site-content.json');
 const DB_PATH = path.resolve(process.env.DB_PATH || 'data/eventrent.db');
