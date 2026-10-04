@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     image: eventrent-backend:latest
+    pull_policy: build
     restart: unless-stopped
     environment:
       PORT: "4320"
@@ -19,6 +20,7 @@ services:
       - /datastore/eventrent/data:/app/data
     networks:
       - edge
+      - octobot-net
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
@@ -33,11 +35,13 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     image: eventrent-frontend:latest
+    pull_policy: build
     restart: unless-stopped
     volumes:
       - /datastore/eventrent/nginx-logs:/app/nginx-logs
     networks:
       - edge
+      - octobot-net
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
@@ -47,4 +51,6 @@ services:
 
 networks:
   edge:
+    external: true
+  octobot-net:
     external: true
