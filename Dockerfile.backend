@@ -1,5 +1,7 @@
 FROM node:20-alpine
 WORKDIR /app
+# native build tools (better-sqlite3 üçün)
+RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY server.js ./
