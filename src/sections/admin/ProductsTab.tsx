@@ -269,9 +269,23 @@ export default function ProductsTab({ token }: { token: string }) {
                           <div key={idx} className="col-12 col-md-6">
                             <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden' }}>
                               {/* Preview sahəsi */}
-                              <div style={{ height: 160, background: '#f8f9fa', position: 'relative', overflow: 'hidden' }}>
+                              <div style={{ height: 200, background: '#f0f0f0', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 {img ? (
-                                  <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => (e.currentTarget.style.display='none')} />
+                                  <>
+                                    <img src={img}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }}
+                                      onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex'; }}
+                                    />
+                                    <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: '#adb5bd', position: 'absolute', inset: 0 }}>
+                                      <ImageIcon size={28} opacity={0.3} />
+                                      <span style={{ fontSize: 11 }}>Şəkil yüklənmədi</span>
+                                    </div>
+                                    {/* Tam açmaq üçün link */}
+                                    <a href={img} target="_blank" rel="noreferrer"
+                                      style={{ position: 'absolute', bottom: 8, right: form.images.length > 1 ? 40 : 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '3px 8px', textDecoration: 'none' }}>
+                                      ↗ Tam
+                                    </a>
+                                  </>
                                 ) : (
                                   <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted" style={{ gap: 6 }}>
                                     <ImageIcon size={28} opacity={0.3} />
