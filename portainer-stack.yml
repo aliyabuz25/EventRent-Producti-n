@@ -25,8 +25,9 @@ services:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
       - 'traefik.http.routers.eventrent-api.rule=(Host(`erent.octotech.az`)) && (PathPrefix(`/api`) || PathPrefix(`/uploads`))'
-      - 'traefik.http.routers.eventrent-api.entrypoints=websecure'
+      - 'traefik.http.routers.eventrent-api.entrypoints=web,websecure'
       - 'traefik.http.routers.eventrent-api.priority=100'
+      - 'traefik.http.routers.eventrent-api.tls=true'
       - 'traefik.http.services.eventrent-api.loadbalancer.server.port=4320'
 
   eventrent-frontend:
@@ -46,7 +47,8 @@ services:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
       - 'traefik.http.routers.eventrent.rule=Host(`erent.octotech.az`)'
-      - 'traefik.http.routers.eventrent.entrypoints=websecure'
+      - 'traefik.http.routers.eventrent.entrypoints=web,websecure'
+      - 'traefik.http.routers.eventrent.tls=true'
       - 'traefik.http.services.eventrent.loadbalancer.server.port=80'
 
 networks:
