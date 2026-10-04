@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package, X, Check, Image as ImageIcon, Tag, Search, RefreshCw, Eye, EyeOff, ChevronRight, LayoutGrid, List } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
@@ -68,6 +68,7 @@ export default function ProductsTab({ token }: { token: string }) {
   const [specKey, setSpecKey]   = useState('');
   const [specVal, setSpecVal]   = useState('');
   const [mediaPicker, setMediaPicker] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [imgPreviews, setImgPreviews] = useState<boolean[]>([]);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
   const toast = useToast();
@@ -167,7 +168,11 @@ export default function ProductsTab({ token }: { token: string }) {
           <h5 className="mb-0 fw-bold">Məhsullar</h5>
           <div style={{ fontSize: 12, color: '#6c757d' }}>{products.length} məhsul</div>
         </div>
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 align-items-center">
+          <div className="btn-group" style={{ borderRadius: 10, overflow: 'hidden' }}>
+            <button onClick={() => setViewMode('list')} className={`btn btn-sm d-flex align-items-center gap-1 ${viewMode === 'list' ? 'btn-dark' : 'btn-outline-secondary'}`} style={{ borderRadius: '10px 0 0 10px', padding: '6px 10px' }} title="Sətir görünüşü"><List size={14} /></button>
+            <button onClick={() => setViewMode('grid')} className={`btn btn-sm d-flex align-items-center gap-1 ${viewMode === 'grid' ? 'btn-dark' : 'btn-outline-secondary'}`} style={{ borderRadius: '0 10px 10px 0', padding: '6px 10px' }} title="Grid görünüşü"><LayoutGrid size={14} /></button>
+          </div>
           <button onClick={load} className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 10 }}><RefreshCw size={13} /></button>
           <button onClick={openCreate} className="btn btn-danger btn-sm fw-semibold d-flex align-items-center gap-2" style={{ borderRadius: 10, padding: '8px 16px' }}><Plus size={14} /> Yeni Məhsul</button>
         </div>
@@ -180,7 +185,7 @@ export default function ProductsTab({ token }: { token: string }) {
 
       {loading ? (
         <div className="text-center py-5"><div className="spinner-border text-danger" style={{ width: 28, height: 28 }} /></div>
-      ) : (
+      ) : viewMode === 'list' ? (
         <div className="ag-theme-alpine" style={{ height: 520, width: '100%', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
           <AgGridReact
             rowData={filtered}
@@ -266,17 +271,53 @@ export default function ProductsTab({ token }: { token: string }) {
                   return (
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center', height: '100%' }}>
                       <button title="Düzəlt" onClick={() => openEdit(prod)}
-                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
+                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '5px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <Pencil size={13} color="#495057" />
+                      </button>
                       <button title={prod.active ? 'Deaktiv et' : 'Aktiv et'} onClick={() => handleToggle(prod)}
-                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>{prod.active ? '👁️' : '🔕'}</button>
+                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '5px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        {prod.active ? <EyeOff size={13} color="#f59e0b" /> : <Eye size={13} color="#22c55e" />}
+                      </button>
                       <button title="Sil" onClick={() => handleDelete(prod.id, prod.name)}
-                        style={{ border: '1px solid #dee2e6', background: '#fff', borderRadius: 8, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>🗑️</button>
+                        style={{ border: '1px solid #fee2e2', background: '#fff5f5', borderRadius: 8, padding: '5px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <Trash2 size={13} color="#dc3545" />
+                      </button>
                     </div>
                   );
                 },
               },
             ]}
           />
+        </div>
+      ) : (
+        <div className="row g-3">
+          {filtered.map(p => (
+            <div key={p.id} className="col-6 col-md-4 col-lg-3">
+              <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 14, overflow: 'hidden', opacity: p.active ? 1 : 0.6, transition: 'transform 0.15s, box-shadow 0.15s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = ''; }}>
+                <div style={{ height: 140, background: '#fff', borderBottom: '1px solid #f1f3f5', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {p.images?.[0] ? <img src={p.images[0]} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: 6 }} /> : <div className="d-flex align-items-center justify-content-center h-100 text-muted"><Package size={32} opacity={0.3} /></div>}
+                  {!p.active && <span style={{ position: 'absolute', top: 8, right: 8, background: '#dc3545', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>Deaktiv</span>}
+                  {p.category && <span style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 20, padding: '2px 8px' }}>{p.category}</span>}
+                </div>
+                <div className="p-3">
+                  <div className="fw-bold mb-1" style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                  {p.tags?.length > 0 && (
+                    <div className="d-flex flex-wrap gap-1 mb-2">
+                      {p.tags.slice(0, 3).map(tag => <span key={tag} style={{ background: '#f1f3f5', color: '#6c757d', fontWeight: 500, fontSize: 9, borderRadius: 20, padding: '2px 8px' }}>{tag}</span>)}
+                    </div>
+                  )}
+                  <div className="d-flex gap-1 mt-2">
+                    <button onClick={() => openEdit(p)} className="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1" style={{ borderRadius: 8, fontSize: 11 }}><Pencil size={11} /> Düzəlt</button>
+                    <button onClick={() => handleToggle(p)} className={`btn btn-sm ${p.active ? 'btn-outline-warning' : 'btn-outline-success'} d-flex align-items-center`} style={{ borderRadius: 8, padding: '4px 8px' }}>{p.active ? <EyeOff size={12} /> : <Eye size={12} />}</button>
+                    <button onClick={() => handleDelete(p.id, p.name)} className="btn btn-sm btn-outline-danger d-flex align-items-center" style={{ borderRadius: 8, padding: '4px 8px' }}><Trash2 size={12} /></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && <div className="col-12 text-center py-5 text-muted"><Package size={36} style={{ marginBottom: 12, opacity: 0.3 }} /><div>Məhsul tapılmadı</div></div>}
         </div>
       )}
 
