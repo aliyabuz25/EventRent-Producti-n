@@ -16,15 +16,24 @@ services:
     volumes:
       - /datastore/eventrent/uploads:/app/uploads
       - /datastore/eventrent/data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4320/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     networks:
-      - edge
+      edge:
+        aliases:
+          - eventrent-backend
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
-      - 'traefik.http.routers.eventrent-api.rule=(Host(`erent.octotech.az`)) && (PathPrefix(`/api`) || PathPrefix(`/uploads`))'
       - 'traefik.http.routers.eventrent-api.entrypoints=web,websecure'
       - 'traefik.http.routers.eventrent-api.priority=100'
+      - 'traefik.http.routers.eventrent-api.rule=(Host(`erent.octotech.az`)) && (PathPrefix(`/api`) || PathPrefix(`/uploads`))'
       - 'traefik.http.services.eventrent-api.loadbalancer.server.port=4320'
+      - 'traefik.http.services.eventrent-api.loadbalancer.server.scheme=http'
 
   eventrent-frontend:
     build:
@@ -35,13 +44,16 @@ services:
     volumes:
       - /datastore/eventrent/nginx-logs:/app/nginx-logs
     networks:
-      - edge
+      edge:
+        aliases:
+          - eventrent-frontend
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
-      - 'traefik.http.routers.eventrent.rule=Host(`erent.octotech.az`)'
       - 'traefik.http.routers.eventrent.entrypoints=web,websecure'
+      - 'traefik.http.routers.eventrent.rule=Host(`erent.octotech.az`)'
       - 'traefik.http.services.eventrent.loadbalancer.server.port=80'
+      - 'traefik.http.services.eventrent.loadbalancer.server.scheme=http'
 
 networks:
   edge:
