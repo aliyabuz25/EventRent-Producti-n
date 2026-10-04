@@ -377,7 +377,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
   const saveContent = async () => {
     setIsSaving(true); setSaveMsg(null);
     try {
-      const res = await fetch('/api/content', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
+      const res = await fetch('/api/content', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(content) });
       if (res.ok) { toast.success('Məzmun saxlandı!'); showMsg('✓ Yadda saxlandı.'); setIsDirty(false); }
       else { toast.error('Saxlama xətası.'); showMsg('✗ Xəta baş verdi.'); }
     } catch { toast.error('Serverə qoşulma alınmadı.'); showMsg('✗ Xəta.'); }
