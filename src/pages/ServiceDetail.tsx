@@ -18,6 +18,7 @@ export default function ServiceDetail() {
 
   const currentCategory = getServiceCategoryBySlug(content, category || '');
   const currentItem = id && category ? getServiceSubItemBySlug(content, category, id) : null;
+  const p = content.product || {} as any;
 
   if (!currentCategory) return <div className="p-20 text-center">Xidmət tapılmadı.</div>;
   if (id && !currentItem) return <div className="p-20 text-center">Xidmət tapılmadı.</div>;
@@ -61,7 +62,7 @@ export default function ServiceDetail() {
 
         <div className="relative max-w-7xl mx-auto px-6 md:px-12">
           <Link to="/services" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest mb-8">
-            <ArrowLeft className="w-4 h-4" /> Xidmətlərə qayıt
+            <ArrowLeft className="w-4 h-4" /> {t(locale, p.backToServices || { az: 'Xidmətlərə qayıt', en: 'Back to services', ru: 'К услугам', tr: 'Hizmetlere dön' })}
           </Link>
           <div className="flex items-center gap-3 mb-8">
             <div className="w-5 h-px bg-premium-orange" />
@@ -113,7 +114,7 @@ export default function ServiceDetail() {
                   to={`/services/${category}/${item.id}`}
                   className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest group-hover:text-white"
                 >
-                  Ətraflı <CheckCircle2 className="w-4 h-4" />
+                  {t(locale, p.viewDetail || { az: 'Ətraflı', en: 'Details', ru: 'Подробнее', tr: 'Detaylar' })} <CheckCircle2 className="w-4 h-4" />
                 </Link>
               </motion.div>
             ))}
@@ -135,11 +136,10 @@ export default function ServiceDetail() {
                 </div>
                 <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{t(locale, currentItem!.name)}</h2>
                 <p className="text-xl text-gray-500 font-light leading-relaxed">
-                  {t(locale, currentItem!.desc)} üçün biz ən müasir texnologiyalar və peşəkar komandamızla xidmətinizdəyik.
-                  Hər bir layihəyə fərdi yanaşaraq, sizin tələblərinizə uyğun ən optimal həlli təklif edirik.
+                  {t(locale, currentItem!.desc)}
                 </p>
                 <div className="space-y-4">
-                  {['Yüksək keyfiyyət', 'Peşəkar yanaşma', 'Sürətli icra', 'Sərfəli qiymət'].map(feature => (
+                  {(p.features ? [p.features.f1, p.features.f2, p.features.f3, p.features.f4].filter(Boolean).map((f: any) => t(locale, f)) : ['Yüksək keyfiyyət', 'Peşəkar yanaşma', 'Sürətli icra', 'Sərfəli qiymət']).map((feature: string) => (
                     <div key={feature} className="flex items-center gap-3 text-gray-900 font-bold">
                       <CheckCircle2 className="w-5 h-5 text-red-500" />
                       {feature}
@@ -153,7 +153,7 @@ export default function ServiceDetail() {
                   onClick={() => setIsOrdering(true)}
                   className="inline-flex items-center gap-3 bg-black text-white px-12 py-6 rounded-full font-bold text-xl hover:bg-gray-800 transition-all shadow-2xl shadow-black/20 active:scale-95"
                 >
-                  Sifariş et <ShoppingCart className="w-6 h-6" />
+                  {t(locale, p.orderBtn || { az: 'Sifariş et', en: 'Order', ru: 'Заказать', tr: 'Sipariş et' })} <ShoppingCart className="w-6 h-6" />
                 </button>
               ) : (
                 <motion.div
@@ -162,7 +162,7 @@ export default function ServiceDetail() {
                   className="bg-gray-50 rounded-[40px] p-10 space-y-8 border border-gray-100"
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold tracking-tight">Sifariş detalları</h3>
+                    <h3 className="text-2xl font-bold tracking-tight">{t(locale, p.orderDetails || { az: 'Sifariş detalları', en: 'Order details', ru: 'Детали заказа', tr: 'Sipariş detayları' })}</h3>
                     <button onClick={() => setIsOrdering(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
                       <X className="w-6 h-6" />
                     </button>
@@ -171,7 +171,7 @@ export default function ServiceDetail() {
                   <div className="space-y-6">
                     {/* Quantity Selector */}
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Say</label>
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">{t(locale, p.quantityLabel || { az: 'Say', en: 'Qty', ru: 'Кол-во', tr: 'Adet' })}</label>
                       <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-gray-100 w-fit">
                         <button
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -195,7 +195,7 @@ export default function ServiceDetail() {
                         <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">{q}</label>
                         <input
                           type="text"
-                          placeholder={`${q} daxil edin...`}
+                          placeholder={`${q}...`}
                           className="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-red-500/5 focus:border-red-500 transition-all"
                           value={answers[q] || ''}
                           onChange={(e) => setAnswers({ ...answers, [q]: e.target.value })}
@@ -208,7 +208,7 @@ export default function ServiceDetail() {
                         onClick={handleAddToCart}
                         className="w-full bg-red-600 text-white py-6 rounded-3xl font-bold text-lg hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 flex items-center justify-center gap-3"
                       >
-                        Səbətə əlavə et <ShoppingCart className="w-6 h-6" />
+                        {t(locale, p.addToCartBtn || { az: 'Səbətə əlavə et', en: 'Add to cart', ru: 'В корзину', tr: 'Sepete ekle' })} <ShoppingCart className="w-6 h-6" />
                       </button>
                     </div>
                   </div>
@@ -227,8 +227,8 @@ export default function ServiceDetail() {
                       <CheckCircle2 className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="font-bold">Səbətə əlavə olundu!</p>
-                      <p className="text-xs text-white/60">Yönləndirilirsiniz...</p>
+                      <p className="font-bold">{t(locale, p.addedToCart || { az: 'Səbətə əlavə olundu!', en: 'Added to cart!', ru: 'Добавлено в корзину!', tr: 'Sepete eklendi!' })}</p>
+                      <p className="text-xs text-white/60">{t(locale, p.redirecting || { az: 'Yönləndirilirsiniz...', en: 'Redirecting...', ru: 'Перенаправление...', tr: 'Yönlendiriliyorsunuz...' })}</p>
                     </div>
                   </motion.div>
                 )}

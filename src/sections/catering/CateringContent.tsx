@@ -70,22 +70,34 @@ export default function CateringContent() {
             {t(locale, s.title)}
           </h2>
           <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-6">
-              <div className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
-                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600&auto=format&fit=crop" loading="lazy" decoding="async" className="w-full h-full object-cover" alt="Catering 1" referrerPolicy="no-referrer" />
-              </div>
-              <div className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
-                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop" loading="lazy" decoding="async" className="w-full h-full object-cover" alt="Catering 2" referrerPolicy="no-referrer" />
-              </div>
-            </div>
-            <div className="space-y-6 pt-12">
-              <div className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
-                <img src="https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop" loading="lazy" decoding="async" className="w-full h-full object-cover" alt="Catering 3" referrerPolicy="no-referrer" />
-              </div>
-              <div className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
-                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600&auto=format&fit=crop" loading="lazy" decoding="async" className="w-full h-full object-cover" alt="Catering 4" referrerPolicy="no-referrer" />
-              </div>
-            </div>
+            {(() => {
+              const imgs = s.galleryImages?.length ? s.galleryImages : [
+                'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600&auto=format&fit=crop',
+              ];
+              const col1 = imgs.filter((_, i) => i % 2 === 0);
+              const col2 = imgs.filter((_, i) => i % 2 === 1);
+              return (
+                <>
+                  <div className="space-y-6">
+                    {col1.map((src, i) => (
+                      <div key={i} className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
+                        <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover" alt={`Catering ${i * 2 + 1}`} referrerPolicy="no-referrer" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-6 pt-12">
+                    {col2.map((src, i) => (
+                      <div key={i} className="cat-img opacity-0 aspect-square rounded-[60px] overflow-hidden shadow-2xl border-4 border-white/10">
+                        <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover" alt={`Catering ${i * 2 + 2}`} referrerPolicy="no-referrer" />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
       </section>

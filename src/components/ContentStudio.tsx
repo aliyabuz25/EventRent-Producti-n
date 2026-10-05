@@ -6,7 +6,7 @@ import { Save, RefreshCw, Pencil, X, Plus, Trash2, Eye, EyeOff, Check, ImageIcon
 import { useToast } from './Toast';
 
 const LANGS: Locale[] = ['az', 'en', 'ru', 'tr'];
-type Section = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio';
+type Section = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio' | 'cart' | 'product' | 'catalog' | 'notfound' | 'gallery' | 'eventgarden' | 'tv' | 'teambuilding-page';
 
 interface ContentStudioProps { section?: Section; className?: string; }
 
@@ -101,12 +101,10 @@ function ItemCard({ index, title, onDelete, children }: { index: number; title?:
 function MemberImgUpload({ value, onChange, token }: { value: string; onChange: (v: string) => void; token?: string }) {
   const [uploading, setUploading] = useState(false);
   const [picker, setPicker] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<{ filename: string; url: string }[]>([]);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const doUpload = async (file: File) => {
     setUploading(true);
     try {
       const fd = new FormData();
@@ -123,92 +121,109 @@ function MemberImgUpload({ value, onChange, token }: { value: string; onChange: 
     }
   };
 
-  const openPicker = async () => {
-    setPicker(true);
-    try {
-      const res = await fetch('/api/media', token ? { headers: { Authorization: `Bearer ${token}` } } : {});
-      if (res.ok) setMediaFiles(await res.json());
-    } catch {}
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) doUpload(file);
   };
 
   return (
-    <div className="d-flex flex-column gap-1">
-      <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} />
-      <button type="button" disabled={uploading}
-        className="btn btn-sm btn-danger d-flex align-items-center justify-content-center gap-1 w-100"
-        style={{ borderRadius: 8, fontSize: 11, fontWeight: 700 }}
-        onClick={() => fileRef.current?.click()}>
-        {uploading ? <RefreshCw size={11} style={{ animation: 'spin 1s linear infinite' }} /> : <Plus size={11} />}
-        {uploading ? 'Yüklənir...' : 'Şəkil Yüklə'}
-      </button>
-      <button type="button"
-        className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 w-100"
-        style={{ borderRadius: 8, fontSize: 10 }}
-        onClick={openPicker}>
-        <ImageIcon size={10} /> Media
-      </button>
-      {value && (
-        <button type="button"
-          className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1 w-100"
-          style={{ borderRadius: 8, fontSize: 10 }}
-          onClick={() => onChange('')}>
-          <X size={10} /> Sil
-        </button>
-      )}
-      {picker && (
-        <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }} onClick={() => setPicker(false)}>
-          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" onClick={e => e.stopPropagation()}>
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 16 }}>
-              <div className="modal-header border-0 px-4 pt-4 pb-2">
-                <h6 className="modal-title fw-bold">Media Seç</h6>
-                <button className="btn-close" onClick={() => setPicker(false)} />
-              </div>
-              <div className="modal-body px-4 pb-4">
-                {mediaFiles.length === 0 ? (
-                  <div className="text-center py-4 text-muted" style={{ fontSize: 13 }}>Media tapılmadı. Əvvəlcə Media tabında fayl yükləyin.</div>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 12 }}>
-                    {mediaFiles.map((f, idx) => (
-                      <div key={idx} style={{ borderRadius: 10, overflow: 'hidden', border: '2px solid transparent', cursor: 'pointer', background: '#f8f9fa', transition: 'border-color 0.2s' }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = '#e30613'}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
-                        onClick={() => { onChange(f.url); setPicker(false); }}>
-                        <div style={{ paddingBottom: '100%', position: 'relative' }}>
-                          <img src={f.url} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
-                        </div>
-                        <div style={{ padding: '6px 8px', fontSize: 10, fontWeight: 600, color: '#333', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.filename}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+    <div style={{ position: 'relative' }}>
+      <label style={{ ...labelStyle, marginBottom: 4 }}>Foto / Şəkil</label>
+      <div
+        style={{
+          width: '100%',
+          aspectRatio: '1/1',
+          borderRadius: 12,
+          overflow: 'hidden',
+          position: 'relative',
+          border: value ? '1px solid #dee2e6' : `2px dashed ${dragOver ? '#e30613' : uploading ? '#adb5bd' : '#dee2e6'}`,
+          background: value ? '#f8f9fa' : dragOver ? '#fff5f5' : '#fafafa',
+          transition: 'all 0.2s ease',
+        }}
+        onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+      >
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) doUpload(f); }} />
+        
+        {value && !uploading ? (
+          <div className="group" style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <img src={value} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} referrerPolicy="no-referrer" onError={e => { e.currentTarget.style.display = 'none'; }} />
+            {/* Hover overlay */}
+            <div
+              style={{
+                position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
+                opacity: 0, transition: 'opacity 0.2s', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)'
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '0'}
+            >
+              <button type="button" onClick={() => fileRef.current?.click()} className="btn btn-sm btn-light w-75 d-flex justify-content-center align-items-center gap-1" style={{ borderRadius: 6, fontSize: 10, padding: '4px' }}>
+                <RefreshCw size={10} /> Dəyiş
+              </button>
+              <button type="button" onClick={() => setPicker(true)} className="btn btn-sm btn-light w-75 d-flex justify-content-center align-items-center gap-1" style={{ borderRadius: 6, fontSize: 10, padding: '4px' }}>
+                <ImageIcon size={10} /> Media
+              </button>
+              <button type="button" onClick={() => onChange('')} className="btn btn-sm btn-danger w-75 d-flex justify-content-center align-items-center gap-1" style={{ borderRadius: 6, fontSize: 10, padding: '4px' }}>
+                <Trash2 size={10} /> Sil
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            onClick={() => !uploading && fileRef.current?.click()}
+            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'default' : 'pointer', padding: 8 }}
+          >
+            {uploading ? (
+              <div style={{ fontSize: 11, color: '#6c757d', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Yüklənir...</span>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 28, marginBottom: 4, filter: dragOver ? 'grayscale(0)' : 'grayscale(1)' }}>📤</div>
+                <div style={{ fontWeight: 700, fontSize: 11, color: dragOver ? '#e30613' : '#495057', marginBottom: 2 }}>
+                  {dragOver ? 'Buraxın' : 'Klik/Sürükle'}
+                </div>
+                <div className="mt-2">
+                  <button type="button" onClick={e => { e.stopPropagation(); setPicker(true); }} className="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center" style={{ borderRadius: 6, fontSize: 9, padding: '2px 6px' }}>
+                    Media-dan seç
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {picker && (
+        <MediaPickerModal token={token} onSelect={onChange} onClose={() => setPicker(false)} />
       )}
     </div>
   );
 }
 
-function ImgField({ label, value, onChange, token, square }: { label: string; value: string; onChange: (v: string) => void; token?: string; square?: boolean }) {
-  const [show, setShow] = useState(true);
-  const [mediaPicker, setMediaPicker] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<{ filename: string; url: string }[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+function MediaPickerModal({ onSelect, onClose, token }: { onSelect: (url: string) => void; onClose: () => void; token?: string }) {
+  const [files, setFiles] = useState<{ filename: string; url: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [uploadingInPicker, setUploadingInPicker] = useState(false);
+  const pickerFileRef = useRef<HTMLInputElement>(null);
 
-  const openPicker = async () => {
-    setMediaPicker(true);
-    try {
-      const res = await fetch('/api/media', token ? { headers: { Authorization: `Bearer ${token}` } } : {});
-      if (res.ok) setMediaFiles(await res.json());
-    } catch {}
-  };
+  React.useEffect(() => {
+    fetch('/api/media', token ? { headers: { Authorization: `Bearer ${token}` } } : {})
+      .then(r => r.ok ? r.json() : [])
+      .then(setFiles)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [token]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePickerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
+    setUploadingInPicker(true);
     try {
       const fd = new FormData();
       fd.append('file', file);
@@ -218,70 +233,184 @@ function ImgField({ label, value, onChange, token, square }: { label: string; va
         body: fd,
       });
       if (res.ok) {
-        const data = await res.json();
-        onChange(data.url);
+        const d = await res.json();
+        setFiles(prev => [{ filename: d.filename, url: d.url }, ...prev]);
+        onSelect(d.url);
+        onClose();
       }
+    } catch {} finally {
+      setUploadingInPicker(false);
+      if (pickerFileRef.current) pickerFileRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.55)', zIndex: 9999 }} onClick={onClose}>
+      <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" style={{ maxWidth: 860 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 18 }}>
+          <div className="modal-header border-0 px-4 pt-4 pb-3" style={{ background: '#fafafa', borderRadius: '18px 18px 0 0' }}>
+            <h6 className="modal-title fw-bold" style={{ fontSize: 15 }}>📁 Media Kitabxanası</h6>
+            <div className="d-flex align-items-center gap-2">
+              <input ref={pickerFileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePickerUpload} />
+              <button type="button" className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, fontWeight: 700 }}
+                disabled={uploadingInPicker} onClick={() => pickerFileRef.current?.click()}>
+                {uploadingInPicker ? <RefreshCw size={11} style={{ animation: 'spin 1s linear infinite' }} /> : <Plus size={11} />}
+                {uploadingInPicker ? 'Yüklənir...' : 'Yeni Yüklə'}
+              </button>
+              <button className="btn-close" onClick={onClose} />
+            </div>
+          </div>
+          <div className="modal-body px-4 pb-4">
+            {loading ? (
+              <div className="text-center py-5 text-muted"><RefreshCw size={20} style={{ animation: 'spin 1s linear infinite' }} /></div>
+            ) : files.length === 0 ? (
+              <div className="text-center py-5 text-muted" style={{ fontSize: 13 }}>
+                Media tapılmadı. Yuxarıdakı "Yeni Yüklə" düyməsindən şəkil əlavə edin.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+                {files.map((f, i) => (
+                  <div key={i}
+                    style={{ borderRadius: 12, overflow: 'hidden', border: '2px solid transparent', cursor: 'pointer', background: '#f8f9fa', transition: 'all 0.15s', boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#e30613'; e.currentTarget.style.transform = 'scale(1.03)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'scale(1)'; }}
+                    onClick={() => { onSelect(f.url); onClose(); }}>
+                    <div style={{ paddingBottom: '100%', position: 'relative' }}>
+                      <img src={f.url} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
+                    </div>
+                    <div style={{ padding: '6px 8px', fontSize: 10, fontWeight: 600, color: '#555', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.filename}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImgField({ label, value, onChange, token, square }: { label: string; value: string; onChange: (v: string) => void; token?: string; square?: boolean }) {
+  const [mediaPicker, setMediaPicker] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [showUrl, setShowUrl] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const doUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/media/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      if (res.ok) { const d = await res.json(); onChange(d.url); }
     } catch {} finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = '';
     }
   };
 
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) doUpload(file);
+  };
+
+  const boxH = square ? 120 : 160;
+
   return (
-    <div>
-      <label style={labelStyle}>{label}</label>
-      <div className="d-flex gap-2 align-items-center">
-        <input className={inputCls} style={{ borderRadius: 8 }} value={value} onChange={e => onChange(e.target.value)} placeholder="https://..." />
-        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} />
-        <button type="button" className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" style={{ borderRadius: 8, flexShrink: 0, fontSize: 11, fontWeight: 700 }}
-          onClick={() => fileRef.current?.click()} title="Şəkil yüklə" disabled={uploading}>
-          {uploading ? <RefreshCw size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Plus size={12} />}
-          {uploading ? 'Yüklənir...' : 'Yüklə'}
-        </button>
-        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, flexShrink: 0 }} onClick={openPicker} title="Media kitabxanasından seç">
-          <ImageIcon size={13} />
-        </button>
-        <button type="button" className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ borderRadius: 8, flexShrink: 0 }} onClick={() => setShow(v => !v)}>
-          {show ? <EyeOff size={13} /> : <Eye size={13} />}
-        </button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+      <div className="d-flex align-items-center justify-content-between">
+        <label style={{ ...labelStyle, marginBottom: 0 }}>{label}</label>
+        {value && (
+          <button type="button" onClick={() => setShowUrl(!showUrl)} style={{ background: 'none', border: 'none', fontSize: 10, color: '#adb5bd', cursor: 'pointer', padding: 0 }}>
+            {showUrl ? 'URL Gizlət' : 'URL Göstər'}
+          </button>
+        )}
       </div>
-      {show && value && (
-        <div style={{ width: square ? 100 : '100%', height: 100, borderRadius: 8, overflow: 'hidden', marginTop: 6, border: '1px solid #dee2e6', background: '#f8f9fa' }}>
-          <img src={value} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" onError={e => (e.currentTarget.style.display = 'none')} />
+
+      {showUrl && value && (
+        <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+          <input className={inputCls} style={{ borderRadius: 6, fontSize: 11 }} value={value} onChange={e => onChange(e.target.value)} placeholder="https://..." />
         </div>
       )}
-      {mediaPicker && (
-        <div className="modal show d-block" tabIndex={-1} style={{ background: 'rgba(0,0,0,0.5)' }} onClick={() => setMediaPicker(false)}>
-          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" onClick={e => e.stopPropagation()}>
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 16 }}>
-              <div className="modal-header border-0 px-4 pt-4 pb-2">
-                <h6 className="modal-title fw-bold">Media Seç</h6>
-                <button className="btn-close" onClick={() => setMediaPicker(false)} />
+
+      <div
+        style={{
+          height: boxH,
+          borderRadius: 12,
+          overflow: 'hidden',
+          position: 'relative',
+          border: value ? '1px solid #dee2e6' : `2px dashed ${dragOver ? '#e30613' : uploading ? '#adb5bd' : '#dee2e6'}`,
+          background: value ? '#f8f9fa' : dragOver ? '#fff5f5' : '#fafafa',
+          transition: 'all 0.2s ease',
+        }}
+        onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+      >
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) doUpload(f); }} />
+        
+        {value && !uploading ? (
+          <div className="group" style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <img src={value} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} referrerPolicy="no-referrer" onError={e => { e.currentTarget.style.display = 'none'; }} />
+            {/* Hover overlay */}
+            <div
+              style={{
+                position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8,
+                opacity: 0, transition: 'opacity 0.2s', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)'
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '0'}
+            >
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button type="button" onClick={() => fileRef.current?.click()} className="btn btn-sm btn-light d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, fontWeight: 600, padding: '4px 10px' }}>
+                  <RefreshCw size={12} /> Dəyiş
+                </button>
+                <button type="button" onClick={() => setMediaPicker(true)} className="btn btn-sm btn-light d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, fontWeight: 600, padding: '4px 10px' }}>
+                  <ImageIcon size={12} /> Media
+                </button>
               </div>
-              <div className="modal-body px-4 pb-4">
-                {mediaFiles.length === 0 ? (
-                  <div className="text-center py-4 text-muted" style={{ fontSize: 13 }}>Media tapılmadı. Əvvəlcə Media tabında fayl yükləyin.</div>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
-                    {mediaFiles.map((f, i) => (
-                      <div key={i} style={{ borderRadius: 12, overflow: 'hidden', border: '2px solid transparent', cursor: 'pointer', position: 'relative', background: '#f8f9fa', transition: 'border-color 0.2s', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = '#e30613'}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
-                        onClick={() => { onChange(f.url); setMediaPicker(false); }}>
-                        <div style={{ paddingBottom: '100%', position: 'relative' }}>
-                          <img src={f.url} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
-                        </div>
-                        <div style={{ padding: '8px 10px', fontSize: 11, fontWeight: 600, color: '#333', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', background: '#fff' }}>
-                          {f.filename}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <button type="button" onClick={() => onChange('')} className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 11, fontWeight: 600, padding: '4px 10px' }}>
+                <Trash2 size={12} /> Sil
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            onClick={() => !uploading && fileRef.current?.click()}
+            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'default' : 'pointer' }}
+          >
+            {uploading ? (
+              <div style={{ fontSize: 13, color: '#6c757d', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> Yüklənir...
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '0 20px' }}>
+                <div style={{ fontSize: 28, marginBottom: 8, filter: dragOver ? 'grayscale(0)' : 'grayscale(1)' }}>📤</div>
+                <div style={{ fontWeight: 700, fontSize: 13, color: dragOver ? '#e30613' : '#495057', marginBottom: 4 }}>
+                  {dragOver ? 'Bura buraxın' : 'Kliklə və ya Sürükle'}
+                </div>
+                <div style={{ fontSize: 11, color: '#adb5bd' }}>Maks 8MB · JPG, PNG, WebP</div>
+                <div className="mt-3">
+                  <button type="button" onClick={e => { e.stopPropagation(); setMediaPicker(true); }} className="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" style={{ borderRadius: 8, fontSize: 10 }}>
+                    <ImageIcon size={11} /> Media-dan seç
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {mediaPicker && (
+        <MediaPickerModal token={token} onSelect={onChange} onClose={() => setMediaPicker(false)} />
       )}
     </div>
   );
@@ -478,7 +607,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Hero">
+        <Card title="1 · Hero">
           <G2>
             <FL label="Başlıq 1" value={content.home.hero.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.home.hero.titleLine1 = setText(c.home.hero.titleLine1, v); return c; })} />
             <FL label="Başlıq 2" value={content.home.hero.titleLine2} locale={editorLocale} onChange={v => upd(c => { c.home.hero.titleLine2 = setText(c.home.hero.titleLine2, v); return c; })} />
@@ -489,6 +618,11 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
             <FL label="Scroll Label" value={content.home.hero.scrollLabel} locale={editorLocale} onChange={v => upd(c => { c.home.hero.scrollLabel = setText(c.home.hero.scrollLabel, v); return c; })} />
             <FL label="Yan Etiket" value={content.home.hero.sideLabel} locale={editorLocale} onChange={v => upd(c => { c.home.hero.sideLabel = setText(c.home.hero.sideLabel, v); return c; })} />
           </G2>
+          <div className="mt-3 d-flex flex-column gap-3">
+            <PlainField label="Video URL (mp4)" value={content.home.hero.videoSrc || ''} onChange={v => upd(c => { c.home.hero.videoSrc = v; return c; })} placeholder="https://...mp4" />
+            <ImgField label="Video Poster Şəkli" value={content.home.hero.videoPoster || ''} token={token} onChange={v => upd(c => { c.home.hero.videoPoster = v; return c; })} />
+            <ImgField label="Arxa Plan Overlay Şəkli" value={content.home.hero.overlayImage || ''} token={token} onChange={v => upd(c => { c.home.hero.overlayImage = v; return c; })} />
+          </div>
           <div className="mt-3">
             <label style={labelStyle}>Statistika (Hero Alt)</label>
             {(content.home.hero.stats || []).map((stat, i) => (
@@ -503,7 +637,8 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Vision / Mission (Compact)">
+        {/* ── 2. Vision / Mission Compact ─────────────────── */}
+        <Card title="2 · Vision / Mission (Ana Səhifə)">
           <G2>
             <FL label="Vizyon Etiketi" value={content.home.visionMissionCompact.visionLabel} locale={editorLocale} onChange={v => upd(c => { c.home.visionMissionCompact.visionLabel = setText(c.home.visionMissionCompact.visionLabel, v); return c; })} />
             <FL label="Missiya Etiketi" value={content.home.visionMissionCompact.missionLabel} locale={editorLocale} onChange={v => upd(c => { c.home.visionMissionCompact.missionLabel = setText(c.home.visionMissionCompact.missionLabel, v); return c; })} />
@@ -512,7 +647,35 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Services Teaser">
+        {/* ── 3. Capabilities ─────────────────── */}
+        <Card title="3 · Capabilities">
+          <G2>
+            <FL label="Badge" value={content.home.capabilities.badge} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.badge = setText(c.home.capabilities.badge, v); return c; })} />
+            <FL label="Başlıq" value={content.home.capabilities.title} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.title = setText(c.home.capabilities.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.capabilities.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.titleAccent = setText(c.home.capabilities.titleAccent, v); return c; })} />
+            <FL label="Açıqlama" value={content.home.capabilities.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.capabilities.description = setText(c.home.capabilities.description, v); return c; })} />
+            <FL label="CTA" value={content.home.capabilities.cta} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.cta = setText(c.home.capabilities.cta, v); return c; })} />
+          </G2>
+          <SectionHeader title="Xidmət Elementləri" count={content.home.capabilities.items.length} />
+          {content.home.capabilities.items.map((item, i) => (
+            <ItemCard key={i} index={i} title={t(editorLocale, item.title)} onDelete={() => upd(c => { c.home.capabilities.items = c.home.capabilities.items.filter((_, j) => j !== i); return c; })}>
+              <G2>
+                <FL label="Başlıq" value={item.title} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.items[i].title = setText(c.home.capabilities.items[i].title, v); return c; })} />
+                <FL label="Açıqlama" value={item.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.capabilities.items[i].description = setText(c.home.capabilities.items[i].description, v); return c; })} />
+              </G2>
+              <div className="mt-2">
+                <ImgField label="Şəkil" value={item.image} token={token} onChange={v => upd(c => { c.home.capabilities.items[i].image = v; return c; })} />
+              </div>
+            </ItemCard>
+          ))}
+          <button type="button" className="btn btn-sm btn-outline-secondary mt-2" style={{ borderRadius: 9, fontSize: 11 }}
+            onClick={() => upd(c => { c.home.capabilities.items.push({ key: `cap-${Date.now()}`, title: { az: 'Yeni', en: 'New', ru: 'Новый', tr: 'Yeni' }, description: { az: '', en: '', ru: '', tr: '' }, image: '' }); return c; })}>
+            <Plus size={11} /> Element Əlavə Et
+          </button>
+        </Card>
+
+        {/* ── 4. Services Showcase (Teaser) ─────────────────── */}
+        <Card title="4 · Xidmətlər Teaser (ServicesShowcase)">
           <G2>
             <FL label="Badge" value={content.home.servicesTeaser.badge} locale={editorLocale} onChange={v => upd(c => { c.home.servicesTeaser.badge = setText(c.home.servicesTeaser.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.home.servicesTeaser.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.home.servicesTeaser.titleLine1 = setText(c.home.servicesTeaser.titleLine1, v); return c; })} />
@@ -521,53 +684,8 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Metrics">
-          <div className="mb-3">
-            <FL label="Eyebrow" value={content.home.metricsEyebrow.text} locale={editorLocale} onChange={v => upd(c => { c.home.metricsEyebrow.text = setText(c.home.metricsEyebrow.text, v); return c; })} />
-          </div>
-          {content.home.metrics.items.map((item, i) => (
-            <ItemCard key={i} index={i} title={item.value} onDelete={() => {}}>
-              <G2>
-                <PlainField label="Dəyər (rəqəm)" value={item.value} onChange={v => upd(c => { c.home.metrics.items[i].value = v; return c; })} />
-                <FL label="Etiket" value={item.label} locale={editorLocale} onChange={v => upd(c => { c.home.metrics.items[i].label = setText(c.home.metrics.items[i].label, v); return c; })} />
-              </G2>
-            </ItemCard>
-          ))}
-        </Card>
-
-        <Card title="Final CTA">
-          <G2>
-            <FL label="Badge" value={content.home.finalCtaBadge.text} locale={editorLocale} onChange={v => upd(c => { c.home.finalCtaBadge.text = setText(c.home.finalCtaBadge.text, v); return c; })} />
-            <FL label="Başlıq" value={content.home.finalCta.title} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.title = setText(c.home.finalCta.title, v); return c; })} />
-            <FL label="Başlıq Accent" value={content.home.finalCta.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.titleAccent = setText(c.home.finalCta.titleAccent, v); return c; })} />
-            <FL label="Açıqlama" value={content.home.finalCta.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.finalCta.description = setText(c.home.finalCta.description, v); return c; })} />
-            <FL label="Əsas Düymə" value={content.home.finalCta.primaryCta} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.primaryCta = setText(c.home.finalCta.primaryCta, v); return c; })} />
-            <FL label="İkinci Düymə" value={content.home.finalCta.secondaryCta} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.secondaryCta = setText(c.home.finalCta.secondaryCta, v); return c; })} />
-            <PlainField label="Email" value={content.home.finalCta.email} onChange={v => upd(c => { c.home.finalCta.email = v; return c; })} placeholder="sales@eventrent.az" />
-            <PlainField label="Telefon" value={content.home.finalCta.phone} onChange={v => upd(c => { c.home.finalCta.phone = v; return c; })} />
-            <FL label="Ünvan" value={content.home.finalCta.address} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.address = setText(c.home.finalCta.address, v); return c; })} />
-          </G2>
-        </Card>
-
-        <Card title="Clients Eyebrow">
-          <G2>
-            <FL label="Badge" value={content.home.clientsEyebrow.badge} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.badge = setText(c.home.clientsEyebrow.badge, v); return c; })} />
-            <FL label="Say" value={content.home.clientsEyebrow.count} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.count = setText(c.home.clientsEyebrow.count, v); return c; })} />
-            <FL label="Trusted Label" value={content.home.clientsEyebrow.trustedLabel} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.trustedLabel = setText(c.home.clientsEyebrow.trustedLabel, v); return c; })} />
-          </G2>
-        </Card>
-
-        <Card title="Capabilities">
-          <G2>
-            <FL label="Badge" value={content.home.capabilities.badge} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.badge = setText(c.home.capabilities.badge, v); return c; })} />
-            <FL label="Başlıq" value={content.home.capabilities.title} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.title = setText(c.home.capabilities.title, v); return c; })} />
-            <FL label="Başlıq Accent" value={content.home.capabilities.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.titleAccent = setText(c.home.capabilities.titleAccent, v); return c; })} />
-            <FL label="Açıqlama" value={content.home.capabilities.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.capabilities.description = setText(c.home.capabilities.description, v); return c; })} />
-            <FL label="CTA" value={content.home.capabilities.cta} locale={editorLocale} onChange={v => upd(c => { c.home.capabilities.cta = setText(c.home.capabilities.cta, v); return c; })} />
-          </G2>
-        </Card>
-
-        <Card title="Müştərilər (Clients)">
+        {/* ── 5. Event Types ─────────────────── */}
+        <Card title="5 · Müştərilər (Clients)">
           <G2>
             <FL label="Badge" value={content.home.clients.badge} locale={editorLocale} onChange={v => upd(c => { c.home.clients.badge = setText(c.home.clients.badge, v); return c; })} />
             <FL label="Başlıq" value={content.home.clients.title} locale={editorLocale} onChange={v => upd(c => { c.home.clients.title = setText(c.home.clients.title, v); return c; })} />
@@ -585,18 +703,19 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
           <div className="d-flex flex-column gap-2">
             {(content.home.clients.clients || []).map((client: any, i: number) => (
-              <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#adb5bd', minWidth: 22 }}>#{i+1}</span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <input className={inputCls} style={{ borderRadius: 6, fontWeight: 600, fontSize: 12 }} value={client.name} onChange={e => upd(c => { c.home.clients.clients[i].name = e.target.value; return c; })} placeholder="SOCAR" />
+              <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 12, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: '#f8f9fa', borderBottom: '1px solid #e9ecef' }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: '#e30613', minWidth: 22 }}>#{i+1}</span>
+                  <input className={inputCls} style={{ borderRadius: 6, fontWeight: 600, fontSize: 12, flex: 1 }} value={client.name} onChange={e => upd(c => { c.home.clients.clients[i].name = e.target.value; return c; })} placeholder="SOCAR" />
+                  <input className={inputCls} style={{ borderRadius: 6, fontSize: 11, color: '#6c757d', flex: 1 }} value={client.url || ''} onChange={e => upd(c => { c.home.clients.clients[i].url = e.target.value; return c; })} placeholder="https://..." />
+                  <button type="button" className="btn btn-sm btn-outline-danger" style={{ borderRadius: 7, padding: '2px 8px', flexShrink: 0 }}
+                    onClick={() => upd(c => { c.home.clients.clients = c.home.clients.clients.filter((_: any, j: number) => j !== i); return c; })}>
+                    <Trash2 size={11} />
+                  </button>
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <input className={inputCls} style={{ borderRadius: 6, fontSize: 11, color: '#6c757d' }} value={client.url || ''} onChange={e => upd(c => { c.home.clients.clients[i].url = e.target.value; return c; })} placeholder="https://..." />
+                <div style={{ padding: '10px 12px' }}>
+                  <ImgField label="Logo" value={client.logo || ''} token={token} square onChange={v => upd(c => { c.home.clients.clients[i].logo = v; return c; })} />
                 </div>
-                <button type="button" className="btn btn-sm btn-outline-danger" style={{ borderRadius: 7, padding: '2px 8px', flexShrink: 0 }}
-                  onClick={() => upd(c => { c.home.clients.clients = c.home.clients.clients.filter((_: any, j: number) => j !== i); return c; })}>
-                  <Trash2 size={11} />
-                </button>
               </div>
             ))}
             {(!content.home.clients.clients || content.home.clients.clients.length === 0) && (
@@ -607,7 +726,32 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Əməkdaşlar (Team)" defaultOpen>
+        {/* ── 6. Metrics ─────────────────── */}
+        <Card title="6 · Metrics (Rəqəmlər)">
+          <div className="mb-3">
+            <FL label="Eyebrow" value={content.home.metricsEyebrow.text} locale={editorLocale} onChange={v => upd(c => { c.home.metricsEyebrow.text = setText(c.home.metricsEyebrow.text, v); return c; })} />
+          </div>
+          {content.home.metrics.items.map((item, i) => (
+            <ItemCard key={i} index={i} title={item.value} onDelete={() => {}}>
+              <G2>
+                <PlainField label="Dəyər (rəqəm)" value={item.value} onChange={v => upd(c => { c.home.metrics.items[i].value = v; return c; })} />
+                <FL label="Etiket" value={item.label} locale={editorLocale} onChange={v => upd(c => { c.home.metrics.items[i].label = setText(c.home.metrics.items[i].label, v); return c; })} />
+              </G2>
+            </ItemCard>
+          ))}
+        </Card>
+
+        {/* ── 7. Clients Eyebrow ayrı blok ─────────────────── */}
+        <Card title="7 · Müştəri Eyebrow (clientsEyebrow)">
+          <G2>
+            <FL label="Badge" value={content.home.clientsEyebrow.badge} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.badge = setText(c.home.clientsEyebrow.badge, v); return c; })} />
+            <FL label="Say" value={content.home.clientsEyebrow.count} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.count = setText(c.home.clientsEyebrow.count, v); return c; })} />
+            <FL label="Trusted Label" value={content.home.clientsEyebrow.trustedLabel} locale={editorLocale} onChange={v => upd(c => { c.home.clientsEyebrow.trustedLabel = setText(c.home.clientsEyebrow.trustedLabel, v); return c; })} />
+          </G2>
+        </Card>
+
+        {/* ── 8. Team (HomeTeam — about sayfasında da işlənir) ─────────────────── */}
+        <Card title="8 · Əməkdaşlar (Team)" defaultOpen>
           <div className="mb-3 p-3 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
             <G2>
               <FL label="Badge" value={content.home.team.badge} locale={editorLocale} onChange={v => upd(c => { c.home.team.badge = setText(c.home.team.badge, v); return c; })} />
@@ -648,18 +792,10 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                   </div>
                   {/* Right - square image */}
                   <div style={{ width: 160, flexShrink: 0, borderLeft: '1px solid #e9ecef', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#fafafa' }}>
-                    <label style={labelStyle}>Foto</label>
-                    {/* Square preview */}
-                    <div style={{ width: '100%', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', border: '2px solid #dee2e6', background: '#f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {member.image ? (
-                        <img src={member.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" onError={e => (e.currentTarget.style.display = 'none')} />
-                      ) : (
-                        <span style={{ fontSize: 32, color: '#ced4da' }}>👤</span>
-                      )}
-                    </div>
-                    {/* Upload button */}
-                    <MemberImgUpload
+                    <ImgField
+                      label="Foto"
                       value={member.image}
+                      square
                       token={(() => { try { return localStorage.getItem('er_admin_token') || undefined; } catch { return undefined; } })()}
                       onChange={v => upd(c => { c.home.team.members[i].image = v; return c; })}
                     />
@@ -675,7 +811,131 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Navbar Linklər">
+        {/* ── 9. Featured Setups ─────────────────── */}
+        <Card title="9 · Event Types (Növlər)">
+          <G2>
+            <FL label="Badge" value={content.home.eventTypes.badge} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.badge = setText(c.home.eventTypes.badge, v); return c; })} />
+            <FL label="Başlıq" value={content.home.eventTypes.title} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.title = setText(c.home.eventTypes.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.eventTypes.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.titleAccent = setText(c.home.eventTypes.titleAccent, v); return c; })} />
+            <FL label="Açıqlama" value={content.home.eventTypes.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.eventTypes.description = setText(c.home.eventTypes.description, v); return c; })} />
+            <FL label="CTA" value={content.home.eventTypes.cta} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.cta = setText(c.home.eventTypes.cta, v); return c; })} />
+          </G2>
+          <SectionHeader title="Növlər" count={content.home.eventTypes.items.length} />
+          {content.home.eventTypes.items.map((item, i) => (
+            <ItemCard key={i} index={i} title={t(editorLocale, item.title)} onDelete={() => upd(c => { c.home.eventTypes.items = c.home.eventTypes.items.filter((_, j) => j !== i); return c; })}>
+              <G2>
+                <FL label="Başlıq" value={item.title} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.items[i].title = setText(c.home.eventTypes.items[i].title, v); return c; })} />
+                <FL label="Subtitle" value={item.subtitle} locale={editorLocale} onChange={v => upd(c => { c.home.eventTypes.items[i].subtitle = setText(c.home.eventTypes.items[i].subtitle, v); return c; })} />
+                <FL label="Açıqlama" value={item.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.eventTypes.items[i].description = setText(c.home.eventTypes.items[i].description, v); return c; })} />
+              </G2>
+              <div className="mt-2">
+                <ImgField label="Şəkil" value={item.image} token={token} onChange={v => upd(c => { c.home.eventTypes.items[i].image = v; return c; })} />
+              </div>
+            </ItemCard>
+          ))}
+          <button type="button" className="btn btn-sm btn-outline-secondary mt-2" style={{ borderRadius: 9, fontSize: 11 }}
+            onClick={() => upd(c => { c.home.eventTypes.items.push({ id: `evt-${Date.now()}`, title: { az: 'Yeni', en: 'New', ru: 'Новый', tr: 'Yeni' }, subtitle: { az: '', en: '', ru: '', tr: '' }, description: { az: '', en: '', ru: '', tr: '' }, image: '' }); return c; })}>
+            <Plus size={11} /> Növ Əlavə Et
+          </button>
+        </Card>
+
+        <Card title="10 · Featured Setups (Portfolio)">
+          <G2>
+            <FL label="Badge" value={content.home.featuredSetups.badge} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.badge = setText(c.home.featuredSetups.badge, v); return c; })} />
+            <FL label="Başlıq" value={content.home.featuredSetups.title} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.title = setText(c.home.featuredSetups.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.featuredSetups.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.titleAccent = setText(c.home.featuredSetups.titleAccent, v); return c; })} />
+            <FL label="Hamısına bax" value={content.home.featuredSetups.viewAll} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.viewAll = setText(c.home.featuredSetups.viewAll, v); return c; })} />
+          </G2>
+          <SectionHeader title="Layihələr" count={content.home.featuredSetups.projects.length} />
+          {content.home.featuredSetups.projects.map((proj, i) => (
+            <ItemCard key={i} index={i} title={t(editorLocale, proj.title)} onDelete={() => upd(c => { c.home.featuredSetups.projects = c.home.featuredSetups.projects.filter((_, j) => j !== i); return c; })}>
+              <G2>
+                <FL label="Başlıq" value={proj.title} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.projects[i].title = setText(c.home.featuredSetups.projects[i].title, v); return c; })} />
+                <FL label="Məkan" value={proj.location} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.projects[i].location = setText(c.home.featuredSetups.projects[i].location, v); return c; })} />
+                <FL label="Kateqoriya" value={proj.category} locale={editorLocale} onChange={v => upd(c => { c.home.featuredSetups.projects[i].category = setText(c.home.featuredSetups.projects[i].category, v); return c; })} />
+                <PlainField label="İl" value={proj.year} onChange={v => upd(c => { c.home.featuredSetups.projects[i].year = v; return c; })} placeholder="2025" />
+              </G2>
+              <div className="mt-2">
+                <ImgField label="Şəkil" value={proj.image} token={token} onChange={v => upd(c => { c.home.featuredSetups.projects[i].image = v; return c; })} />
+              </div>
+            </ItemCard>
+          ))}
+          <button type="button" className="btn btn-sm btn-outline-secondary mt-2" style={{ borderRadius: 9, fontSize: 11 }}
+            onClick={() => upd(c => { c.home.featuredSetups.projects.push({ title: { az: 'Yeni Layihə', en: 'New Project', ru: 'Новый проект', tr: 'Yeni Proje' }, location: { az: '', en: '', ru: '', tr: '' }, category: { az: '', en: '', ru: '', tr: '' }, image: '', year: String(new Date().getFullYear()) }); return c; })}>
+            <Plus size={11} /> Layihə Əlavə Et
+          </button>
+        </Card>
+
+        <Card title="11 · Final CTA">
+          <G2>
+            <FL label="Badge" value={content.home.finalCtaBadge.text} locale={editorLocale} onChange={v => upd(c => { c.home.finalCtaBadge.text = setText(c.home.finalCtaBadge.text, v); return c; })} />
+            <FL label="Başlıq" value={content.home.finalCta.title} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.title = setText(c.home.finalCta.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.finalCta.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.titleAccent = setText(c.home.finalCta.titleAccent, v); return c; })} />
+            <FL label="Açıqlama" value={content.home.finalCta.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.finalCta.description = setText(c.home.finalCta.description, v); return c; })} />
+            <FL label="Əsas Düymə" value={content.home.finalCta.primaryCta} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.primaryCta = setText(c.home.finalCta.primaryCta, v); return c; })} />
+            <FL label="İkinci Düymə" value={content.home.finalCta.secondaryCta} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.secondaryCta = setText(c.home.finalCta.secondaryCta, v); return c; })} />
+            <PlainField label="Email" value={content.home.finalCta.email} onChange={v => upd(c => { c.home.finalCta.email = v; return c; })} placeholder="sales@eventrent.az" />
+            <PlainField label="Telefon" value={content.home.finalCta.phone} onChange={v => upd(c => { c.home.finalCta.phone = v; return c; })} />
+            <FL label="Ünvan" value={content.home.finalCta.address} locale={editorLocale} onChange={v => upd(c => { c.home.finalCta.address = setText(c.home.finalCta.address, v); return c; })} />
+          </G2>
+        </Card>
+
+        {/* ── Catalog Gateway & Process — services sayfası ilə bağlantılı ─ */}
+        <Card title="12 · Process (Proses — /services)">
+          <G2>
+            <FL label="Badge" value={content.home.process.badge} locale={editorLocale} onChange={v => upd(c => { c.home.process.badge = setText(c.home.process.badge, v); return c; })} />
+            <FL label="Başlıq" value={content.home.process.title} locale={editorLocale} onChange={v => upd(c => { c.home.process.title = setText(c.home.process.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.process.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.process.titleAccent = setText(c.home.process.titleAccent, v); return c; })} />
+            <FL label="Açıqlama" value={content.home.process.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.process.description = setText(c.home.process.description, v); return c; })} />
+            <FL label="Mərhələ Etiketi" value={content.home.process.phase} locale={editorLocale} onChange={v => upd(c => { c.home.process.phase = setText(c.home.process.phase, v); return c; })} />
+            <FL label="Footer Mətni" value={content.home.process.footer} locale={editorLocale} onChange={v => upd(c => { c.home.process.footer = setText(c.home.process.footer, v); return c; })} />
+          </G2>
+          <SectionHeader title="Addımlar" count={content.home.process.steps.length} />
+          {content.home.process.steps.map((step, i) => (
+            <ItemCard key={i} index={i} title={t(editorLocale, step.title)} onDelete={() => upd(c => { c.home.process.steps = c.home.process.steps.filter((_, j) => j !== i); return c; })}>
+              <G2>
+                <FL label="Başlıq" value={step.title} locale={editorLocale} onChange={v => upd(c => { c.home.process.steps[i].title = setText(c.home.process.steps[i].title, v); return c; })} />
+                <FL label="Açıqlama" value={step.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.process.steps[i].description = setText(c.home.process.steps[i].description, v); return c; })} />
+              </G2>
+              <div className="mt-2">
+                <ImgField label="Arxa plan şəkli" value={step.bg} token={token} onChange={v => upd(c => { c.home.process.steps[i].bg = v; return c; })} />
+              </div>
+            </ItemCard>
+          ))}
+          <button type="button" className="btn btn-sm btn-outline-secondary mt-2" style={{ borderRadius: 9, fontSize: 11 }}
+            onClick={() => upd(c => { c.home.process.steps.push({ title: { az: 'Yeni Addım', en: 'New Step', ru: 'Новый шаг', tr: 'Yeni Adım' }, description: { az: '', en: '', ru: '', tr: '' }, bg: '' }); return c; })}>
+            <Plus size={11} /> Addım Əlavə Et
+          </button>
+        </Card>
+
+        <Card title="13 · Catalog Gateway">
+          <G2>
+            <FL label="Badge" value={content.home.catalogGateway.badge} locale={editorLocale} onChange={v => upd(c => { c.home.catalogGateway.badge = setText(c.home.catalogGateway.badge, v); return c; })} />
+            <FL label="Başlıq" value={content.home.catalogGateway.title} locale={editorLocale} onChange={v => upd(c => { c.home.catalogGateway.title = setText(c.home.catalogGateway.title, v); return c; })} />
+            <FL label="Başlıq Accent" value={content.home.catalogGateway.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.catalogGateway.titleAccent = setText(c.home.catalogGateway.titleAccent, v); return c; })} />
+            <FL label="Açıqlama" value={content.home.catalogGateway.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.catalogGateway.description = setText(c.home.catalogGateway.description, v); return c; })} />
+            <FL label="CTA" value={content.home.catalogGateway.cta} locale={editorLocale} onChange={v => upd(c => { c.home.catalogGateway.cta = setText(c.home.catalogGateway.cta, v); return c; })} />
+          </G2>
+          <div className="mt-2">
+            <ImgField label="Şəkil" value={content.home.catalogGateway.image} token={token} onChange={v => upd(c => { c.home.catalogGateway.image = v; return c; })} />
+          </div>
+          <SectionHeader title="Statistika" count={content.home.catalogGateway.stats.length} />
+          {content.home.catalogGateway.stats.map((stat, i) => (
+            <ItemCard key={i} index={i} title={stat.value} onDelete={() => upd(c => { c.home.catalogGateway.stats = c.home.catalogGateway.stats.filter((_, j) => j !== i); return c; })}>
+              <G2>
+                <PlainField label="Dəyər" value={stat.value} onChange={v => upd(c => { c.home.catalogGateway.stats[i].value = v; return c; })} placeholder="500+" />
+                <FL label="Etiket" value={stat.label} locale={editorLocale} onChange={v => upd(c => { c.home.catalogGateway.stats[i].label = setText(c.home.catalogGateway.stats[i].label, v); return c; })} />
+              </G2>
+            </ItemCard>
+          ))}
+          <button type="button" className="btn btn-sm btn-outline-secondary mt-2" style={{ borderRadius: 9, fontSize: 11 }}
+            onClick={() => upd(c => { c.home.catalogGateway.stats.push({ value: '', label: { az: '', en: '', ru: '', tr: '' } }); return c; })}>
+            <Plus size={11} /> Stat Əlavə Et
+          </button>
+        </Card>
+
+        {/* ── Navbar Links ─────────────────── */}
+        <Card title="Navbar / Footer Linklər">
           <div style={{ fontSize: 11, color: '#6c757d', marginBottom: 12 }}>Bu linklər hem navbar həm footer-da görünür. Path dəyişdirmə frontend router ilə uyğun olmalıdır.</div>
           {(content.footer.navLinks || []).map((link, i) => (
             <div key={i} style={subCardStyle}>
@@ -700,7 +960,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Hero">
+        <Card title="1 · Hero">
           <G2>
             <FL label="Badge" value={content.about.hero.badge} locale={editorLocale} onChange={v => upd(c => { c.about.hero.badge = setText(c.about.hero.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.about.hero.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.about.hero.titleLine1 = setText(c.about.hero.titleLine1, v); return c; })} />
@@ -709,7 +969,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Partner Intro">
+        <Card title="2 · Partner Intro">
           <G2>
             <FL label="Badge" value={content.about.partnerIntro.badge} locale={editorLocale} onChange={v => upd(c => { c.about.partnerIntro.badge = setText(c.about.partnerIntro.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.about.partnerIntro.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.about.partnerIntro.titleLine1 = setText(c.about.partnerIntro.titleLine1, v); return c; })} />
@@ -729,7 +989,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Approach">
+        <Card title="3 · Approach (Yanaşma)">
           <G2>
             <FL label="Badge" value={content.about.approach.badge} locale={editorLocale} onChange={v => upd(c => { c.about.approach.badge = setText(c.about.approach.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.about.approach.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.about.approach.titleLine1 = setText(c.about.approach.titleLine1, v); return c; })} />
@@ -747,7 +1007,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Vision / Mission">
+        <Card title="4 · Vision / Mission (Haqqımızda)">
           <G2>
             <FL label="Badge" value={content.about.visionMission.badge} locale={editorLocale} onChange={v => upd(c => { c.about.visionMission.badge = setText(c.about.visionMission.badge, v); return c; })} />
             <FL label="Vizyon Etiketi" value={content.about.visionMission.visionLabel} locale={editorLocale} onChange={v => upd(c => { c.about.visionMission.visionLabel = setText(c.about.visionMission.visionLabel, v); return c; })} />
@@ -770,12 +1030,15 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           ))}
         </Card>
 
-        <Card title="Bento">
+        <Card title="5 · Bento">
           <G2>
             <FL label="Badge" value={content.about.bento.badge} locale={editorLocale} onChange={v => upd(c => { c.about.bento.badge = setText(c.about.bento.badge, v); return c; })} />
             <FL label="Şəkil Başlıq" value={content.about.bento.imageTitle} locale={editorLocale} onChange={v => upd(c => { c.about.bento.imageTitle = setText(c.about.bento.imageTitle, v); return c; })} />
             <FL label="Şəkil Accent" value={content.about.bento.imageTitleAccent} locale={editorLocale} onChange={v => upd(c => { c.about.bento.imageTitleAccent = setText(c.about.bento.imageTitleAccent, v); return c; })} />
           </G2>
+          <div className="mt-3">
+            <ImgField label="Bento Sağ Şəkil" value={content.about.bento.image || ''} token={token} onChange={v => upd(c => { c.about.bento.image = v; return c; })} />
+          </div>
           <SectionHeader title="Kartlar" count={content.about.bento.cards.length} />
           {content.about.bento.cards.map((card, i) => (
             <ItemCard key={i} index={i} title={t(editorLocale, card.title)} onDelete={() => {}}>
@@ -787,7 +1050,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           ))}
         </Card>
 
-        <Card title="Əməkdaşlar (Team)" defaultOpen badge={content.home.team.members.length}>
+        <Card title="6 · Əməkdaşlar (Team — about)" defaultOpen badge={content.home.team.members.length}>
           <div className="mb-3 p-3 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
             <G3>
               <FL label="Badge" value={content.about.team.badge} locale={editorLocale} onChange={v => upd(c => { c.about.team.badge = setText(c.about.team.badge, v); return c; })} />
@@ -825,13 +1088,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                     <FL label="Açıqlama" value={member.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.team.members[i].description = setText(c.home.team.members[i].description, v); return c; })} />
                   </div>
                   <div style={{ width: 156, flexShrink: 0, borderLeft: '1px solid #f0f0f0', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#fafafa' }}>
-                    <label style={labelStyle}>Foto</label>
-                    <div style={{ width: '100%', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', border: '2px solid #e9ecef', background: '#f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {member.image
-                        ? <img src={member.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" onError={e => (e.currentTarget.style.display = 'none')} />
-                        : <span style={{ fontSize: 36, color: '#dee2e6' }}>👤</span>}
-                    </div>
-                    <MemberImgUpload value={member.image} token={token} onChange={v => upd(c => { c.home.team.members[i].image = v; return c; })} />
+                    <ImgField label="Foto" value={member.image} token={token} square onChange={v => upd(c => { c.home.team.members[i].image = v; return c; })} />
                   </div>
                 </div>
               </div>
@@ -839,7 +1096,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Values">
+        <Card title="7 · Values (Dəyərlər)">
           <G2>
             <FL label="Badge" value={content.about.values.badge} locale={editorLocale} onChange={v => upd(c => { c.about.values.badge = setText(c.about.values.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.about.values.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.about.values.titleLine1 = setText(c.about.values.titleLine1, v); return c; })} />
@@ -866,7 +1123,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Showcase">
+        <Card title="1 · Showcase (ServicesShowcase)">
           <G2>
             <FL label="Badge" value={content.services.showcase.badge} locale={editorLocale} onChange={v => upd(c => { c.services.showcase.badge = setText(c.services.showcase.badge, v); return c; })} />
             <FL label="Ətraflı Link" value={content.services.showcase.detailLink} locale={editorLocale} onChange={v => upd(c => { c.services.showcase.detailLink = setText(c.services.showcase.detailLink, v); return c; })} />
@@ -887,20 +1144,14 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                   <FL label="Açıqlama" value={item.description} locale={editorLocale} multiline onChange={v => upd(c => { c.services.showcase.items[i].description = setText(c.services.showcase.items[i].description, v); return c; })} />
                 </div>
                 <div style={{ width: 156, flexShrink: 0, borderLeft: '1px solid #f0f0f0', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#fafafa' }}>
-                  <label style={labelStyle}>Şəkil</label>
-                  <div style={{ width: '100%', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', border: '2px solid #e9ecef', background: '#f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {item.image
-                      ? <img src={item.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" onError={e => (e.currentTarget.style.display = 'none')} />
-                      : <ImageIcon size={28} color="#dee2e6" />}
-                  </div>
-                  <MemberImgUpload value={item.image} token={token} onChange={v => upd(c => { c.services.showcase.items[i].image = v; return c; })} />
+                  <ImgField label="Şəkil" value={item.image} token={token} square onChange={v => upd(c => { c.services.showcase.items[i].image = v; return c; })} />
                 </div>
               </div>
             </div>
           ))}
         </Card>
 
-        <Card title="Grid">
+        <Card title="2 · Grid (ServicesGrid)">
           <G2>
             <FL label="Badge" value={content.services.grid.badge} locale={editorLocale} onChange={v => upd(c => { c.services.grid.badge = setText(c.services.grid.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.services.grid.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.services.grid.titleLine1 = setText(c.services.grid.titleLine1, v); return c; })} />
@@ -909,7 +1160,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Kateqoriyalar">
+        <Card title="3 · Kateqoriyalar (alt xidmətlər)">
           <div className="d-flex flex-wrap gap-2 mb-3">
             {content.services.categories.map(cat => (
               <button key={cat.id} type="button" onClick={() => setSelectedCategoryId(cat.id)} style={badgeStyle(selectedCategoryId === cat.id)}>
@@ -938,13 +1189,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                   <FL label="Açıqlama" value={selectedCategory.description} locale={editorLocale} multiline onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) cat.description = setText(cat.description, v); return c; })} />
                 </div>
                 <div style={{ width: 156, flexShrink: 0, borderLeft: '1px solid #f0f0f0', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#fafafa' }}>
-                  <label style={labelStyle}>Şəkil</label>
-                  <div style={{ width: '100%', aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', border: '2px solid #e9ecef', background: '#f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {selectedCategory.image
-                      ? <img src={selectedCategory.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" onError={e => (e.currentTarget.style.display = 'none')} />
-                      : <ImageIcon size={28} color="#dee2e6" />}
-                  </div>
-                  <MemberImgUpload value={selectedCategory.image} token={token} onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) cat.image = v; return c; })} />
+                  <ImgField label="Şəkil" value={selectedCategory.image} token={token} square onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) cat.image = v; return c; })} />
                 </div>
               </div>
 
@@ -1004,7 +1249,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Hero">
+        <Card title="1 · Hero">
           <G2>
             <FL label="Badge" value={content.contact.hero.badge} locale={editorLocale} onChange={v => upd(c => { c.contact.hero.badge = setText(c.contact.hero.badge, v); return c; })} />
             <FL label="Başlıq 1" value={content.contact.hero.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.contact.hero.titleLine1 = setText(c.contact.hero.titleLine1, v); return c; })} />
@@ -1013,7 +1258,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Form">
+        <Card title="2 · Form">
           <G3>
             {([
               ['labelName','Ad Soyad'], ['labelPhone','Telefon'], ['labelEmail','Email'], ['labelMessage','Mesaj'],
@@ -1030,7 +1275,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G3>
         </Card>
 
-        <Card title="CTA">
+        <Card title="3 · CTA">
           <G3>
             {([
               ['badge','Badge'], ['subText','Alt Mətn'], ['bottomLabel','Alt Etiket'],
@@ -1051,7 +1296,12 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </div>
         </Card>
 
-        <Card title="Map Overlay">
+        <Card title="3.5 · Xəritə Embed URL">
+          <PlainField label="Google Maps Embed URL" value={content.contact.mapEmbedUrl || ''} onChange={v => upd(c => { c.contact.mapEmbedUrl = v; return c; })} placeholder="https://www.google.com/maps/embed?pb=..." />
+          <div style={{ fontSize: 11, color: '#6c757d', marginTop: 6 }}>Google Maps → Share → Embed a map → HTML içindəki src URL-ni bura yapışdırın.</div>
+        </Card>
+
+        <Card title="4 · Map Overlay">
           <G2>
             <FL label="Başlıq" value={content.contact.map.overlayTitle} locale={editorLocale} onChange={v => upd(c => { c.contact.map.overlayTitle = setText(c.contact.map.overlayTitle, v); return c; })} />
             <FL label="Subtitle" value={content.contact.map.overlaySubtitle} locale={editorLocale} multiline onChange={v => upd(c => { c.contact.map.overlaySubtitle = setText(c.contact.map.overlaySubtitle, v); return c; })} />
@@ -1080,14 +1330,31 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
             <FL label="Məxfilik" value={content.footer.privacyPolicy} locale={editorLocale} onChange={v => upd(c => { c.footer.privacyPolicy = setText(c.footer.privacyPolicy, v); return c; })} />
             <FL label="Şərtlər" value={content.footer.termsOfService} locale={editorLocale} onChange={v => upd(c => { c.footer.termsOfService = setText(c.footer.termsOfService, v); return c; })} />
           </G2>
+          <div className="mt-3 d-flex flex-column gap-2">
+            <PlainField label="WhatsApp href (wa.me/...)" value={content.footer.whatsappHref || ''} onChange={v => upd(c => { c.footer.whatsappHref = v; return c; })} placeholder="https://wa.me/994XXXXXXXXX" />
+            <PlainField label="Instagram href" value={content.footer.instagramHref || ''} onChange={v => upd(c => { c.footer.instagramHref = v; return c; })} placeholder="https://instagram.com/..." />
+            <PlainField label="LinkedIn href" value={content.footer.linkedinHref || ''} onChange={v => upd(c => { c.footer.linkedinHref = v; return c; })} placeholder="https://linkedin.com/company/..." />
+          </div>
           <div className="mt-3">
-            <label style={labelStyle}>Nav Linklər</label>
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <label style={labelStyle}>Nav Linklər</label>
+              <button type="button" className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9, fontSize: 11 }}
+                onClick={() => upd(c => { c.footer.navLinks.push({ label: { az: 'Yeni Link', en: 'New Link', ru: 'Новая ссылка', tr: 'Yeni Link' }, path: '/' }); return c; })}>
+                <Plus size={11} /> Əlavə Et
+              </button>
+            </div>
             {content.footer.navLinks.map((link, i) => (
-              <div key={i} style={subCardStyle}>
-                <G2>
-                  <FL label="Etiket" value={link.label} locale={editorLocale} onChange={v => upd(c => { c.footer.navLinks[i].label = setText(c.footer.navLinks[i].label, v); return c; })} />
-                  <PlainField label="Path" value={link.path} onChange={v => upd(c => { c.footer.navLinks[i].path = v; return c; })} placeholder="/" />
-                </G2>
+              <div key={i} style={{ ...subCardStyle, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <div style={{ flex: 1 }}>
+                  <G2>
+                    <FL label="Etiket" value={link.label} locale={editorLocale} onChange={v => upd(c => { c.footer.navLinks[i].label = setText(c.footer.navLinks[i].label, v); return c; })} />
+                    <PlainField label="Path" value={link.path} onChange={v => upd(c => { c.footer.navLinks[i].path = v; return c; })} placeholder="/" />
+                  </G2>
+                </div>
+                <button type="button" className="btn btn-sm btn-outline-danger mt-3" style={{ borderRadius: 7, flexShrink: 0 }}
+                  onClick={() => upd(c => { c.footer.navLinks = c.footer.navLinks.filter((_, j) => j !== i); return c; })}>
+                  <Trash2 size={11} />
+                </button>
               </div>
             ))}
           </div>
@@ -1103,7 +1370,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Hero">
+        <Card title="1 · Hero">
           <G2>
             <FL label="Eyebrow" value={content.catering.hero.eyebrow} locale={editorLocale} onChange={v => upd(c => { c.catering.hero.eyebrow = setText(c.catering.hero.eyebrow, v); return c; })} />
             <FL label="Başlıq 1" value={content.catering.hero.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.catering.hero.titleLine1 = setText(c.catering.hero.titleLine1, v); return c; })} />
@@ -1112,7 +1379,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Məzmun Bölməsi">
+        <Card title="2 · Məzmun Bölməsi (+ Qalereya)">
           <G2>
             <FL label="Eyebrow" value={content.catering.content.eyebrow} locale={editorLocale} onChange={v => upd(c => { c.catering.content.eyebrow = setText(c.catering.content.eyebrow, v); return c; })} />
             <FL label="Başlıq" value={content.catering.content.title} locale={editorLocale} onChange={v => upd(c => { c.catering.content.title = setText(c.catering.content.title, v); return c; })} />
@@ -1129,9 +1396,29 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
               </div>
             ))}
           </div>
+          <div style={{ marginTop: 16 }}>
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <label style={labelStyle}>Qalereya Şəkilləri</label>
+              <button type="button" className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9, fontSize: 11 }}
+                onClick={() => upd(c => { if (!c.catering.content.galleryImages) c.catering.content.galleryImages = []; c.catering.content.galleryImages.push(''); return c; })}>
+                <Plus size={11} /> Şəkil Əlavə Et
+              </button>
+            </div>
+            {(content.catering.content.galleryImages || []).map((url, i) => (
+              <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 8 }}>
+                <div style={{ flex: 1 }}>
+                  <ImgField label={`Şəkil ${i + 1}`} value={url} token={token} onChange={v => upd(c => { c.catering.content.galleryImages[i] = v; return c; })} />
+                </div>
+                <button type="button" className="btn btn-sm btn-outline-danger mt-3" style={{ borderRadius: 7, flexShrink: 0 }}
+                  onClick={() => upd(c => { c.catering.content.galleryImages = c.catering.content.galleryImages.filter((_, j) => j !== i); return c; })}>
+                  <Trash2 size={11} />
+                </button>
+              </div>
+            ))}
+          </div>
         </Card>
 
-        <Card title="Sifariş Formu">
+        <Card title="3 · Sifariş Formu">
           <G2>
             <FL label="Eyebrow" value={content.catering.request.eyebrow} locale={editorLocale} onChange={v => upd(c => { c.catering.request.eyebrow = setText(c.catering.request.eyebrow, v); return c; })} />
             <FL label="Başlıq 1" value={content.catering.request.titleLine1} locale={editorLocale} onChange={v => upd(c => { c.catering.request.titleLine1 = setText(c.catering.request.titleLine1, v); return c; })} />
@@ -1175,7 +1462,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
       {topBar}
       <div className="d-flex flex-column gap-3">
 
-        <Card title="Hero">
+        <Card title="1 · Hero">
           <G2>
             <FL label="Eyebrow" value={content.portfolio.hero.eyebrow} locale={editorLocale} onChange={v => upd(c => { c.portfolio.hero.eyebrow = setText(c.portfolio.hero.eyebrow, v); return c; })} />
             <FL label="Başlıq" value={content.portfolio.hero.title} locale={editorLocale} onChange={v => upd(c => { c.portfolio.hero.title = setText(c.portfolio.hero.title, v); return c; })} />
@@ -1183,7 +1470,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        <Card title="Filter Mətnləri">
+        <Card title="2 · Filter Mətnləri (PortfolioGrid)">
           <G2>
             <FL label="Axtarış placeholder" value={content.portfolio.filters.searchPlaceholder} locale={editorLocale} onChange={v => upd(c => { c.portfolio.filters.searchPlaceholder = setText(c.portfolio.filters.searchPlaceholder, v); return c; })} />
             <FL label="Kateqoriya label" value={content.portfolio.filters.categoryLabel} locale={editorLocale} onChange={v => upd(c => { c.portfolio.filters.categoryLabel = setText(c.portfolio.filters.categoryLabel, v); return c; })} />
@@ -1194,6 +1481,204 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
+      </div>
+    </div>
+  );
+
+  /* ══ CART ══ */
+  if (section === 'cart') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="Səbət Mətnləri" defaultOpen>
+          <G3>
+            {([
+              ['heading','Başlıq'], ['itemCount','Məhsul sayı'], ['empty','Boş mətn'],
+              ['browseCatalog','Kataloqa bax'], ['checkoutTitle','Sifariş Başlıq'], ['checkoutSub','Sifariş Alt'],
+              ['labelName','Ad Etiketi'], ['labelEmail','Email Etiketi'], ['labelPhone','Telefon Etiketi'],
+              ['labelLocation','Məkan Etiketi'], ['labelDate','Tarix Etiketi'],
+              ['placeholderLocation','Məkan Placeholder'], ['placeholderName','Ad Placeholder'],
+              ['placeholderPhone','Tel Placeholder'], ['submitBtn','Göndər Düymə'],
+              ['submitting','Göndərilir...'], ['successTitle','Uğur Başlıq'], ['successBody','Uğur Mətn'],
+              ['goProfile','Profil düyməsi'], ['errorSend','Xəta: göndərilmədi'], ['errorServer','Xəta: server'],
+              ['loginPromptTitle','Giriş Xəbərdarlıq Başlıq'], ['loginPromptBody','Giriş Xəbərdarlıq Mətn'],
+              ['loginBtn','Giriş Düymə'], ['fallbackProduct','Məhsul adı (fallback)'],
+            ] as [keyof SiteContent['cart'], string][]).map(([field, label]) => (
+              <FL key={field} label={label} value={content.cart[field]} locale={editorLocale}
+                onChange={v => upd(c => { c.cart[field] = setText(c.cart[field], v); return c; })} />
+            ))}
+          </G3>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ PRODUCT ══ */
+  if (section === 'product') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="Məhsul Səhifəsi Mətnləri" defaultOpen>
+          <G3>
+            {([
+              ['notFound','Tapılmadı'], ['backToCatalog','Kataloqa qayıt'], ['techSpecs','Texniki Xüsusiyyətlər'],
+              ['addToCart','Sorğuya əlavə et'], ['relatedTitle1','Əlaqəli Başlıq 1'], ['relatedTitle2','Əlaqəli Başlıq 2'],
+              ['relatedSub','Əlaqəli Alt'], ['viewAll','Hamısına bax'], ['details','Detallar'],
+              ['modalTitle','Modal Başlıq'], ['qty','Say'], ['size','Ölçü'],
+              ['sizePlaceholder','Ölçü Placeholder'], ['material','Material'],
+              ['materialPlaceholder','Material Placeholder'], ['lamination','Laminasiya'],
+              ['laminationPlaceholder','Laminasiya Placeholder'], ['installation','Montaj'],
+              ['installationPlaceholder','Montaj Placeholder'], ['addToCartBtn','Səbət Düymə'],
+            ] as [keyof SiteContent['product'], string][]).map(([field, label]) => (
+              <FL key={field} label={label} value={content.product[field]} locale={editorLocale}
+                onChange={v => upd(c => { c.product[field] = setText(c.product[field], v); return c; })} />
+            ))}
+          </G3>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ CATALOG ══ */
+  if (section === 'catalog') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="Kataloq Səhifəsi Mətnləri" defaultOpen>
+          <G3>
+            {([
+              ['hub','Hub Başlıq'], ['collection','Kolleksiya'], ['searchPlaceholder','Axtarış Placeholder'],
+              ['categories','Kateqoriyalar'], ['all','Hamısı'], ['noGear','Məhsul tapılmadı'],
+              ['noGearSub','Məhsul tapılmadı alt'], ['clearFilters','Filtrləri Təmizlə'],
+              ['heroTitle1','Hero Başlıq 1'], ['heroTitle2','Hero Başlıq 2'],
+              ['heroBadge','Hero Badge'], ['heroSub','Hero Subtitle'],
+            ] as [keyof SiteContent['catalog'], string][]).map(([field, label]) => (
+              <FL key={field} label={label} value={content.catalog[field]} locale={editorLocale}
+                onChange={v => upd(c => { c.catalog[field] = setText(c.catalog[field], v); return c; })} />
+            ))}
+          </G3>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ GALLERY ══ */
+  if (section === 'gallery') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="1 · Hero Mətnləri">
+          <G2>
+            <FL label="Badge" value={content.gallery?.hero?.badge || { az: '', en: '', ru: '', tr: '' }} locale={editorLocale} onChange={v => upd(c => { if (!c.gallery?.hero) { if (!c.gallery) c.gallery = { hero: { badge:{az:'',en:'',ru:'',tr:''}, titleLine1:{az:'',en:'',ru:'',tr:''}, titleLine2:{az:'',en:'',ru:'',tr:''}, subtitle:{az:'',en:'',ru:'',tr:''} }, images: [] }; } c.gallery.hero.badge = setText(c.gallery.hero.badge, v); return c; })} />
+            <FL label="Başlıq 1" value={content.gallery?.hero?.titleLine1 || { az: '', en: '', ru: '', tr: '' }} locale={editorLocale} onChange={v => upd(c => { c.gallery.hero.titleLine1 = setText(c.gallery.hero.titleLine1, v); return c; })} />
+            <FL label="Başlıq 2 (italic)" value={content.gallery?.hero?.titleLine2 || { az: '', en: '', ru: '', tr: '' }} locale={editorLocale} onChange={v => upd(c => { c.gallery.hero.titleLine2 = setText(c.gallery.hero.titleLine2, v); return c; })} />
+            <FL label="Subtitle" value={content.gallery?.hero?.subtitle || { az: '', en: '', ru: '', tr: '' }} locale={editorLocale} multiline onChange={v => upd(c => { c.gallery.hero.subtitle = setText(c.gallery.hero.subtitle, v); return c; })} />
+          </G2>
+        </Card>
+
+        <Card title="2 · Qalereya Şəkilləri" defaultOpen>
+          <div style={{ fontSize: 11, color: '#6c757d', marginBottom: 12 }}>
+            Hər şəkilə URL və kateqoriya daxil edin. Kateqoriya filtr düymələrini idarə edir.
+          </div>
+          <div className="d-flex flex-wrap gap-2 mb-3">
+            <button type="button" className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11, fontWeight: 700 }}
+              onClick={() => upd(c => { if (!c.gallery) c.gallery = { hero: { badge:{az:'',en:'',ru:'',tr:''}, titleLine1:{az:'',en:'',ru:'',tr:''}, titleLine2:{az:'',en:'',ru:'',tr:''}, subtitle:{az:'',en:'',ru:'',tr:''} }, images: [] }; c.gallery.images.push({ url: '', category: 'Tədbir' }); return c; })}>
+              <Plus size={11} /> Şəkil Əlavə Et
+            </button>
+          </div>
+          <div className="d-flex flex-column gap-3">
+            {(content.gallery?.images || []).map((img, i) => (
+              <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 12, overflow: 'hidden' }}>
+                <div className="d-flex align-items-center justify-content-between px-3 py-2" style={{ background: '#f8f9fa', borderBottom: '1px solid #e9ecef' }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: '#e30613' }}>#{i + 1}</span>
+                  <input className={inputCls} style={{ borderRadius: 6, fontSize: 11, maxWidth: 160 }} value={img.category} onChange={e => upd(c => { c.gallery.images[i].category = e.target.value; return c; })} placeholder="Kateqoriya (məs: Şou)" />
+                  <button type="button" className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" style={{ borderRadius: 7, fontSize: 10, padding: '2px 8px' }}
+                    onClick={() => upd(c => { c.gallery.images = c.gallery.images.filter((_, j) => j !== i); return c; })}>
+                    <Trash2 size={10} /> Sil
+                  </button>
+                </div>
+                <div style={{ padding: 12 }}>
+                  <ImgField label="Şəkil URL" value={img.url} token={token} onChange={v => upd(c => { c.gallery.images[i].url = v; return c; })} />
+                </div>
+              </div>
+            ))}
+            {(!content.gallery?.images || content.gallery.images.length === 0) && (
+              <div className="text-center py-4 text-muted" style={{ fontSize: 13, border: '2px dashed #dee2e6', borderRadius: 10 }}>
+                Hələ şəkil yoxdur. "Şəkil Əlavə Et" düyməsini basın.
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ EVENTGARDEN ══ */
+  if (section === 'eventgarden') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="1 · Hero" defaultOpen>
+          <G2>
+            <FL label="Badge" value={content.eventgarden?.hero?.badge || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { if (!c.eventgarden) c.eventgarden = { hero: { badge:{az:'',en:'',ru:'',tr:''}, titleLine1:{az:'',en:'',ru:'',tr:''}, titleLine2:{az:'',en:'',ru:'',tr:''}, subtitle:{az:'',en:'',ru:'',tr:''} } }; c.eventgarden.hero.badge = setText(c.eventgarden.hero.badge, v); return c; })} />
+            <FL label="Başlıq 1" value={content.eventgarden?.hero?.titleLine1 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.eventgarden.hero.titleLine1 = setText(c.eventgarden.hero.titleLine1, v); return c; })} />
+            <FL label="Başlıq 2 (italic)" value={content.eventgarden?.hero?.titleLine2 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.eventgarden.hero.titleLine2 = setText(c.eventgarden.hero.titleLine2, v); return c; })} />
+            <FL label="Subtitle" value={content.eventgarden?.hero?.subtitle || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} multiline onChange={v => upd(c => { c.eventgarden.hero.subtitle = setText(c.eventgarden.hero.subtitle, v); return c; })} />
+          </G2>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ TV ══ */
+  if (section === 'tv') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="1 · Hero" defaultOpen>
+          <G2>
+            <FL label="Badge" value={content.tv?.hero?.badge || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { if (!c.tv) c.tv = { hero: { badge:{az:'',en:'',ru:'',tr:''}, titleLine1:{az:'',en:'',ru:'',tr:''}, titleLine2:{az:'',en:'',ru:'',tr:''}, subtitle:{az:'',en:'',ru:'',tr:''} } }; c.tv.hero.badge = setText(c.tv.hero.badge, v); return c; })} />
+            <FL label="Başlıq 1" value={content.tv?.hero?.titleLine1 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.tv.hero.titleLine1 = setText(c.tv.hero.titleLine1, v); return c; })} />
+            <FL label="Başlıq 2 (italic)" value={content.tv?.hero?.titleLine2 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.tv.hero.titleLine2 = setText(c.tv.hero.titleLine2, v); return c; })} />
+            <FL label="Subtitle" value={content.tv?.hero?.subtitle || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} multiline onChange={v => upd(c => { c.tv.hero.subtitle = setText(c.tv.hero.subtitle, v); return c; })} />
+          </G2>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ TEAMBUILDING PAGE ══ */
+  if (section === 'teambuilding-page') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="1 · Hero" defaultOpen>
+          <G2>
+            <FL label="Badge" value={content.teambuilding?.hero?.badge || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { if (!c.teambuilding) c.teambuilding = { hero: { badge:{az:'',en:'',ru:'',tr:''}, titleLine1:{az:'',en:'',ru:'',tr:''}, titleLine2:{az:'',en:'',ru:'',tr:''}, subtitle:{az:'',en:'',ru:'',tr:''} } }; c.teambuilding.hero.badge = setText(c.teambuilding.hero.badge, v); return c; })} />
+            <FL label="Başlıq 1" value={content.teambuilding?.hero?.titleLine1 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.teambuilding.hero.titleLine1 = setText(c.teambuilding.hero.titleLine1, v); return c; })} />
+            <FL label="Başlıq 2 (italic)" value={content.teambuilding?.hero?.titleLine2 || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} onChange={v => upd(c => { c.teambuilding.hero.titleLine2 = setText(c.teambuilding.hero.titleLine2, v); return c; })} />
+            <FL label="Subtitle" value={content.teambuilding?.hero?.subtitle || { az:'',en:'',ru:'',tr:'' }} locale={editorLocale} multiline onChange={v => upd(c => { c.teambuilding.hero.subtitle = setText(c.teambuilding.hero.subtitle, v); return c; })} />
+          </G2>
+        </Card>
+      </div>
+    </div>
+  );
+
+  /* ══ NOT FOUND ══ */
+  if (section === 'notfound') return (
+    <div className={className}>
+      {topBar}
+      <div className="d-flex flex-column gap-3">
+        <Card title="404 Səhifəsi Mətnləri" defaultOpen>
+          <G3>
+            {([
+              ['title','Başlıq'], ['body','Mətn'], ['home','Ana Səhifəyə Qayıt'],
+            ] as [keyof SiteContent['notFound'], string][]).map(([field, label]) => (
+              <FL key={field} label={label} value={content.notFound[field]} locale={editorLocale}
+                onChange={v => upd(c => { c.notFound[field] = setText(c.notFound[field], v); return c; })} />
+            ))}
+          </G3>
+        </Card>
       </div>
     </div>
   );

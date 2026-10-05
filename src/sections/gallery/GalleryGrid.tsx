@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Maximize2 } from 'lucide-react';
+import { useSiteContent } from '../../content.context';
 
-const IMAGES = [
+const FALLBACK_IMAGES = [
   { url: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800&auto=format&fit=crop', category: 'Tədbir' },
   { url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop', category: 'Səhnə' },
   { url: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop', category: 'Korporativ' },
@@ -17,14 +18,23 @@ const IMAGES = [
   { url: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=800&auto=format&fit=crop', category: 'Tədbir' },
 ];
 
-const CATEGORIES = ['Hamısı', 'Tədbir', 'Səhnə', 'Korporativ', 'Teambuilding', 'İşıq', 'Texnika'];
-
 export default function GalleryGrid() {
+  const { content } = useSiteContent();
   const [selectedCategory, setSelectedCategory] = useState('Hamısı');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const filteredImages = selectedCategory === 'Hamısı' 
-    ? IMAGES 
+  const IMAGES = useMemo(() => {
+    const imgs = content.gallery?.images;
+    return imgs && imgs.length > 0 ? imgs : FALLBACK_IMAGES;
+  }, [content.gallery?.images]);
+
+  const CATEGORIES = useMemo(() => {
+    const cats = [...new Set(IMAGES.map(img => img.category))];
+    return ['Hamısı', ...cats];
+  }, [IMAGES]);
+
+  const filteredImages = selectedCategory === 'Hamısı'
+    ? IMAGES
     : IMAGES.filter(img => img.category === selectedCategory);
 
   return (

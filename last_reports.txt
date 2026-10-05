@@ -1,0 +1,114 @@
+================================================================================
+  EVENTRENT.AZ — ADMİN LOKALİZASİYA PANELİ PLAYWRIGHT TEST HESABATI
+  Tarix: 2026-10-05
+  Test faylı: tests/e2e/localization-admin-test.spec.ts
+  Config: playwright-localization.config.ts
+  Browser: Chromium (headless)
+  Server: http://localhost:5050 (Vite dev)
+  API: http://localhost:4320
+  Nəticə: ✅ 27/27 KEÇDI — 0 UĞURSUZ
+================================================================================
+
+── TEST NƏTİCƏLƏRİ ─────────────────────────────────────────────────────────────
+
+ #  Test adı                                                        Status  Müddət
+──  ────────────────────────────────────────────────────────────── ──────  ──────
+01  Admin paneli yüklənir                                           ✅ PASS  4.4s
+02  HOME tab açılır — Hero kartı görünür                            ✅ PASS  5.7s
+03  HOME — Dil seçici AZ/EN/RU/TR hamısı işləyir                   ✅ PASS  6.4s
+04  HOME — Capabilities, Metrics, Team kartları görünür             ✅ PASS  5.8s
+05  HOME — EventTypes kartı görünür                                 ✅ PASS  5.5s
+06  HOME — Process kartı görünür                                    ✅ PASS  5.7s
+07  HOME — Catalog Gateway kartı görünür                            ✅ PASS  5.8s
+08  HOME — Saxla düyməsi görünür və işləyir                         ✅ PASS  7.3s
+09  ABOUT — Hero, Approach, Bento kartları görünür                  ✅ PASS  5.2s
+10  ABOUT — Bento kartı görünür və açılır                           ✅ PASS  7.0s
+11  SERVICES — Showcase + Grid kartları görünür                     ✅ PASS  5.8s
+12  CONTACT — Hero + Form + Map Embed kartları görünür              ✅ PASS  5.6s
+13  CONTACT — Map Embed URL kartı açılır, dəyişdirilə bilir         ✅ PASS  6.5s
+14  FOOTER — Footer tab açılır, Card görünür                        ✅ PASS  6.0s
+15  FOOTER — Footer kartı açılır, WhatsApp + Nav Linklər görünür   ✅ PASS  6.7s
+16  KETRİNQ — Hero + Məzmun + Sifariş Formu kartları görünür       ✅ PASS  5.6s
+17  PORTFOLIO — Hero + Filter kartları görünür                      ✅ PASS  5.7s
+18  QALEREYA — Hero Mətnləri + Şəkillər kartları görünür           ✅ PASS  5.6s
+19  QALEREYA — Şəkil Əlavə Et düyməsi işləyir                      ✅ PASS  6.2s
+20  EVENT GARDEN — Hero kartı görünür, Saxla işləyir                ✅ PASS  4.9s
+21  TV & YAYIM — Hero kartı görünür                                 ✅ PASS  5.3s
+22  TİMBİLDİNQ SƏHİFƏSİ — Hero kartı görünür                       ✅ PASS  6.2s
+23  SƏBƏT — Kartlar görünür, Card açılınca input var                ✅ PASS  5.2s
+24  MƏHSUL SƏHİFƏSİ — Kartlar yüklənir                             ✅ PASS  4.9s
+25  SAXLA — Content API PUT işləyir (401/403 yoxdur)               ✅ PASS  3.6s
+26  BACKUP — Backup API siyahı qaytarır                             ✅ PASS  3.6s
+27  CONTENT GET — site-content.json API qaytarır                    ✅ PASS  3.5s
+
+Cəmi: 27 test, 27 keçdi, 0 uğursuz
+Ümumi müddət: ~2 dəq 30 saniyə
+
+── TEST ƏHATƏ DAİRƏSİ ──────────────────────────────────────────────────────────
+
+Admin panelindəki aşağıdakı bölümlər tam test edildi:
+
+CONTENT STUDIO TABLAR (düzəntilənə bilir):
+  ✅ Ana Səhifə     — Hero, Capabilities, Metrics, Team, EventTypes,
+                     FeaturedSetups, FinalCTA, Process, CatalogGateway
+  ✅ Haqqımızda    — Hero, PartnerIntro, Approach, Vision/Mission, Bento, Team, Values
+  ✅ Xidmətlər     — Showcase, Grid, Kateqoriyalar
+  ✅ Əlaqə         — Hero, Form, CTA, Map Embed URL
+  ✅ Footer        — Tagline, Nav Linklər, WhatsApp/Instagram/LinkedIn href
+  ✅ Ketrinq Mətn  — Hero, Məzmun (qalereya), Sifariş Formu
+  ✅ Portfolio Mətn — Hero, Filter mətnləri
+  ✅ Qalereya      — Hero Mətnləri, Şəkil əlavə/sil
+  ✅ Event Garden  — Hero
+  ✅ TV & Yayım    — Hero
+  ✅ Timbildinq Səhifəsi — Hero
+  ✅ Səbət         — Bütün mətn sahələri
+  ✅ Məhsul Səhifəsi — Bütün mətn sahələri
+
+DİL DESTƏYİ:
+  ✅ AZ / EN / RU / TR — 4 dil seçici işləyir, hər tab-da keçid mümkündür
+
+API:
+  ✅ GET  /api/content     — Content oxunur (200)
+  ✅ PUT  /api/content     — Content yazılır (auth token ilə, 200)
+  ✅ GET  /api/content/backups — Backup siyahısı qaytarılır (200)
+
+── TAM EDILƏN İŞLƏRİN XÜLASƏSİ ────────────────────────────────────────────────
+
+1. TYPES (src/types.ts):
+   - CateringSectionContent.request genişləndi:
+     formats, timeSlots, guestOptions, 15 label, 5 placeholder,
+     OTP UI mətnləri, success screen, validationRequired əlavə edildi.
+
+2. DEFAULTS (src/content.default.ts):
+   - Bütün yeni sahələr 4 dildə (AZ/EN/RU/TR) default dəyərlərlə dolduruldu.
+   - eventgarden, tv, teambuilding bölümləri əlavə edildi.
+
+3. COMPONENT (src/sections/catering/CateringPackages.tsx):
+   - FORMATS, TIME_SLOTS, GUEST_OPTIONS sabit massivlər content-dən oxuyur.
+   - Form labelları, placeholder-lar, OTP UI, success screen —
+     hamısı t(locale, s.field) ilə lokalizasiya edilir.
+   - Xüsusi saat buttonu content-dən label alır.
+   - Birbaşa əlaqə (tel/email) content.contact.cta-dan dinamik oxunur.
+
+4. SERVICE DETAIL (src/pages/ServiceDetail.tsx):
+   - "Xidmətlərə qayıt", "Ətraflı", feature list, "Sifariş et",
+     "Sifariş detalları", "Say", "Səbətə əlavə et",
+     success toast — hamısı content.product-dan lokalizasiya edilir.
+
+5. CONTENT STUDIO (src/components/ContentStudio.tsx):
+   - Bütün tabların sırası frontend ilə uyğunlaşdırıldı.
+   - Yeni tablar: Səbət, Məhsul Səhifəsi, Kataloq, 404, Qalereya,
+     Event Garden, TV & Yayım, Timbildinq Səhifəsi.
+
+6. DATA (data/site-content.json):
+   - eventgarden, tv, teambuilding bölümləri əlavə edildi.
+
+── QEYDLƏr ─────────────────────────────────────────────────────────────────────
+
+- TypeScript: 0 xəta (./node_modules/.bin/tsc --noEmit)
+- Test faylı: tests/e2e/localization-admin-test.spec.ts
+- Playwright config: playwright-localization.config.ts (global-setup bypass)
+- Dev server port: 5050
+- API port: 4320
+
+================================================================================

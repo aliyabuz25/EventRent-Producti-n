@@ -10,18 +10,16 @@ type Step = 'form' | 'otp' | 'success';
 
 const OTP_LENGTH = 6;
 
-const FORMATS = ['Korporativ', 'Toy', 'Nişan', 'Ad günü', 'Məzuniyyət', 'Açılış', 'Digər'];
-const GUEST_OPTIONS = ['10-20', '20-50', '50-100', '100-200', '200-500', '500+'];
-const TIME_SLOTS = [
-  '08:00–12:00', '10:00–14:00', '12:00–16:00',
-  '14:00–18:00', '16:00–20:00', '18:00–22:00',
-  '19:00–23:00', '20:00–00:00', 'Xüsusi saat'
-];
+
 
 export default function CateringRequest() {
   const toast = useToast();
   const { content, locale } = useSiteContent();
   const s = content.catering.request;
+  const FORMATS = (s.formats || []).map(f => t(locale, f));
+  const GUEST_OPTIONS = s.guestOptions || ['10-20','20-50','50-100','100-200','200-500','500+'];
+  const TIME_SLOTS = [...(s.timeSlots || [])];
+  const customSlotLabel = t(locale, { az: 'Xüsusi saat', en: 'Custom time', ru: 'Особое время', tr: 'Özel saat' });
   const firstRef = useRef<HTMLInputElement>(null);
   const otpRefs = Array.from({ length: OTP_LENGTH }, () => useRef<HTMLInputElement>(null));
 
@@ -78,7 +76,7 @@ export default function CateringRequest() {
   }, []);
 
   const sendOtp = async () => {
-    if (!form.name.trim() || !form.phone.trim()) { toast.error('Ad və telefon mütləqdir.'); return; }
+    if (!form.name.trim() || !form.phone.trim()) { toast.error(t(locale, s.validationRequired)); return; }
     setSending(true);
     try {
       const res = await fetch('/api/otp/send', {
@@ -178,10 +176,10 @@ export default function CateringRequest() {
               })}
             </ul>
             <div className="mt-12 pt-8 border-t border-white/[0.06]">
-              <p className="text-white/30 text-xs font-bold uppercase tracking-[0.25em] mb-4">Bilavasitə əlaqə</p>
+              <p className="text-white/30 text-xs font-bold uppercase tracking-[0.25em] mb-4">{t(locale, s.directContactLabel)}</p>
               <div className="flex flex-wrap gap-4">
-                <a href="tel:+994102553555" className="flex items-center gap-2 text-white/50 hover:text-premium-orange text-sm font-bold transition-colors duration-200"><Send className="w-3.5 h-3.5" /> +994 10 255 35 55</a>
-                <a href="mailto:sales@eventrent.az" className="flex items-center gap-2 text-white/50 hover:text-premium-orange text-sm font-bold transition-colors duration-200"><FileText className="w-3.5 h-3.5" /> sales@eventrent.az</a>
+                <a href={`tel:${t(locale, content.contact.cta.channelPhoneValue).replace(/\s/g,'')}`} className="flex items-center gap-2 text-white/50 hover:text-premium-orange text-sm font-bold transition-colors duration-200"><Send className="w-3.5 h-3.5" /> {t(locale, content.contact.cta.channelPhoneValue)}</a>
+                <a href={`mailto:${t(locale, content.contact.cta.channelEmailValue)}`} className="flex items-center gap-2 text-white/50 hover:text-premium-orange text-sm font-bold transition-colors duration-200"><FileText className="w-3.5 h-3.5" /> {t(locale, content.contact.cta.channelEmailValue)}</a>
               </div>
             </div>
           </motion.div>
@@ -200,7 +198,7 @@ export default function CateringRequest() {
                 {step === 'form' && (
                   <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8 md:p-10">
                     <div className="mb-8">
-                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-premium-orange mb-2">Sifariş formu</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-premium-orange mb-2">{t(locale, s.formBadge)}</p>
                       <h3 className="text-2xl font-black tracking-tight text-white">{t(locale, s.formTitle)}</h3>
                       <p className="text-white/35 text-sm mt-1">{t(locale, s.formSubtitle)}</p>
                     </div>
@@ -209,24 +207,24 @@ export default function CateringRequest() {
                       {/* Ad + Telefon */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Users className="w-3 h-3 text-premium-orange/70" /> Ad Soyad <span className="text-premium-orange">*</span></label>
-                          <input ref={firstRef} type="text" placeholder="Adınız" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inp} />
+                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Users className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelName)} <span className="text-premium-orange">*</span></label>
+                          <input ref={firstRef} type="text" placeholder={t(locale, s.placeholderName)} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inp} />
                         </div>
                         <div className="z-50 relative">
-                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Send className="w-3 h-3 text-premium-orange/70" /> Telefon <span className="text-premium-orange">*</span></label>
+                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Send className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelPhone)} <span className="text-premium-orange">*</span></label>
                           <PhoneInput theme="dark" value={form.phone} onChange={val => setForm(f => ({ ...f, phone: val }))} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-2xl transition-colors focus-within:border-premium-orange/50 focus-within:bg-white/[0.07]" />
                         </div>
                       </div>
 
                       {/* Email */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><FileText className="w-3 h-3 text-premium-orange/70" /> Email</label>
+                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><FileText className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelEmail)}</label>
                         <input type="email" placeholder="email@domain.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inp} />
                       </div>
 
                       {/* Qonaq sayı */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Users className="w-3 h-3 text-premium-orange/70" /> Qonaq sayı</label>
+                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Users className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelGuests)}</label>
                         <div className="flex flex-wrap gap-2">
                           {GUEST_OPTIONS.map(g => (
                             <button key={g} type="button" onClick={() => setForm(f => ({ ...f, guests: g }))}
@@ -234,7 +232,7 @@ export default function CateringRequest() {
                               {g}
                             </button>
                           ))}
-                          <input type="text" placeholder="Özəl say" value={GUEST_OPTIONS.includes(form.guests) ? '' : form.guests}
+                          <input type="text" placeholder={t(locale, s.placeholderGuests)} value={GUEST_OPTIONS.includes(form.guests) ? '' : form.guests}
                             onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
                             className="flex-1 min-w-[80px] px-4 py-2 bg-white/[0.03] border border-white/[0.08] rounded-xl text-xs text-white placeholder:text-white/25 focus:outline-none focus:border-premium-orange/50" />
                         </div>
@@ -266,31 +264,35 @@ export default function CateringRequest() {
                       {/* Tarix + Saat */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Calendar className="w-3 h-3 text-premium-orange/70" /> Tarix</label>
+                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Calendar className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelDate)}</label>
                           <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                             min={new Date().toISOString().split('T')[0]} className={inp} />
                         </div>
                         <div>
-                          <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Clock className="w-3 h-3 text-premium-orange/70" /> Saat aralığı</label>
+<label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><Clock className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelTimeRange)}</label>
                           <div className="flex flex-wrap gap-1.5">
                             {TIME_SLOTS.map(slot => (
-                              <button key={slot} type="button" onClick={() => setForm(f => ({ ...f, time_range: slot === 'Xüsusi saat' ? '' : slot }))}
+                              <button key={slot} type="button" onClick={() => setForm(f => ({ ...f, time_range: slot }))}
                                 className={`px-2 py-1.5 rounded-lg text-[10px] font-bold border transition-all duration-150 ${form.time_range === slot ? 'bg-premium-orange border-premium-orange text-white' : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:border-premium-orange/40 hover:text-white/70'}`}>
                                 {slot}
                               </button>
                             ))}
+                            <button type="button" onClick={() => setForm(f => ({ ...f, time_range: '' }))}
+                              className={`px-2 py-1.5 rounded-lg text-[10px] font-bold border transition-all duration-150 ${!TIME_SLOTS.includes(form.time_range) && form.time_range === '' ? 'bg-premium-orange border-premium-orange text-white' : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:border-premium-orange/40 hover:text-white/70'}`}>
+                              {customSlotLabel}
+                            </button>
                           </div>
-                          {(form.time_range === '' || !TIME_SLOTS.slice(0, -1).includes(form.time_range)) && (
-                            <input type="text" placeholder="məs: 18:00 – 23:00" value={form.time_range}
+                          {!TIME_SLOTS.includes(form.time_range) && form.time_range !== '' && (
+                            <input type="text" placeholder={t(locale, s.placeholderTimeRange)} value={form.time_range}
                               onChange={e => setForm(f => ({ ...f, time_range: e.target.value }))}
                               className={`${inp} mt-3`} />
                           )}
-                        </div>
+                         </div>
                       </div>
 
                       {/* Format */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><ChefHat className="w-3 h-3 text-premium-orange/70" /> Tədbir formatı</label>
+                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><ChefHat className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelFormat)}</label>
                         <div className="flex flex-wrap gap-2">
                           {FORMATS.map(fmt => (
                             <button key={fmt} type="button" onClick={() => setForm(f => ({ ...f, format: fmt }))}
@@ -303,8 +305,8 @@ export default function CateringRequest() {
 
                       {/* Menyu qeyd */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><ChefHat className="w-3 h-3 text-premium-orange/70" /> Menyu haqqında xüsusi istək</label>
-                        <textarea rows={3} placeholder="Allerji, xüsusi diyet..." value={form.menu_note}
+                        <label className="flex items-center gap-1.5 text-[9px] font-black text-white/35 uppercase tracking-[0.25em] mb-2"><ChefHat className="w-3 h-3 text-premium-orange/70" /> {t(locale, s.labelMenuNote)}</label>
+                        <textarea rows={3} placeholder={t(locale, s.placeholderMenuNote)} value={form.menu_note}
                           onChange={e => setForm(f => ({ ...f, menu_note: e.target.value }))} className={`${inp} resize-none`} />
                       </div>
                     </div>
@@ -319,9 +321,9 @@ export default function CateringRequest() {
 
                     <button type="button" disabled={sending} onClick={sendOtp}
                       className="w-full mt-6 py-5 bg-premium-orange hover:bg-premium-orange/90 disabled:opacity-50 text-white font-black text-sm uppercase tracking-[0.22em] rounded-2xl flex items-center justify-center gap-3 transition-[background-color] duration-200 shadow-[0_16px_48px_rgba(227,6,19,0.28)]">
-                      {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Göndərilir...</> : <><ShieldCheck className="w-4 h-4" /> Kodu al və davam et</>}
+                      {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> {t(locale, s.sendingLabel)}</> : <><ShieldCheck className="w-4 h-4" /> {t(locale, s.getCodeLabel)}</>}
                     </button>
-                    <p className="text-center text-white/20 text-[10px] mt-4 uppercase tracking-widest">WhatsApp bildirişi sizə və adminə göndəriləcək</p>
+                    <p className="text-center text-white/20 text-[10px] mt-4 uppercase tracking-widest">{t(locale, s.waNote)}</p>
                   </motion.div>
                 )}
 
@@ -330,9 +332,9 @@ export default function CateringRequest() {
                   <motion.div key="otp" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="p-8 md:p-12">
                     <div className="flex items-center justify-between mb-8">
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-green-400 mb-2">Təsdiq kodu</p>
-                        <h3 className="text-2xl font-black tracking-tight text-white">WhatsApp kodu</h3>
-                        <p className="text-white/35 text-sm mt-1">Kod <span className="text-white/80 font-bold">{form.phone}</span> nömrəsinə göndərildi</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-green-400 mb-2">{t(locale, s.otpBadge)}</p>
+                        <h3 className="text-2xl font-black tracking-tight text-white">{t(locale, s.otpTitle)}</h3>
+                        <p className="text-white/35 text-sm mt-1"><span className="text-white/80 font-bold">{form.phone}</span> {t(locale, s.otpSentTo)}</p>
                       </div>
                       <button onClick={() => setStep('form')} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all">
                         <X className="w-4 h-4" />
@@ -370,14 +372,14 @@ export default function CateringRequest() {
 
                     <button type="button" disabled={verifying || otp.join('').length < OTP_LENGTH} onClick={() => verifyAndSubmit()}
                       className="w-full py-5 bg-premium-orange hover:bg-premium-orange/90 disabled:opacity-50 text-white font-black text-sm uppercase tracking-[0.22em] rounded-2xl flex items-center justify-center gap-3 transition-[background-color] duration-200 shadow-[0_16px_48px_rgba(227,6,19,0.28)]">
-                      {verifying ? <><Loader2 className="w-5 h-5 animate-spin" /> Yoxlanılır...</> : <><CheckCircle2 className="w-5 h-5" /> Təsdiqlə və Göndər</>}
+                      {verifying ? <><Loader2 className="w-5 h-5 animate-spin" /> {t(locale, s.otpVerifyingLabel)}</> : <><CheckCircle2 className="w-5 h-5" /> {t(locale, s.otpVerifyBtn)}</>}
                     </button>
 
                     <div className="flex items-center justify-center gap-2 mt-6">
-                      <p className="text-white/30 text-sm">Kodu almadınız?</p>
+                      <p className="text-white/30 text-sm">{t(locale, s.otpNoCode)}</p>
                       {resendCooldown > 0
-                        ? <span className="text-white/30 text-sm font-bold">{resendCooldown}s gözləyin</span>
-                        : <button type="button" onClick={sendOtp} className="text-premium-orange text-sm font-bold hover:underline flex items-center gap-1"><RefreshCw className="w-4 h-4" /> Yenidən göndər</button>
+                        ? <span className="text-white/30 text-sm font-bold">{resendCooldown}{t(locale, s.otpWait)}</span>
+                        : <button type="button" onClick={sendOtp} className="text-premium-orange text-sm font-bold hover:underline flex items-center gap-1"><RefreshCw className="w-4 h-4" /> {t(locale, s.otpResend)}</button>
                       }
                     </div>
                   </motion.div>
@@ -390,20 +392,20 @@ export default function CateringRequest() {
                       <CheckCircle2 className="w-12 h-12 text-green-400" />
                     </div>
                     <div>
-                      <h3 className="text-3xl font-black text-white tracking-tight mb-3">Sifarişiniz qəbul edildi!</h3>
-                      <p className="text-white/40 text-base max-w-sm leading-relaxed">Komandamız ən qısa zamanda sizinlə əlaqə saxlayaraq detalları dəqiqləşdirəcək.</p>
+                      <h3 className="text-3xl font-black text-white tracking-tight mb-3">{t(locale, s.successTitle)}</h3>
+                      <p className="text-white/40 text-base max-w-sm leading-relaxed">{t(locale, s.successSubtitle)}</p>
                     </div>
                     {(form.date || form.location || form.guests) && (
                       <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl px-8 py-5 text-sm text-white/50 space-y-3 w-full max-w-sm text-left mt-4">
-                        {form.guests   && <p className="flex justify-between border-b border-white/5 pb-3"><span className="text-white/30">Qonaq:</span> <span className="text-white font-bold">{form.guests}</span></p>}
-                        {form.date     && <p className="flex justify-between border-b border-white/5 pb-3 pt-1"><span className="text-white/30">Tarix:</span> <span className="text-white font-bold">{form.date}</span></p>}
-                        {form.location && <p className="flex justify-between pt-1"><span className="text-white/30">Məkan:</span> <span className="text-white font-bold">{form.location}</span></p>}
+{form.guests   && <p className="flex justify-between border-b border-white/5 pb-3"><span className="text-white/30">{t(locale, s.successGuestLabel)}</span> <span className="text-white font-bold">{form.guests}</span></p>}
+                         {form.date     && <p className="flex justify-between border-b border-white/5 pb-3 pt-1"><span className="text-white/30">{t(locale, s.successDateLabel)}</span> <span className="text-white font-bold">{form.date}</span></p>}
+                         {form.location && <p className="flex justify-between pt-1"><span className="text-white/30">{t(locale, s.successLocationLabel)}</span> <span className="text-white font-bold">{form.location}</span></p>}
                       </div>
                     )}
                     <button onClick={() => { setStep('form'); setForm({ name:'',phone:'',email:'',guests:'',location:'',date:'',time_range:'',format:'',menu_note:'' }); setOtp(Array(OTP_LENGTH).fill('')); }}
-                      className="mt-8 px-10 py-4 bg-white/5 hover:bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-full transition-colors duration-300">
-                      Yeni Sifariş
-                    </button>
+className="mt-8 px-10 py-4 bg-white/5 hover:bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-full transition-colors duration-300">
+                       {t(locale, s.newOrderBtn)}
+                     </button>
                   </motion.div>
                 )}
 

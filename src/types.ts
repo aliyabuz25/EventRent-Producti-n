@@ -94,6 +94,9 @@ export interface HomeHeroSection {
   scrollLabel: LocalizedText;
   sideLabel: LocalizedText;
   stats: HomeHeroStatItem[];
+  videoPoster: string;
+  overlayImage: string;
+  videoSrc: string;
 }
 
 export interface HomeCapabilityItem {
@@ -261,6 +264,11 @@ export interface AboutBentoCard {
   desc: LocalizedText;
 }
 
+export interface GalleryImageItem {
+  url: string;
+  category: string;
+}
+
 export interface AboutValueItem {
   title: LocalizedText;
   desc: LocalizedText;
@@ -302,6 +310,7 @@ export interface AboutSection {
     cards: AboutBentoCard[];
     imageTitle: LocalizedText;
     imageTitleAccent: LocalizedText;
+    image: string;
   };
   team: {
     badge: LocalizedText;
@@ -323,6 +332,7 @@ export interface ContactSection {
     titleLine2: LocalizedText;
     subtitle: LocalizedText;
   };
+  mapEmbedUrl: string;
   ctaHeroWord: LocalizedText;
   form: {
     labelName: LocalizedText;
@@ -408,6 +418,9 @@ export interface FooterSection {
   whatsappLine: LocalizedText;
   whatsappCta: LocalizedText;
   whatsappBadge: LocalizedText;
+  whatsappHref: string;
+  instagramHref: string;
+  linkedinHref: string;
   copyright: LocalizedText;
   privacyPolicy: LocalizedText;
   termsOfService: LocalizedText;
@@ -455,6 +468,7 @@ export interface CateringSectionContent {
     subtitle: LocalizedText;
     menuItems: { title: LocalizedText; desc: LocalizedText }[];
     galleryLabel: LocalizedText;
+    galleryImages: string[];
   };
   request: {
     eyebrow: LocalizedText;
@@ -474,10 +488,64 @@ export interface CateringSectionContent {
     successTitle: LocalizedText;
     successSubtitle: LocalizedText;
     newOrderBtn: LocalizedText;
+    directContactLabel: LocalizedText;
+    formats: LocalizedText[];
+    timeSlots: string[];
+    guestOptions: string[];
+    labelName: LocalizedText;
+    labelPhone: LocalizedText;
+    labelEmail: LocalizedText;
+    labelGuests: LocalizedText;
+    labelLocation: LocalizedText;
+    labelDate: LocalizedText;
+    labelTimeRange: LocalizedText;
+    labelFormat: LocalizedText;
+    labelMenuNote: LocalizedText;
+    placeholderName: LocalizedText;
+    placeholderGuests: LocalizedText;
+    placeholderLocation: LocalizedText;
+    placeholderTimeRange: LocalizedText;
+    placeholderMenuNote: LocalizedText;
+    sendingLabel: LocalizedText;
+    getCodeLabel: LocalizedText;
+    otpBadge: LocalizedText;
+    otpTitle: LocalizedText;
+    otpSentTo: LocalizedText;
+    otpVerifyBtn: LocalizedText;
+    otpVerifyingLabel: LocalizedText;
+    otpNoCode: LocalizedText;
+    otpResend: LocalizedText;
+    otpWait: LocalizedText;
+    formBadge: LocalizedText;
+    successGuestLabel: LocalizedText;
+    successDateLabel: LocalizedText;
+    successLocationLabel: LocalizedText;
+    validationRequired: LocalizedText;
   };
 }
 
 /* ── Portfolio ── */
+export interface SimpleHeroSection {
+  badge: LocalizedText;
+  titleLine1: LocalizedText;
+  titleLine2: LocalizedText;
+  subtitle: LocalizedText;
+}
+
+export type GalleryHeroSection = SimpleHeroSection;
+
+export interface EventgardenSection {
+  hero: SimpleHeroSection;
+}
+
+export interface TVSection {
+  hero: SimpleHeroSection;
+}
+
+export interface TeambuildingPageSection {
+  hero: SimpleHeroSection;
+}
+
 export interface PortfolioSectionContent {
   hero: {
     eyebrow: LocalizedText;
@@ -492,6 +560,11 @@ export interface PortfolioSectionContent {
     allLabel: LocalizedText;
     emptyLabel: LocalizedText;
   };
+}
+
+export interface SiteGallery {
+  hero: SimpleHeroSection;
+  images: GalleryImageItem[];
 }
 
 export interface SiteContent {
@@ -526,4 +599,8 @@ export interface SiteContent {
   product: Record<string, LocalizedText>;
   catalog: Record<string, LocalizedText>;
   notFound: Record<string, LocalizedText>;
+  gallery: SiteGallery;
+  eventgarden: EventgardenSection;
+  tv: TVSection;
+  teambuilding: TeambuildingPageSection;
 }

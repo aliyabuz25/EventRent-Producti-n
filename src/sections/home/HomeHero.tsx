@@ -74,13 +74,16 @@ export default function HomeHero() {
           muted
           loop
           playsInline
-          poster="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=2070"
+          poster={content.home.hero.videoPoster || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=2070'}
           aria-label="Concert atmosphere background"
         >
-          <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
+          {(content.home.hero.videoSrc || 'https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4') && (
+            <source src={content.home.hero.videoSrc || 'https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4'} type="video/mp4" />
+          )}
         </video>
 
         {/* Single audience overlay — reduced from 3 stacked filtered images */}
+        {(content.home.hero.overlayImage || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600') && (
         <div
           className="absolute inset-x-0 bottom-0 h-[60%] pointer-events-none"
           style={{
@@ -90,7 +93,7 @@ export default function HomeHero() {
           }}
         >
           <img
-            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600"
+            src={content.home.hero.overlayImage || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600'}
             className="w-full h-full object-cover"
             alt=""
             referrerPolicy="no-referrer"
@@ -98,6 +101,7 @@ export default function HomeHero() {
             decoding="async"
           />
         </div>
+        )}
 
         <div className="absolute inset-0 bg-linear-to-b from-brand-bg/95 via-brand-bg/55 to-brand-bg" />
         <div className="absolute inset-0 bg-black/20" />

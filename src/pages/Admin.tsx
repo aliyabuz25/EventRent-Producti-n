@@ -31,9 +31,11 @@ import('bootstrap/dist/css/bootstrap.min.css');
 type Tab = 'dashboard' | 'orders' | 'leads' | 'products' | 'teambuilding' | 'support'
   | 'content-home' | 'content-about' | 'content-services'
   | 'content-contact' | 'content-footer' | 'content-catering' | 'content-portfolio'
+  | 'content-cart' | 'content-product' | 'content-catalog' | 'content-notfound' | 'content-gallery'
+  | 'content-eventgarden' | 'content-tv' | 'content-teambuilding-page'
   | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database';
 
-type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio';
+type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio' | 'cart' | 'product' | 'catalog' | 'notfound' | 'gallery' | 'eventgarden' | 'tv' | 'teambuilding-page';
 
 interface NavItemDef {
   id: Tab;
@@ -58,6 +60,14 @@ const CONTENT_TABS: { id: Tab; section: ContentSection; label: string }[] = [
   { id: 'content-footer',    section: 'footer',    label: 'Footer' },
   { id: 'content-catering',  section: 'catering',  label: 'Ketrinq Mətn' },
   { id: 'content-portfolio', section: 'portfolio', label: 'Portfolio Mətn' },
+  { id: 'content-cart',      section: 'cart',      label: 'Səbət' },
+  { id: 'content-product',   section: 'product',   label: 'Məhsul Səhifəsi' },
+  { id: 'content-catalog',   section: 'catalog',   label: 'Kataloq' },
+  { id: 'content-notfound',  section: 'notfound',  label: '404 Səhifəsi' },
+  { id: 'content-gallery',          section: 'gallery',          label: 'Qalereya' },
+  { id: 'content-eventgarden',      section: 'eventgarden',      label: 'Event Garden' },
+  { id: 'content-tv',               section: 'tv',               label: 'TV & Yayım' },
+  { id: 'content-teambuilding-page',section: 'teambuilding-page',label: 'Timbildinq Səhifəsi' },
 ];
 
 const TOKEN_KEY = 'er_admin_token';

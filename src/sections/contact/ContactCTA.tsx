@@ -15,12 +15,13 @@ export default function ContactCTA() {
   const { content, locale } = useSiteContent();
   const s = content.contact.cta;
 
+  const footer = content.footer;
   const CHANNELS = [
-    { icon: Phone,     label: t(locale, s.channelPhone),     value: t(locale, s.channelPhoneValue),     href: 'tel:+994102553555',                     color: '#e30613', tag: t(locale, s.channelTagPhone) },
-    { icon: Mail,      label: t(locale, s.channelEmail),     value: t(locale, s.channelEmailValue),     href: 'mailto:sales@eventrent.az',             color: '#ff6b35', tag: t(locale, s.channelTagEmail) },
-    { icon: MapPin,    label: t(locale, s.channelMap),       value: t(locale, s.channelAddressValue),   href: 'https://maps.google.com/?q=Xocalı+Prospekti+55+Bakı', color: '#c2185b', tag: t(locale, s.channelTagMap) },
-    { icon: Instagram, label: t(locale, s.channelInstagram), value: t(locale, s.channelInstagramValue), href: 'https://instagram.com/eventrent.az',    color: '#9c27b0', tag: t(locale, s.channelTagInstagram) },
-    { icon: Facebook,  label: t(locale, s.channelFacebook),  value: t(locale, s.channelFacebookValue),  href: 'https://facebook.com/eventrent',        color: '#1565c0', tag: t(locale, s.channelTagFacebook) },
+    { icon: Phone,     label: t(locale, s.channelPhone),     value: t(locale, s.channelPhoneValue),     href: `tel:${t(locale, s.channelPhoneValue).replace(/\s/g,'')}`,   color: '#e30613', tag: t(locale, s.channelTagPhone) },
+    { icon: Mail,      label: t(locale, s.channelEmail),     value: t(locale, s.channelEmailValue),     href: `mailto:${t(locale, s.channelEmailValue)}`,                   color: '#ff6b35', tag: t(locale, s.channelTagEmail) },
+    { icon: MapPin,    label: t(locale, s.channelMap),       value: t(locale, s.channelAddressValue),   href: `https://maps.google.com/?q=${encodeURIComponent(t(locale, s.channelAddressValue))}`, color: '#c2185b', tag: t(locale, s.channelTagMap) },
+    { icon: Instagram, label: t(locale, s.channelInstagram), value: t(locale, s.channelInstagramValue), href: footer.instagramHref || 'https://instagram.com/eventrent.az', color: '#9c27b0', tag: t(locale, s.channelTagInstagram) },
+    { icon: Facebook,  label: t(locale, s.channelFacebook),  value: t(locale, s.channelFacebookValue),  href: 'https://facebook.com/eventrent',                             color: '#1565c0', tag: t(locale, s.channelTagFacebook) },
   ];
 
   // Direct DOM update — no setState, no re-render on every mousemove

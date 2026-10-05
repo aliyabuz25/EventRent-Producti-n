@@ -328,7 +328,8 @@
         "en": "Team.",
         "ru": "Команда.",
         "tr": "Ekip."
-      }
+      },
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=900&auto=format&fit=crop"
     },
     "team": {
       "badge": {
@@ -698,6 +699,7 @@
         "tr": "Event Rent"
       }
     },
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3039.428490102005!2d49.8712345!3d40.4012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDI0JzA0LjQiTiA0OcKwNTInMTYuNCJF!5e0!3m2!1sen!2saz!4v1620000000000!5m2!1sen!2saz",
     "ctaHeroWord": {
       "az": "BURDAYIQ",
       "en": "REACH US",
@@ -812,6 +814,9 @@
       "ru": "Сейчас",
       "tr": "Şimdi"
     },
+    "whatsappHref": "https://wa.me/994502251515",
+    "instagramHref": "https://instagram.com/eventrent.az",
+    "linkedinHref": "https://linkedin.com/company/eventrent",
     "copyright": {
       "az": "© 2026 EVENTRENT.AZ. BÜTÜN HÜQUQLAR QORUNUR.",
       "en": "© 2026 EVENTRENT.AZ. ALL RIGHTS RESERVED.",
@@ -924,7 +929,10 @@
             "tr": "Sinematik"
           }
         }
-      ]
+      ],
+      "videoPoster": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=2070",
+      "overlayImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600",
+      "videoSrc": "Test 1791188670926"
     },
     "capabilities": {
       "badge": {
@@ -1595,7 +1603,7 @@
             "tr": "Kurucu / Direktör"
           },
           "description": {
-            "az": "Tədbir idarəçiliyi və kreativ planlama sahəsində təcrübəli komanda lideridir. Böyükmiqyaslı layihələrin strategiyası, planlaşdırılması və icrasını idarə edir.",
+            "az": "TEST BAŞLIQ",
             "en": "An experienced team leader in event management and creative planning. Manages strategy, planning and execution of large-scale projects.",
             "ru": "Опытный руководитель команды в сфере управления мероприятиями и креативного планирования. Управляет стратегией, планированием и реализацией масштабных проектов.",
             "tr": "Etkinlik yönetimi ve yaratıcı planlama alanında deneyimli bir ekip lideridir. Büyük ölçekli projelerin stratejisini, planlamasını ve uygulanmasını yönetir."
@@ -2567,69 +2575,1104 @@
       }
     ]
   },
+  "cart": {
+    "heading": {
+      "az": "Səbətiniz",
+      "en": "Your Cart",
+      "ru": "Ваша корзина",
+      "tr": "Sepetiniz"
+    },
+    "itemCount": {
+      "az": "məhsul",
+      "en": "item(s)",
+      "ru": "товар(ов)",
+      "tr": "ürün"
+    },
+    "empty": {
+      "az": "Səbətiniz boşdur.",
+      "en": "Your cart is empty.",
+      "ru": "Ваша корзина пуста.",
+      "tr": "Sepetiniz boş."
+    },
+    "browseCatalog": {
+      "az": "Kataloqa baxın",
+      "en": "Browse Catalog",
+      "ru": "Смотреть каталог",
+      "tr": "Kataloğa göz atın"
+    },
+    "checkoutTitle": {
+      "az": "Sifarişi Tamamla",
+      "en": "Complete Order",
+      "ru": "Оформить заказ",
+      "tr": "Siparişi Tamamla"
+    },
+    "checkoutSub": {
+      "az": "Məlumatları daxil edərək sifarişi yekunlaşdırın.",
+      "en": "Enter your details to finalize the order.",
+      "ru": "Введите данные для оформления заказа.",
+      "tr": "Siparişi tamamlamak için bilgilerinizi girin."
+    },
+    "labelName": {
+      "az": "Ad Soyad / Şirkət",
+      "en": "Full Name / Company",
+      "ru": "Имя / Компания",
+      "tr": "Ad Soyad / Şirket"
+    },
+    "labelEmail": {
+      "az": "Email",
+      "en": "Email",
+      "ru": "Email",
+      "tr": "Email"
+    },
+    "labelPhone": {
+      "az": "Telefon",
+      "en": "Phone",
+      "ru": "Телефон",
+      "tr": "Telefon"
+    },
+    "labelLocation": {
+      "az": "Məkan",
+      "en": "Location",
+      "ru": "Место",
+      "tr": "Konum"
+    },
+    "labelDate": {
+      "az": "Tarix",
+      "en": "Date",
+      "ru": "Дата",
+      "tr": "Tarih"
+    },
+    "placeholderLocation": {
+      "az": "Məkan axtar və ya yazın...",
+      "en": "Search or type location...",
+      "ru": "Поиск или ввод места...",
+      "tr": "Konum ara veya yaz..."
+    },
+    "placeholderName": {
+      "az": "John Appleseed",
+      "en": "John Appleseed",
+      "ru": "Иван Иванов",
+      "tr": "Ahmet Yılmaz"
+    },
+    "placeholderPhone": {
+      "az": "+994 50 000 00 00",
+      "en": "+1 000 000 0000",
+      "ru": "+7 000 000 00 00",
+      "tr": "+90 000 000 0000"
+    },
+    "submitBtn": {
+      "az": "Sifarişi Tamamla",
+      "en": "Complete Order",
+      "ru": "Оформить заказ",
+      "tr": "Siparişi Tamamla"
+    },
+    "submitting": {
+      "az": "Göndərilir...",
+      "en": "Sending...",
+      "ru": "Отправка...",
+      "tr": "Gönderiliyor..."
+    },
+    "successTitle": {
+      "az": "Təşəkkür edirik!",
+      "en": "Thank you!",
+      "ru": "Спасибо!",
+      "tr": "Teşekkürler!"
+    },
+    "successBody": {
+      "az": "Sifarişiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlayacağıq.",
+      "en": "Your order has been received. We will contact you shortly.",
+      "ru": "Ваш заказ принят. Мы свяжемся с вами в ближайшее время.",
+      "tr": "Siparişiniz alındı. En kısa sürede sizinle iletişime geçeceğiz."
+    },
+    "goProfile": {
+      "az": "Profilə keç",
+      "en": "Go to Profile",
+      "ru": "Перейти в профиль",
+      "tr": "Profile Git"
+    },
+    "errorSend": {
+      "az": "Sifariş göndərilmədi.",
+      "en": "Order could not be sent.",
+      "ru": "Заказ не отправлен.",
+      "tr": "Sipariş gönderilemedi."
+    },
+    "errorServer": {
+      "az": "Serverə qoşulma alınmadı.",
+      "en": "Could not connect to server.",
+      "ru": "Не удалось подключиться к серверу.",
+      "tr": "Sunucuya bağlanılamadı."
+    },
+    "loginPromptTitle": {
+      "az": "Sifarişi tamamlamaq üçün daxil olun",
+      "en": "Sign in to complete your order",
+      "ru": "Войдите для оформления заказа",
+      "tr": "Siparişi tamamlamak için giriş yapın"
+    },
+    "loginPromptBody": {
+      "az": "Səbətinizdəki məhsulları görmək və sifarişi tamamlamaq üçün zəhmət olmasa hesabınıza daxil olun.",
+      "en": "Please sign in to view your cart items and complete your order.",
+      "ru": "Пожалуйста, войдите, чтобы просмотреть корзину и оформить заказ.",
+      "tr": "Sepetinizdeki ürünleri görmek ve siparişi tamamlamak için lütfen giriş yapın."
+    },
+    "loginBtn": {
+      "az": "Daxil ol",
+      "en": "Sign In",
+      "ru": "Войти",
+      "tr": "Giriş Yap"
+    },
+    "fallbackProduct": {
+      "az": "Xidmət",
+      "en": "Service",
+      "ru": "Услуга",
+      "tr": "Hizmet"
+    }
+  },
+  "product": {
+    "notFound": {
+      "az": "Məhsul tapılmadı",
+      "en": "Product not found",
+      "ru": "Товар не найден",
+      "tr": "Ürün bulunamadı"
+    },
+    "backToCatalog": {
+      "az": "Kataloqa qayıt",
+      "en": "Back to Catalog",
+      "ru": "Назад к каталогу",
+      "tr": "Kataloğa dön"
+    },
+    "techSpecs": {
+      "az": "Texniki Xüsusiyyətlər",
+      "en": "Technical Specs",
+      "ru": "Технические характеристики",
+      "tr": "Teknik Özellikler"
+    },
+    "addToCart": {
+      "az": "Sorğuya əlavə et",
+      "en": "Add to Inquiry",
+      "ru": "Добавить в запрос",
+      "tr": "Sorguya ekle"
+    },
+    "relatedTitle1": {
+      "az": "Birlikdə",
+      "en": "Often Used",
+      "ru": "Часто используется",
+      "tr": "Birlikte"
+    },
+    "relatedTitle2": {
+      "az": "İstifadə Olunur.",
+      "en": "Together.",
+      "ru": "Вместе.",
+      "tr": "Kullanılır."
+    },
+    "relatedSub": {
+      "az": "Bu məhsulla tamamlanan digər avadanlıqlar.",
+      "en": "Other equipment that complements this product.",
+      "ru": "Другое оборудование, дополняющее этот товар.",
+      "tr": "Bu ürünü tamamlayan diğer ekipmanlar."
+    },
+    "viewAll": {
+      "az": "Hamısına bax",
+      "en": "View All",
+      "ru": "Смотреть все",
+      "tr": "Tümünü Gör"
+    },
+    "details": {
+      "az": "Detallar",
+      "en": "Details",
+      "ru": "Подробнее",
+      "tr": "Detaylar"
+    },
+    "modalTitle": {
+      "az": "Sifariş detalları",
+      "en": "Order details",
+      "ru": "Детали заказа",
+      "tr": "Sipariş detayları"
+    },
+    "qty": {
+      "az": "SAY",
+      "en": "QTY",
+      "ru": "КОЛ-ВО",
+      "tr": "ADET"
+    },
+    "size": {
+      "az": "ÖLÇÜ (M²)",
+      "en": "SIZE (M²)",
+      "ru": "РАЗМЕР (M²)",
+      "tr": "ÖLÇÜ (M²)"
+    },
+    "sizePlaceholder": {
+      "az": "Ölçü (m²) daxil edin...",
+      "en": "Enter size (m²)...",
+      "ru": "Введите размер (м²)...",
+      "tr": "Boyut girin (m²)..."
+    },
+    "material": {
+      "az": "MATERIAL NÖVÜ",
+      "en": "MATERIAL TYPE",
+      "ru": "ТИП МАТЕРИАЛА",
+      "tr": "MALZEME TÜRÜ"
+    },
+    "materialPlaceholder": {
+      "az": "Material növü daxil edin...",
+      "en": "Enter material type...",
+      "ru": "Введите тип материала...",
+      "tr": "Malzeme türü girin..."
+    },
+    "lamination": {
+      "az": "LAMİNASİYA",
+      "en": "LAMINATION",
+      "ru": "ЛАМИНАЦИЯ",
+      "tr": "LAMİNASYON"
+    },
+    "laminationPlaceholder": {
+      "az": "Laminasiya daxil edin...",
+      "en": "Enter lamination...",
+      "ru": "Введите ламинацию...",
+      "tr": "Laminasyon girin..."
+    },
+    "installation": {
+      "az": "MONTAJ XİDMƏTİ",
+      "en": "INSTALLATION",
+      "ru": "МОНТАЖ",
+      "tr": "MONTAJ HİZMETİ"
+    },
+    "installationPlaceholder": {
+      "az": "Montaj xidməti daxil edin...",
+      "en": "Enter installation service...",
+      "ru": "Введите услугу монтажа...",
+      "tr": "Montaj hizmeti girin..."
+    },
+    "addToCartBtn": {
+      "az": "Səbətə əlavə et",
+      "en": "Add to Cart",
+      "ru": "В корзину",
+      "tr": "Sepete ekle"
+    }
+  },
+  "catalog": {
+    "hub": {
+      "az": "Avadanlıq Mərkəzi",
+      "en": "Equipment Hub",
+      "ru": "Центр оборудования",
+      "tr": "Ekipman Merkezi"
+    },
+    "collection": {
+      "az": "KOLLEKSİYA",
+      "en": "THE COLLECTION",
+      "ru": "КОЛЛЕКЦИЯ",
+      "tr": "KOLEKSİYON"
+    },
+    "searchPlaceholder": {
+      "az": "Inventar axtar...",
+      "en": "Search inventory...",
+      "ru": "Поиск по инвентарю...",
+      "tr": "Envanter ara..."
+    },
+    "categories": {
+      "az": "Kateqoriyalar",
+      "en": "Categories",
+      "ru": "Категории",
+      "tr": "Kategoriler"
+    },
+    "all": {
+      "az": "Hamısı",
+      "en": "All",
+      "ru": "Все",
+      "tr": "Tümü"
+    },
+    "noGear": {
+      "az": "Məhsul Tapılmadı",
+      "en": "No Gear Found",
+      "ru": "Ничего не найдено",
+      "tr": "Ürün Bulunamadı"
+    },
+    "noGearSub": {
+      "az": "Axtarış parametrlərini dəyişin.",
+      "en": "Adjust your search parameters.",
+      "ru": "Измените параметры поиска.",
+      "tr": "Arama parametrelerini ayarlayın."
+    },
+    "clearFilters": {
+      "az": "Filtrləri Təmizlə",
+      "en": "Clear All Filters",
+      "ru": "Очистить фильтры",
+      "tr": "Filtreleri Temizle"
+    },
+    "heroTitle1": {
+      "az": "Texniki",
+      "en": "Technical",
+      "ru": "Технический",
+      "tr": "Teknik"
+    },
+    "heroTitle2": {
+      "az": "İnventar.",
+      "en": "Inventory.",
+      "ru": "Инвентарь.",
+      "tr": "Envanter."
+    },
+    "heroBadge": {
+      "az": "Avadanlıq Kataloqu",
+      "en": "Equipment Catalog",
+      "ru": "Каталог оборудования",
+      "tr": "Ekipman Kataloğu"
+    },
+    "heroSub": {
+      "az": "Premium audio-vizual avadanlıqlar — dünyanın aparıcı istehsalçılarından, ən yüksək sənaye standartlarında.",
+      "en": "Premium audio-visual equipment — from the world's leading manufacturers, at the highest industry standards.",
+      "ru": "Премиальное аудиовизуальное оборудование — от ведущих мировых производителей, по высочайшим отраслевым стандартам.",
+      "tr": "Premium ses-görüntü ekipmanları — dünyanın önde gelen üreticilerinden, en yüksek sektör standartlarında."
+    }
+  },
+  "notFound": {
+    "title": {
+      "az": "Tapılmadı",
+      "en": "Not Found",
+      "ru": "Не найдено",
+      "tr": "Bulunamadı"
+    },
+    "body": {
+      "az": "Axtardığınız səhifə mövcud deyil və ya köçürülüb.",
+      "en": "The page you are looking for does not exist or has been moved.",
+      "ru": "Страница не существует или была перемещена.",
+      "tr": "Aradığınız sayfa mevcut değil veya taşınmış."
+    },
+    "home": {
+      "az": "Ana Səhifəyə Qayıt",
+      "en": "Back to Home",
+      "ru": "На главную",
+      "tr": "Ana Sayfaya Dön"
+    }
+  },
   "catering": {
     "hero": {
-      "eyebrow": { "az": "Dadlı Təcrübə", "en": "Delicious Experience", "ru": "Вкусный Опыт", "tr": "Lezzetli Deneyim" },
-      "titleLine1": { "az": "Ketrinq", "en": "Catering", "ru": "Кейтеринг", "tr": "Catering" },
-      "titleLine2": { "az": "Xidməti.", "en": "Service.", "ru": "Сервис.", "tr": "Hizmeti." },
-      "subtitle": { "az": "Tədbirləriniz üçün peşəkar qidalanma və xidmət həlləri.", "en": "Professional catering and service solutions for your events.", "ru": "Профессиональные решения кейтеринга для ваших мероприятий.", "tr": "Etkinlikleriniz için profesyonel yiyecek ve hizmet çözümleri." }
+      "eyebrow": {
+        "az": "Dadlı Təcrübə",
+        "en": "Delicious Experience",
+        "ru": "Вкусный Опыт",
+        "tr": "Lezzetli Deneyim"
+      },
+      "titleLine1": {
+        "az": "Ketrinq",
+        "en": "Catering",
+        "ru": "Кейтеринг",
+        "tr": "Catering"
+      },
+      "titleLine2": {
+        "az": "Xidməti.",
+        "en": "Service.",
+        "ru": "Сервис.",
+        "tr": "Hizmeti."
+      },
+      "subtitle": {
+        "az": "Tədbirləriniz üçün peşəkar qidalanma və xidmət həlləri.",
+        "en": "Professional catering and service solutions for your events.",
+        "ru": "Профессиональные решения кейтеринга для ваших мероприятий.",
+        "tr": "Etkinlikleriniz için profesyonel yiyecek ve hizmet çözümleri."
+      }
     },
     "content": {
-      "eyebrow": { "az": "Peşəkar Mətbəx", "en": "Professional Kitchen", "ru": "Профессиональная Кухня", "tr": "Profesyonel Mutfak" },
-      "title": { "az": "Keyfiyyətli Qidalanma, Peşəkar Xidmət", "en": "Quality Food, Professional Service", "ru": "Качественное Питание, Профессиональный Сервис", "tr": "Kaliteli Yemek, Profesyonel Hizmet" },
-      "subtitle": { "az": "\"Event Rent\" olaraq biz, tədbirlərinizin ləzzətini artırmaq üçün ən yüksək keyfiyyətli ketrinq xidmətini təklif edirik.", "en": "As \"Event Rent\" we offer the highest quality catering service to enhance the taste of your events.", "ru": "Как \"Event Rent\" мы предлагаем высококачественный кейтеринг для ваших мероприятий.", "tr": "\"Event Rent\" olarak etkinliklerinizin lezzetini artırmak için en yüksek kalitede catering hizmeti sunuyoruz." },
+      "eyebrow": {
+        "az": "Peşəkar Mətbəx",
+        "en": "Professional Kitchen",
+        "ru": "Профессиональная Кухня",
+        "tr": "Profesyonel Mutfak"
+      },
+      "title": {
+        "az": "Keyfiyyətli Qidalanma, Peşəkar Xidmət",
+        "en": "Quality Food, Professional Service",
+        "ru": "Качественное Питание, Профессиональный Сервис",
+        "tr": "Kaliteli Yemek, Profesyonel Hizmet"
+      },
+      "subtitle": {
+        "az": "\"Event Rent\" olaraq biz, tədbirlərinizin ləzzətini artırmaq üçün ən yüksək keyfiyyətli ketrinq xidmətini təklif edirik.",
+        "en": "As \"Event Rent\" we offer the highest quality catering service to enhance the taste of your events.",
+        "ru": "Как \"Event Rent\" мы предлагаем высококачественный кейтеринг для ваших мероприятий.",
+        "tr": "\"Event Rent\" olarak etkinliklerinizin lezzetini artırmak için en yüksek kalitede catering hizmeti sunuyoruz."
+      },
       "menuItems": [
-        { "title": { "az": "Soyuq Qəlyanaltılar", "en": "Cold Appetizers", "ru": "Холодные Закуски", "tr": "Soğuk Mezeler" }, "desc": { "az": "Müxtəlif pendir, ət və tərəvəz çeşidləri.", "en": "Various cheese, meat and vegetable assortments.", "ru": "Различные сыры, мясо и овощные ассорти.", "tr": "Çeşitli peynir, et ve sebze çeşitleri." } },
-        { "title": { "az": "İsti Yeməklər", "en": "Hot Dishes", "ru": "Горячие Блюда", "tr": "Sıcak Yemekler" }, "desc": { "az": "Milli və Avropa mətbəxinin ən dadlı nümunələri.", "en": "The most delicious examples of national and European cuisine.", "ru": "Самые вкусные примеры национальной и европейской кухни.", "tr": "Milli ve Avrupa mutfağının en lezzetli örnekleri." } },
-        { "title": { "az": "Desertlər", "en": "Desserts", "ru": "Десерты", "tr": "Tatlılar" }, "desc": { "az": "Şirniyyat və meyvə çeşidləri ilə zəngin süfrə.", "en": "A rich table with sweets and fruit assortments.", "ru": "Богатый стол со сладостями и фруктами.", "tr": "Tatlı ve meyve çeşitleriyle zengin sofra." } },
-        { "title": { "az": "İçkilər", "en": "Beverages", "ru": "Напитки", "tr": "İçecekler" }, "desc": { "az": "Alkoqollu və alkoqolsuz içki menyusu.", "en": "Alcoholic and non-alcoholic beverage menu.", "ru": "Алкогольное и безалкогольное меню напитков.", "tr": "Alkollü ve alkolsüz içecek menüsü." } }
+        {
+          "title": {
+            "az": "Soyuq Qəlyanaltılar",
+            "en": "Cold Appetizers",
+            "ru": "Холодные Закуски",
+            "tr": "Soğuk Mezeler"
+          },
+          "desc": {
+            "az": "Müxtəlif pendir, ət və tərəvəz çeşidləri.",
+            "en": "Various cheese, meat and vegetable assortments.",
+            "ru": "Различные сыры, мясо и овощные ассорти.",
+            "tr": "Çeşitli peynir, et ve sebze çeşitleri."
+          }
+        },
+        {
+          "title": {
+            "az": "İsti Yeməklər",
+            "en": "Hot Dishes",
+            "ru": "Горячие Блюда",
+            "tr": "Sıcak Yemekler"
+          },
+          "desc": {
+            "az": "Milli və Avropa mətbəxinin ən dadlı nümunələri.",
+            "en": "The most delicious examples of national and European cuisine.",
+            "ru": "Самые вкусные примеры национальной и европейской кухни.",
+            "tr": "Milli ve Avrupa mutfağının en lezzetli örnekleri."
+          }
+        },
+        {
+          "title": {
+            "az": "Desertlər",
+            "en": "Desserts",
+            "ru": "Десерты",
+            "tr": "Tatlılar"
+          },
+          "desc": {
+            "az": "Şirniyyat və meyvə çeşidləri ilə zəngin süfrə.",
+            "en": "A rich table with sweets and fruit assortments.",
+            "ru": "Богатый стол со сладостями и фруктами.",
+            "tr": "Tatlı ve meyve çeşitleriyle zengin sofra."
+          }
+        },
+        {
+          "title": {
+            "az": "İçkilər",
+            "en": "Beverages",
+            "ru": "Напитки",
+            "tr": "İçecekler"
+          },
+          "desc": {
+            "az": "Alkoqollu və alkoqolsuz içki menyusu.",
+            "en": "Alcoholic and non-alcoholic beverage menu.",
+            "ru": "Алкогольное и безалкогольное меню напитков.",
+            "tr": "Alkollü ve alkolsüz içecek menüsü."
+          }
+        }
       ],
-      "galleryLabel": { "az": "Qalereya", "en": "Gallery", "ru": "Галерея", "tr": "Galeri" }
+      "galleryLabel": {
+        "az": "Qalereya",
+        "en": "Gallery",
+        "ru": "Галерея",
+        "tr": "Galeri"
+      },
+      "galleryImages": [
+        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600&auto=format&fit=crop"
+      ]
     },
     "request": {
-      "eyebrow": { "az": "Ketrinq Sifarişi", "en": "Catering Order", "ru": "Заказ Кейтеринга", "tr": "Catering Siparişi" },
-      "titleLine1": { "az": "Tədbiriniz üçün", "en": "For your event", "ru": "Для вашего мероприятия", "tr": "Etkinliğiniz için" },
-      "titleLine2": { "az": "fərdi menyu.", "en": "a personal menu.", "ru": "персональное меню.", "tr": "kişisel menü." },
-      "subtitle": { "az": "Formu doldurun — peşəkar ketrinq komandamız sizinlə əlaqə saxlayıb tam fərdi menyu planı hazırlasın.", "en": "Fill out the form — our professional catering team will contact you and prepare a fully personalized menu plan.", "ru": "Заполните форму — наша профессиональная команда свяжется с вами и подготовит персональный план меню.", "tr": "Formu doldurun — profesyonel catering ekibimiz sizinle iletişime geçip tam kişisel menü planı hazırlasın." },
-      "features": [
-        { "az": "Peşəkar aşpazlar və ofisiantlar", "en": "Professional chefs and waiters", "ru": "Профессиональные повара и официанты", "tr": "Profesyonel aşçılar ve garsonlar" },
-        { "az": "10-dən 1000+ nəfərə qədər tədbirlər", "en": "Events from 10 to 1000+ guests", "ru": "Мероприятия от 10 до 1000+ человек", "tr": "10'dan 1000+ kişiye kadar etkinlikler" },
-        { "az": "Korporativ, toy, ad günü və daha çox", "en": "Corporate, wedding, birthday and more", "ru": "Корпоративные, свадьбы, дни рождения и многое другое", "tr": "Kurumsal, düğün, doğum günü ve daha fazlası" },
-        { "az": "Anında WhatsApp təsdiq mesajı", "en": "Instant WhatsApp confirmation message", "ru": "Мгновенное подтверждение через WhatsApp", "tr": "Anında WhatsApp onay mesajı" }
-      ],
-      "formTitle": { "az": "Ketrinq Sifarişi", "en": "Catering Order", "ru": "Заказ Кейтеринга", "tr": "Catering Siparişi" },
-      "formSubtitle": { "az": "Zəhmət olmasa məlumatları doldurun.", "en": "Please fill in the details.", "ru": "Пожалуйста, заполните данные.", "tr": "Lütfen bilgileri doldurun." },
-      "fields": {
-        "name": { "az": "Ad Soyad", "en": "Full Name", "ru": "Имя Фамилия", "tr": "Ad Soyad" },
-        "phone": { "az": "Telefon", "en": "Phone", "ru": "Телефон", "tr": "Telefon" },
-        "email": { "az": "Email", "en": "Email", "ru": "Email", "tr": "Email" },
-        "guests": { "az": "Qonaq sayı", "en": "Guest count", "ru": "Количество гостей", "tr": "Misafir sayısı" },
-        "location": { "az": "Məkan", "en": "Venue", "ru": "Место", "tr": "Mekan" },
-        "date": { "az": "Tarix", "en": "Date", "ru": "Дата", "tr": "Tarih" },
-        "timeRange": { "az": "Saat aralığı", "en": "Time range", "ru": "Временной диапазон", "tr": "Saat aralığı" },
-        "format": { "az": "Tədbir formatı", "en": "Event format", "ru": "Формат мероприятия", "tr": "Etkinlik formatı" },
-        "menuNote": { "az": "Menyu haqqında xüsusi istək", "en": "Special menu request", "ru": "Особые пожелания к меню", "tr": "Menü hakkında özel istek" }
+      "eyebrow": {
+        "az": "Ketrinq Sifarişi",
+        "en": "Catering Order",
+        "ru": "Заказ Кейтеринга",
+        "tr": "Catering Siparişi"
       },
-      "submitBtn": { "az": "Sifarişi Göndər", "en": "Send Order", "ru": "Отправить заказ", "tr": "Siparişi Gönder" },
-      "waNote": { "az": "WhatsApp bildirişi sizə və adminə göndəriləcək.", "en": "WhatsApp notification will be sent to you and the admin.", "ru": "Уведомление WhatsApp будет отправлено вам и администратору.", "tr": "WhatsApp bildirimi size ve admine gönderilecek." },
-      "successTitle": { "az": "Sifarişiniz qəbul edildi!", "en": "Your order has been received!", "ru": "Ваш заказ получен!", "tr": "Siparişiniz alındı!" },
-      "successSubtitle": { "az": "WhatsApp nömrənizə təsdiq mesajı göndərildi. Tezliklə sizinlə əlaqə saxlayacağıq.", "en": "A confirmation message has been sent to your WhatsApp. We will contact you soon.", "ru": "На ваш WhatsApp отправлено подтверждение. Мы свяжемся с вами скоро.", "tr": "WhatsApp numaranıza onay mesajı gönderildi. Yakında sizinle iletişime geçeceğiz." },
-      "newOrderBtn": { "az": "Yeni Sifariş", "en": "New Order", "ru": "Новый заказ", "tr": "Yeni Sipariş" }
+      "titleLine1": {
+        "az": "Tədbiriniz üçün",
+        "en": "For your event",
+        "ru": "Для вашего мероприятия",
+        "tr": "Etkinliğiniz için"
+      },
+      "titleLine2": {
+        "az": "fərdi menyu.",
+        "en": "a personal menu.",
+        "ru": "персональное меню.",
+        "tr": "kişisel menü."
+      },
+      "subtitle": {
+        "az": "Formu doldurun — peşəkar ketrinq komandamız sizinlə əlaqə saxlayıb tam fərdi menyu planı hazırlasın.",
+        "en": "Fill out the form — our professional catering team will contact you and prepare a fully personalized menu plan.",
+        "ru": "Заполните форму — наша профессиональная команда свяжется с вами и подготовит персональный план меню.",
+        "tr": "Formu doldurun — profesyonel catering ekibimiz sizinle iletişime geçip tam kişisel menü planı hazırlasın."
+      },
+      "features": [
+        {
+          "az": "Peşəkar aşpazlar və ofisiantlar",
+          "en": "Professional chefs and waiters",
+          "ru": "Профессиональные повара и официанты",
+          "tr": "Profesyonel aşçılar ve garsonlar"
+        },
+        {
+          "az": "10-dən 1000+ nəfərə qədər tədbirlər",
+          "en": "Events from 10 to 1000+ guests",
+          "ru": "Мероприятия от 10 до 1000+ человек",
+          "tr": "10'dan 1000+ kişiye kadar etkinlikler"
+        },
+        {
+          "az": "Korporativ, toy, ad günü və daha çox",
+          "en": "Corporate, wedding, birthday and more",
+          "ru": "Корпоративные, свадьбы, дни рождения и многое другое",
+          "tr": "Kurumsal, düğün, doğum günü ve daha fazlası"
+        },
+        {
+          "az": "Anında WhatsApp təsdiq mesajı",
+          "en": "Instant WhatsApp confirmation message",
+          "ru": "Мгновенное подтверждение через WhatsApp",
+          "tr": "Anında WhatsApp onay mesajı"
+        }
+      ],
+      "formTitle": {
+        "az": "Ketrinq Sifarişi",
+        "en": "Catering Order",
+        "ru": "Заказ Кейтеринга",
+        "tr": "Catering Siparişi"
+      },
+      "formSubtitle": {
+        "az": "Zəhmət olmasa məlumatları doldurun.",
+        "en": "Please fill in the details.",
+        "ru": "Пожалуйста, заполните данные.",
+        "tr": "Lütfen bilgileri doldurun."
+      },
+      "fields": {
+        "name": {
+          "az": "Ad Soyad",
+          "en": "Full Name",
+          "ru": "Имя Фамилия",
+          "tr": "Ad Soyad"
+        },
+        "phone": {
+          "az": "Telefon",
+          "en": "Phone",
+          "ru": "Телефон",
+          "tr": "Telefon"
+        },
+        "email": {
+          "az": "Email",
+          "en": "Email",
+          "ru": "Email",
+          "tr": "Email"
+        },
+        "guests": {
+          "az": "Qonaq sayı",
+          "en": "Guest count",
+          "ru": "Количество гостей",
+          "tr": "Misafir sayısı"
+        },
+        "location": {
+          "az": "Məkan",
+          "en": "Venue",
+          "ru": "Место",
+          "tr": "Mekan"
+        },
+        "date": {
+          "az": "Tarix",
+          "en": "Date",
+          "ru": "Дата",
+          "tr": "Tarih"
+        },
+        "timeRange": {
+          "az": "Saat aralığı",
+          "en": "Time range",
+          "ru": "Временной диапазон",
+          "tr": "Saat aralığı"
+        },
+        "format": {
+          "az": "Tədbir formatı",
+          "en": "Event format",
+          "ru": "Формат мероприятия",
+          "tr": "Etkinlik formatı"
+        },
+        "menuNote": {
+          "az": "Menyu haqqında xüsusi istək",
+          "en": "Special menu request",
+          "ru": "Особые пожелания к меню",
+          "tr": "Menü hakkında özel istek"
+        }
+      },
+      "submitBtn": {
+        "az": "Sifarişi Göndər",
+        "en": "Send Order",
+        "ru": "Отправить заказ",
+        "tr": "Siparişi Gönder"
+      },
+      "waNote": {
+        "az": "WhatsApp bildirişi sizə və adminə göndəriləcək.",
+        "en": "WhatsApp notification will be sent to you and the admin.",
+        "ru": "Уведомление WhatsApp будет отправлено вам и администратору.",
+        "tr": "WhatsApp bildirimi size ve admine gönderilecek."
+      },
+      "successTitle": {
+        "az": "Sifarişiniz qəbul edildi!",
+        "en": "Your order has been received!",
+        "ru": "Ваш заказ получен!",
+        "tr": "Siparişiniz alındı!"
+      },
+      "successSubtitle": {
+        "az": "WhatsApp nömrənizə təsdiq mesajı göndərildi. Tezliklə sizinlə əlaqə saxlayacağıq.",
+        "en": "A confirmation message has been sent to your WhatsApp. We will contact you soon.",
+        "ru": "На ваш WhatsApp отправлено подтверждение. Мы свяжемся с вами скоро.",
+        "tr": "WhatsApp numaranıza onay mesajı gönderildi. Yakında sizinle iletişime geçeceğiz."
+      },
+      "newOrderBtn": {
+        "az": "Yeni Sifariş",
+        "en": "New Order",
+        "ru": "Новый заказ",
+        "tr": "Yeni Sipariş"
+      },
+      "directContactLabel": {
+        "az": "Bilavasitə əlaqə",
+        "en": "Direct contact",
+        "ru": "Прямая связь",
+        "tr": "Doğrudan iletişim"
+      },
+      "formats": [
+        {
+          "az": "Korporativ",
+          "en": "Corporate",
+          "ru": "Корпоратив",
+          "tr": "Kurumsal"
+        },
+        {
+          "az": "Toy",
+          "en": "Wedding",
+          "ru": "Свадьба",
+          "tr": "Düğün"
+        },
+        {
+          "az": "Nişan",
+          "en": "Engagement",
+          "ru": "Помолвка",
+          "tr": "Nişan"
+        },
+        {
+          "az": "Ad günü",
+          "en": "Birthday",
+          "ru": "День рождения",
+          "tr": "Doğum günü"
+        },
+        {
+          "az": "Məzuniyyət",
+          "en": "Graduation",
+          "ru": "Выпускной",
+          "tr": "Mezuniyet"
+        },
+        {
+          "az": "Açılış",
+          "en": "Opening",
+          "ru": "Открытие",
+          "tr": "Açılış"
+        },
+        {
+          "az": "Digər",
+          "en": "Other",
+          "ru": "Другое",
+          "tr": "Diğer"
+        }
+      ],
+      "timeSlots": [
+        "08:00–12:00",
+        "10:00–14:00",
+        "12:00–16:00",
+        "14:00–18:00",
+        "16:00–20:00",
+        "18:00–22:00",
+        "19:00–23:00",
+        "20:00–00:00"
+      ],
+      "guestOptions": [
+        "10-20",
+        "20-50",
+        "50-100",
+        "100-200",
+        "200-500",
+        "500+"
+      ],
+      "labelName": {
+        "az": "Ad Soyad",
+        "en": "Full Name",
+        "ru": "Имя и Фамилия",
+        "tr": "Ad Soyad"
+      },
+      "labelPhone": {
+        "az": "Telefon",
+        "en": "Phone",
+        "ru": "Телефон",
+        "tr": "Telefon"
+      },
+      "labelEmail": {
+        "az": "Email",
+        "en": "Email",
+        "ru": "Email",
+        "tr": "Email"
+      },
+      "labelGuests": {
+        "az": "Qonaq sayı",
+        "en": "Guest count",
+        "ru": "Кол-во гостей",
+        "tr": "Misafir sayısı"
+      },
+      "labelLocation": {
+        "az": "Məkan",
+        "en": "Venue",
+        "ru": "Место",
+        "tr": "Mekan"
+      },
+      "labelDate": {
+        "az": "Tarix",
+        "en": "Date",
+        "ru": "Дата",
+        "tr": "Tarih"
+      },
+      "labelTimeRange": {
+        "az": "Saat aralığı",
+        "en": "Time range",
+        "ru": "Диапазон времени",
+        "tr": "Saat aralığı"
+      },
+      "labelFormat": {
+        "az": "Tədbir formatı",
+        "en": "Event format",
+        "ru": "Формат мероприятия",
+        "tr": "Etkinlik formatı"
+      },
+      "labelMenuNote": {
+        "az": "Menyu haqqında xüsusi istək",
+        "en": "Special menu request",
+        "ru": "Особые пожелания",
+        "tr": "Özel menü isteği"
+      },
+      "placeholderName": {
+        "az": "Adınız",
+        "en": "Your name",
+        "ru": "Ваше имя",
+        "tr": "Adınız"
+      },
+      "placeholderGuests": {
+        "az": "Özəl say",
+        "en": "Custom count",
+        "ru": "Своё число",
+        "tr": "Özel sayı"
+      },
+      "placeholderLocation": {
+        "az": "Şəhər, küçə, yer adı...",
+        "en": "City, street, venue...",
+        "ru": "Город, улица, место...",
+        "tr": "Şehir, cadde, mekan..."
+      },
+      "placeholderTimeRange": {
+        "az": "məs: 18:00 – 23:00",
+        "en": "e.g. 18:00 – 23:00",
+        "ru": "напр: 18:00 – 23:00",
+        "tr": "örn: 18:00 – 23:00"
+      },
+      "placeholderMenuNote": {
+        "az": "Allerji, xüsusi diyet...",
+        "en": "Allergy, special diet...",
+        "ru": "Аллергия, диета...",
+        "tr": "Alerji, özel diyet..."
+      },
+      "sendingLabel": {
+        "az": "Göndərilir...",
+        "en": "Sending...",
+        "ru": "Отправка...",
+        "tr": "Gönderiliyor..."
+      },
+      "getCodeLabel": {
+        "az": "Kodu al və davam et",
+        "en": "Get code and continue",
+        "ru": "Получить код",
+        "tr": "Kodu al ve devam et"
+      },
+      "formBadge": {
+        "az": "Sifariş formu",
+        "en": "Order form",
+        "ru": "Форма заказа",
+        "tr": "Sipariş formu"
+      },
+      "otpBadge": {
+        "az": "Təsdiq kodu",
+        "en": "Verification code",
+        "ru": "Код подтверждения",
+        "tr": "Doğrulama kodu"
+      },
+      "otpTitle": {
+        "az": "WhatsApp kodu",
+        "en": "WhatsApp code",
+        "ru": "Код WhatsApp",
+        "tr": "WhatsApp kodu"
+      },
+      "otpSentTo": {
+        "az": "nömrəsinə göndərildi",
+        "en": "sent to",
+        "ru": "отправлен на",
+        "tr": "numarasına gönderildi"
+      },
+      "otpVerifyBtn": {
+        "az": "Təsdiqlə və Göndər",
+        "en": "Verify and Send",
+        "ru": "Подтвердить и отправить",
+        "tr": "Doğrula ve Gönder"
+      },
+      "otpVerifyingLabel": {
+        "az": "Yoxlanılır...",
+        "en": "Verifying...",
+        "ru": "Проверка...",
+        "tr": "Doğrulanıyor..."
+      },
+      "otpNoCode": {
+        "az": "Kodu almadınız?",
+        "en": "Didn't receive the code?",
+        "ru": "Не получили код?",
+        "tr": "Kodu almadınız mı?"
+      },
+      "otpResend": {
+        "az": "Yenidən göndər",
+        "en": "Resend",
+        "ru": "Отправить снова",
+        "tr": "Yeniden gönder"
+      },
+      "otpWait": {
+        "az": "s gözləyin",
+        "en": "s wait",
+        "ru": "с ожидания",
+        "tr": "s bekleyin"
+      },
+      "successGuestLabel": {
+        "az": "Qonaq:",
+        "en": "Guests:",
+        "ru": "Гости:",
+        "tr": "Misafir:"
+      },
+      "successDateLabel": {
+        "az": "Tarix:",
+        "en": "Date:",
+        "ru": "Дата:",
+        "tr": "Tarih:"
+      },
+      "successLocationLabel": {
+        "az": "Məkan:",
+        "en": "Venue:",
+        "ru": "Место:",
+        "tr": "Mekan:"
+      },
+      "validationRequired": {
+        "az": "Ad və telefon mütləqdir.",
+        "en": "Name and phone are required.",
+        "ru": "Имя и телефон обязательны.",
+        "tr": "Ad ve telefon zorunludur."
+      }
     }
   },
   "portfolio": {
     "hero": {
-      "eyebrow": { "az": "Portfolio", "en": "Portfolio", "ru": "Портфолио", "tr": "Portföy" },
-      "title": { "az": "Layihələrimiz", "en": "Our Projects", "ru": "Наши Проекты", "tr": "Projelerimiz" },
-      "subtitle": { "az": "Hər tədbirə özəl yanaşma. Real layihələr, real nəticələr.", "en": "A unique approach to every event. Real projects, real results.", "ru": "Индивидуальный подход к каждому мероприятию. Реальные проекты, реальные результаты.", "tr": "Her etkinliğe özel yaklaşım. Gerçek projeler, gerçek sonuçlar." }
+      "eyebrow": {
+        "az": "Portfolio",
+        "en": "Portfolio",
+        "ru": "Портфолио",
+        "tr": "Portföy"
+      },
+      "title": {
+        "az": "Layihələrimiz",
+        "en": "Our Projects",
+        "ru": "Наши Проекты",
+        "tr": "Projelerimiz"
+      },
+      "subtitle": {
+        "az": "Hər tədbirə özəl yanaşma. Real layihələr, real nəticələr.",
+        "en": "A unique approach to every event. Real projects, real results.",
+        "ru": "Индивидуальный подход к каждому мероприятию. Реальные проекты, реальные результаты.",
+        "tr": "Her etkinliğe özel yaklaşım. Gerçek projeler, gerçek sonuçlar."
+      }
     },
     "filters": {
-      "searchPlaceholder": { "az": "Layihə, müştəri...", "en": "Project, client...", "ru": "Проект, клиент...", "tr": "Proje, müşteri..." },
-      "categoryLabel": { "az": "Kateqoriya", "en": "Category", "ru": "Категория", "tr": "Kategori" },
-      "tagsLabel": { "az": "Etiketlər", "en": "Tags", "ru": "Теги", "tr": "Etiketler" },
-      "clearLabel": { "az": "Filtri Təmizlə", "en": "Clear Filters", "ru": "Сбросить фильтры", "tr": "Filtreleri Temizle" },
-      "allLabel": { "az": "Hamısı", "en": "All", "ru": "Все", "tr": "Hepsi" },
-      "emptyLabel": { "az": "Nəticə tapılmadı", "en": "No results found", "ru": "Результаты не найдены", "tr": "Sonuç bulunamadı" }
+      "searchPlaceholder": {
+        "az": "Layihə, müştəri...",
+        "en": "Project, client...",
+        "ru": "Проект, клиент...",
+        "tr": "Proje, müşteri..."
+      },
+      "categoryLabel": {
+        "az": "Kateqoriya",
+        "en": "Category",
+        "ru": "Категория",
+        "tr": "Kategori"
+      },
+      "tagsLabel": {
+        "az": "Etiketlər",
+        "en": "Tags",
+        "ru": "Теги",
+        "tr": "Etiketler"
+      },
+      "clearLabel": {
+        "az": "Filtri Təmizlə",
+        "en": "Clear Filters",
+        "ru": "Сбросить фильтры",
+        "tr": "Filtreleri Temizle"
+      },
+      "allLabel": {
+        "az": "Hamısı",
+        "en": "All",
+        "ru": "Все",
+        "tr": "Hepsi"
+      },
+      "emptyLabel": {
+        "az": "Nəticə tapılmadı",
+        "en": "No results found",
+        "ru": "Результаты не найдены",
+        "tr": "Sonuç bulunamadı"
+      }
     }
+  },
+  "eventgarden": {
+    "hero": {
+      "badge": {
+        "az": "Açıq Hava Etkinlikləri",
+        "en": "Outdoor Events",
+        "ru": "Мероприятия на открытом воздухе",
+        "tr": "Açık Hava Etkinlikleri"
+      },
+      "titleLine1": {
+        "az": "Event",
+        "en": "Event",
+        "ru": "Event",
+        "tr": "Event"
+      },
+      "titleLine2": {
+        "az": "Garden.",
+        "en": "Garden.",
+        "ru": "Garden.",
+        "tr": "Garden."
+      },
+      "subtitle": {
+        "az": "Bağça və açıq hava etkinlikləri üçün xüsusi konsept.",
+        "en": "A special concept for garden and outdoor events.",
+        "ru": "Специальная концепция для уличных мероприятий.",
+        "tr": "Bahçe etkinlikleri için özel konsept."
+      }
+    }
+  },
+  "tv": {
+    "hero": {
+      "badge": {
+        "az": "Media & Yayım",
+        "en": "Media & Broadcast",
+        "ru": "Медиа и трансляции",
+        "tr": "Medya & Yayın"
+      },
+      "titleLine1": {
+        "az": "TV &",
+        "en": "TV &",
+        "ru": "TV &",
+        "tr": "TV &"
+      },
+      "titleLine2": {
+        "az": "Yayım.",
+        "en": "Broadcast.",
+        "ru": "Трансляция.",
+        "tr": "Yayın."
+      },
+      "subtitle": {
+        "az": "Tədbirlərinizin peşəkar yayımı və video həlləri.",
+        "en": "Professional broadcasting and video solutions.",
+        "ru": "Профессиональные трансляции для ваших мероприятий.",
+        "tr": "Etkinlikleriniz için profesyonel yayın çözümleri."
+      }
+    }
+  },
+  "teambuilding": {
+    "hero": {
+      "badge": {
+        "az": "Komanda Ruhu",
+        "en": "Team Spirit",
+        "ru": "Командный дух",
+        "tr": "Takım Ruhu"
+      },
+      "titleLine1": {
+        "az": "Timbildinq",
+        "en": "Teambuilding",
+        "ru": "Тимбилдинг",
+        "tr": "Takım Oluşturma"
+      },
+      "titleLine2": {
+        "az": "Həlləri.",
+        "en": "Solutions.",
+        "ru": "Решения.",
+        "tr": "Çözümleri."
+      },
+      "subtitle": {
+        "az": "Komandanızı gücləndirən yaradıcı və interaktiv etkinlik həlləri.",
+        "en": "Creative and interactive event solutions that strengthen your team.",
+        "ru": "Творческие решения для укрепления команды.",
+        "tr": "Takımınızı güçlendiren yaratıcı çözümler."
+      }
+    }
+  },
+  "gallery": {
+    "hero": {
+      "badge": {
+        "az": "Vizual Arxiv",
+        "en": "Visual Archive",
+        "ru": "Визуальный архив",
+        "tr": "Görsel Arşiv"
+      },
+      "titleLine1": {
+        "az": "Bizim",
+        "en": "Our",
+        "ru": "Наша",
+        "tr": "Bizim"
+      },
+      "titleLine2": {
+        "az": "Qalereya.",
+        "en": "Gallery.",
+        "ru": "Галерея.",
+        "tr": "Galeri."
+      },
+      "subtitle": {
+        "az": "Tədbirlərimizdən ən yadda qalan və vizual olaraq möhtəşəm anlar.",
+        "en": "The most memorable and visually stunning moments from our events.",
+        "ru": "Самые незабываемые моменты наших мероприятий.",
+        "tr": "Etkinliklerimizden en akılda kalan görsel anlar."
+      }
+    },
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800&auto=format&fit=crop",
+        "category": "Tədbir"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop",
+        "category": "Səhnə"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop",
+        "category": "Korporativ"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop",
+        "category": "Teambuilding"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800&auto=format&fit=crop",
+        "category": "İşıq"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop",
+        "category": "Texnika"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1560472355-536de3962603?q=80&w=800&auto=format&fit=crop",
+        "category": "Təqdimat"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800&auto=format&fit=crop",
+        "category": "Konfrans"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=800&auto=format&fit=crop",
+        "category": "Şou"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?q=80&w=800&auto=format&fit=crop",
+        "category": "Konsert"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=800&auto=format&fit=crop",
+        "category": "Premium"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=800&auto=format&fit=crop",
+        "category": "Tədbir"
+      }
+    ]
   }
 }

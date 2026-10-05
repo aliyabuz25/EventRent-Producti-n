@@ -54,7 +54,7 @@ export default function AboutBento() {
 
           <div className="lg:col-span-2 border border-white/[0.07] rounded-2xl overflow-hidden relative min-h-[380px]">
             <img
-              src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=900&auto=format&fit=crop"
+              src={s.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=900&auto=format&fit=crop'}
               className="bento-img absolute inset-0 w-full h-full object-cover opacity-40"
               alt={t(locale, s.imageTitle)}
               referrerPolicy="no-referrer"

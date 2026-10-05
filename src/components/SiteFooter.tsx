@@ -29,14 +29,18 @@ export default function SiteFooter() {
             <div className="space-y-4">
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href={s.instagramHref || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-premium-orange hover:border-premium-orange transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                 >
                   <Instagram aria-hidden="true" className="w-5 h-5 text-gray-400 group-hover:text-white" />
                 </a>
                 <a
-                  href="#"
+                  href={s.linkedinHref || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="LinkedIn"
                   className="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-premium-orange hover:border-premium-orange transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-premium-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                 >
@@ -45,7 +49,7 @@ export default function SiteFooter() {
               </div>
 
               <a
-                href="https://wa.me/994502251515"
+                href={s.whatsappHref || 'https://wa.me/994502251515'}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t(locale, s.whatsappCta)}
