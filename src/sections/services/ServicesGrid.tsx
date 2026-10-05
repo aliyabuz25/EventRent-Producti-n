@@ -1,13 +1,9 @@
 import React, { useRef } from 'react';
-import { Printer, Palette, Sparkles, CheckCircle2, ArrowUpRight, type LucideIcon } from 'lucide-react';
+import { CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useGsap, gsap } from '../../motion/useGsap';
 import { useSiteContent } from '../../content.context';
 import { t, getServiceCategories } from '../../content';
-
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  printing: Printer, decor: Palette, other: Sparkles,
-};
 
 export default function ServicesGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -22,10 +18,6 @@ export default function ServicesGrid() {
     });
     gsap.from('.service-card-img', {
       scale: 1.15, opacity: 0, duration: 1.4, stagger: 0.15, ease: 'power3.out',
-      toggleActions: 'play none none none',
-    });
-    gsap.from('.service-card-icon', {
-      scale: 0, opacity: 0, duration: 0.7, stagger: 0.15, ease: 'back.out(1.7)',
       toggleActions: 'play none none none',
     });
   }, { scope: containerRef });
@@ -45,7 +37,6 @@ export default function ServicesGrid() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
         {categories.map((category) => {
-          const Icon = CATEGORY_ICONS[category.id] ?? Sparkles;
           const title = t(locale, category.title);
           const description = t(locale, category.description);
           const path = category.path ?? `/services/${category.id}`;
@@ -59,17 +50,18 @@ export default function ServicesGrid() {
           return (
             <div key={category.id} className="service-card group flex flex-col">
               <Link to={path} className="relative aspect-square rounded-[60px] overflow-hidden bg-black shadow-2xl border-8 border-gray-50 mb-8 flex-shrink-0">
-                <img
-                  src={category.image}
-                  alt={title}
-                  className="service-card-img absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
-                  referrerPolicy="no-referrer"
-                />
+                {category.image ? (
+                  <img
+                    src={category.image}
+                    alt={title}
+                    className="service-card-img absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gray-900 opacity-60" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute inset-0 p-10 md:p-12 flex flex-col justify-end">
-                  <div className="service-card-icon w-16 h-16 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white border border-white/10 group-hover:bg-white group-hover:text-premium-orange transition-all duration-500 mb-6">
-                    <Icon className="w-8 h-8" />
-                  </div>
                   <h3 className="text-4xl lg:text-[2.6rem] font-bold text-white tracking-tighter leading-[1.05]">
                     {firstWord}
                     {restWords && (

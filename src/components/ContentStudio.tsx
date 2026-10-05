@@ -321,8 +321,6 @@ function ImgField({ label, value, onChange, token, square }: { label: string; va
     if (file && file.type.startsWith('image/')) doUpload(file);
   };
 
-  const boxH = square ? 120 : 160;
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
       <div className="d-flex align-items-center justify-content-between">
@@ -342,7 +340,8 @@ function ImgField({ label, value, onChange, token, square }: { label: string; va
 
       <div
         style={{
-          height: boxH,
+          aspectRatio: square ? '1 / 1' : '16 / 9',
+          width: '100%',
           borderRadius: 12,
           overflow: 'hidden',
           position: 'relative',
@@ -750,67 +749,6 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           </G2>
         </Card>
 
-        {/* ── 8. Team (HomeTeam — about sayfasında da işlənir) ─────────────────── */}
-        <Card title="8 · Əməkdaşlar (Team)" defaultOpen>
-          <div className="mb-3 p-3 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
-            <G2>
-              <FL label="Badge" value={content.home.team.badge} locale={editorLocale} onChange={v => upd(c => { c.home.team.badge = setText(c.home.team.badge, v); return c; })} />
-              <FL label="Başlıq Accent" value={content.home.team.titleAccent} locale={editorLocale} onChange={v => upd(c => { c.home.team.titleAccent = setText(c.home.team.titleAccent, v); return c; })} />
-            </G2>
-          </div>
-
-          <div className="d-flex align-items-center justify-content-between mb-3">
-            <div>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#212529' }}>Əməkdaşlar</span>
-              <span className="ms-2 badge bg-danger" style={{ fontSize: 10, borderRadius: 20 }}>{content.home.team.members.length}</span>
-            </div>
-            <button type="button" className="btn btn-sm btn-danger d-flex align-items-center gap-1" style={{ borderRadius: 9, fontSize: 11, fontWeight: 700 }}
-              onClick={() => upd(c => { c.home.team.members.push({ name: { az: 'Yeni Əməkdaş', en: 'New Member', ru: 'Новый участник', tr: 'Yeni Üye' }, role: { az: '', en: '', ru: '', tr: '' }, description: { az: '', en: '', ru: '', tr: '' }, image: '' }); return c; })}>
-              <Plus size={12} /> Əməkdaş Əlavə Et
-            </button>
-          </div>
-
-          <div className="d-flex flex-column gap-3">
-            {content.home.team.members.map((member, i) => (
-              <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                {/* Header bar */}
-                <div className="d-flex align-items-center justify-content-between px-3 py-2" style={{ background: '#f8f9fa', borderBottom: '1px solid #e9ecef' }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#e30613' }}>#{i + 1}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#212529' }}>{member.name.az || 'Yeni Əməkdaş'}</span>
-                  <button type="button" className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" style={{ borderRadius: 7, fontSize: 10, padding: '2px 8px' }}
-                    onClick={() => upd(c => { c.home.team.members = c.home.team.members.filter((_, j) => j !== i); return c; })}>
-                    <Trash2 size={10} /> Sil
-                  </button>
-                </div>
-                {/* Body */}
-                <div className="d-flex gap-0" style={{ padding: 0 }}>
-                  {/* Left - form fields */}
-                  <div className="d-flex flex-column gap-2 flex-grow-1" style={{ padding: 16 }}>
-                    <FL label="Ad Soyad" value={member.name} locale={editorLocale} onChange={v => upd(c => { c.home.team.members[i].name = setText(c.home.team.members[i].name, v); return c; })} />
-                    <FL label="Vəzifə" value={member.role} locale={editorLocale} onChange={v => upd(c => { c.home.team.members[i].role = setText(c.home.team.members[i].role, v); return c; })} />
-                    <FL label="Açıqlama" value={member.description} locale={editorLocale} multiline onChange={v => upd(c => { c.home.team.members[i].description = setText(c.home.team.members[i].description, v); return c; })} />
-                  </div>
-                  {/* Right - square image */}
-                  <div style={{ width: 160, flexShrink: 0, borderLeft: '1px solid #e9ecef', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#fafafa' }}>
-                    <ImgField
-                      label="Foto"
-                      value={member.image}
-                      square
-                      token={(() => { try { return localStorage.getItem('er_admin_token') || undefined; } catch { return undefined; } })()}
-                      onChange={v => upd(c => { c.home.team.members[i].image = v; return c; })}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-            {content.home.team.members.length === 0 && (
-              <div className="text-center py-4 text-muted" style={{ fontSize: 13, border: '2px dashed #dee2e6', borderRadius: 10 }}>
-                Hələ əməkdaş yoxdur. "Əməkdaş Əlavə Et" düyməsini basın.
-              </div>
-            )}
-          </div>
-        </Card>
-
         {/* ── 9. Featured Setups ─────────────────── */}
         <Card title="9 · Event Types (Növlər)">
           <G2>
@@ -1050,7 +988,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
           ))}
         </Card>
 
-        <Card title="6 · Əməkdaşlar (Team — about)" defaultOpen badge={content.home.team.members.length}>
+        <Card title="6 · Əməkdaşlar (Team)" defaultOpen badge={content.home.team.members.length}>
           <div className="mb-3 p-3 rounded-3" style={{ background: '#f8f9fa', border: '1px solid #e9ecef' }}>
             <G3>
               <FL label="Badge" value={content.about.team.badge} locale={editorLocale} onChange={v => upd(c => { c.about.team.badge = setText(c.about.team.badge, v); return c; })} />
