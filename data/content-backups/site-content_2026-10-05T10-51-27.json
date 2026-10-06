@@ -839,7 +839,7 @@
   "home": {
     "hero": {
       "titleLine1": {
-        "az": "Səhnə",
+        "az": "Səhnəsfds",
         "en": "The Stage",
         "ru": "Сцена",
         "tr": "Sahne"
@@ -932,7 +932,7 @@
       ],
       "videoPoster": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=2070",
       "overlayImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1600",
-      "videoSrc": "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4"
+      "videoSrc": "Test 1791188670926"
     },
     "capabilities": {
       "badge": {
@@ -1603,7 +1603,7 @@
             "tr": "Kurucu / Direktör"
           },
           "description": {
-            "az": "Tədbir idarəçiliyi və kreativ planlama sahəsində təcrübəli komanda lideridir. Böyükmiqyaslı layihələrin strategiyası, planlaşdırılması və icrasını idarə edir.",
+            "az": "TEST BAŞLIQ",
             "en": "An experienced team leader in event management and creative planning. Manages strategy, planning and execution of large-scale projects.",
             "ru": "Опытный руководитель команды в сфере управления мероприятиями и креативного планирования. Управляет стратегией, планированием и реализацией масштабных проектов.",
             "tr": "Etkinlik yönetimi ve yaratıcı planlama alanında deneyimli bir ekip lideridir. Büyük ölçekli projelerin stratejisini, planlamasını ve uygulanmasını yönetir."
@@ -1698,7 +1698,7 @@
           "name": {
             "az": "Nərmin Tarverdiyeva",
             "en": "Narmin Tarverdiyeva",
-            "ru": "Нармин Тарвердиева",
+            "ru": "Нарм��н Тарвердиева",
             "tr": "Nermin Tarverdiyeva"
           },
           "role": {
@@ -2986,8 +2986,8 @@
       "subtitle": {
         "az": "\"Event Rent\" olaraq biz, tədbirlərinizin ləzzətini artırmaq üçün ən yüksək keyfiyyətli ketrinq xidmətini təklif edirik.",
         "en": "As \"Event Rent\" we offer the highest quality catering service to enhance the taste of your events.",
-        "ru": "Как \"Event Rent\" мы предлагаем высококачественный кейтеринг.",
-        "tr": "\"Event Rent\" olarak en yüksek kalitede catering hizmeti sunuyoruz."
+        "ru": "Как \"Event Rent\" мы предлагаем высококачественный кейтеринг для ваших мероприятий.",
+        "tr": "\"Event Rent\" olarak etkinliklerinizin lezzetini artırmak için en yüksek kalitede catering hizmeti sunuyoruz."
       },
       "menuItems": [
         {
@@ -3000,8 +3000,8 @@
           "desc": {
             "az": "Müxtəlif pendir, ət və tərəvəz çeşidləri.",
             "en": "Various cheese, meat and vegetable assortments.",
-            "ru": "Различные сыры, мясо и овощи.",
-            "tr": "Çeşitli peynir, et ve sebzeler."
+            "ru": "Различные сыры, мясо и овощные ассорти.",
+            "tr": "Çeşitli peynir, et ve sebze çeşitleri."
           }
         },
         {
@@ -3014,7 +3014,7 @@
           "desc": {
             "az": "Milli və Avropa mətbəxinin ən dadlı nümunələri.",
             "en": "The most delicious examples of national and European cuisine.",
-            "ru": "Лучшие блюда национальной и европейской кухни.",
+            "ru": "Самые вкусные примеры национальной и европейской кухни.",
             "tr": "Milli ve Avrupa mutfağının en lezzetli örnekleri."
           }
         },
@@ -3042,7 +3042,7 @@
           "desc": {
             "az": "Alkoqollu və alkoqolsuz içki menyusu.",
             "en": "Alcoholic and non-alcoholic beverage menu.",
-            "ru": "Алкогольное и безалкогольное меню.",
+            "ru": "Алкогольное и безалкогольное меню напитков.",
             "tr": "Alkollü ve alkolsüz içecek menüsü."
           }
         }
@@ -3082,8 +3082,8 @@
       "subtitle": {
         "az": "Formu doldurun — peşəkar ketrinq komandamız sizinlə əlaqə saxlayıb tam fərdi menyu planı hazırlasın.",
         "en": "Fill out the form — our professional catering team will contact you and prepare a fully personalized menu plan.",
-        "ru": "Заполните форму — наша команда свяжется с вами.",
-        "tr": "Formu doldurun — ekibimiz sizinle iletişime geçsin."
+        "ru": "Заполните форму — наша профессиональная команда свяжется с вами и подготовит персональный план меню.",
+        "tr": "Formu doldurun — profesyonel catering ekibimiz sizinle iletişime geçip tam kişisel menü planı hazırlasın."
       },
       "features": [
         {
@@ -3101,7 +3101,7 @@
         {
           "az": "Korporativ, toy, ad günü və daha çox",
           "en": "Corporate, wedding, birthday and more",
-          "ru": "Корпоративные, свадьбы, дни рождения",
+          "ru": "Корпоративные, свадьбы, дни рождения и многое другое",
           "tr": "Kurumsal, düğün, doğum günü ve daha fazlası"
         },
         {
@@ -3200,8 +3200,8 @@
       "successSubtitle": {
         "az": "WhatsApp nömrənizə təsdiq mesajı göndərildi. Tezliklə sizinlə əlaqə saxlayacağıq.",
         "en": "A confirmation message has been sent to your WhatsApp. We will contact you soon.",
-        "ru": "На ваш WhatsApp отправлено подтверждение.",
-        "tr": "WhatsApp numaranıza onay mesajı gönderildi."
+        "ru": "На ваш WhatsApp отправлено подтверждение. Мы свяжемся с вами скоро.",
+        "tr": "WhatsApp numaranıza onay mesajı gönderildi. Yakında sizinle iletişime geçeceğiz."
       },
       "newOrderBtn": {
         "az": "Yeni Sifariş",
@@ -3470,8 +3470,8 @@
       "subtitle": {
         "az": "Hər tədbirə özəl yanaşma. Real layihələr, real nəticələr.",
         "en": "A unique approach to every event. Real projects, real results.",
-        "ru": "Индивидуальный подход к каждому мероприятию.",
-        "tr": "Her etkinliğe özel yaklaşım. Gerçek projeler."
+        "ru": "Индивидуальный подход к каждому мероприятию. Реальные проекты, реальные результаты.",
+        "tr": "Her etkinliğe özel yaklaşım. Gerçek projeler, gerçek sonuçlar."
       }
     },
     "filters": {
@@ -3494,7 +3494,7 @@
         "tr": "Etiketler"
       },
       "clearLabel": {
-        "az": "Filtri Sıfırla",
+        "az": "Filtri Təmizlə",
         "en": "Clear Filters",
         "ru": "Сбросить фильтры",
         "tr": "Filtreleri Temizle"
@@ -3534,10 +3534,10 @@
         "tr": "Garden."
       },
       "subtitle": {
-        "az": "Bağça və açıq hava etkinlikləri üçün xüsusi konsept — çadır, dekor, işıqlandırma və səs sistemləri ilə tam həll.",
-        "en": "A special concept for garden and outdoor events — complete solutions with tents, decor, lighting and sound systems.",
-        "ru": "Специальная концепция для уличных мероприятий — полное решение с тентами, декором, освещением и звуком.",
-        "tr": "Bahçe ve açık hava etkinlikleri için özel konsept — çadır, dekor, aydınlatma ve ses sistemleri ile tam çözüm."
+        "az": "Bağça və açıq hava etkinlikləri üçün xüsusi konsept.",
+        "en": "A special concept for garden and outdoor events.",
+        "ru": "Специальная концепция для уличных мероприятий.",
+        "tr": "Bahçe etkinlikleri için özel konsept."
       }
     }
   },
@@ -3563,9 +3563,9 @@
       },
       "subtitle": {
         "az": "Tədbirlərinizin peşəkar yayımı və video həlləri.",
-        "en": "Professional broadcasting and video solutions for your events.",
-        "ru": "Профессиональные трансляции и видеорешения для ваших мероприятий.",
-        "tr": "Etkinlikleriniz için profesyonel yayın ve video çözümleri."
+        "en": "Professional broadcasting and video solutions.",
+        "ru": "Профессиональные трансляции для ваших мероприятий.",
+        "tr": "Etkinlikleriniz için profesyonel yayın çözümleri."
       }
     }
   },
@@ -3592,8 +3592,8 @@
       "subtitle": {
         "az": "Komandanızı gücləndirən yaradıcı və interaktiv etkinlik həlləri.",
         "en": "Creative and interactive event solutions that strengthen your team.",
-        "ru": "Творческие и интерактивные решения для укрепления команды.",
-        "tr": "Takımınızı güçlendiren yaratıcı ve interaktif etkinlik çözümleri."
+        "ru": "Творческие решения для укрепления команды.",
+        "tr": "Takımınızı güçlendiren yaratıcı çözümler."
       }
     }
   },
