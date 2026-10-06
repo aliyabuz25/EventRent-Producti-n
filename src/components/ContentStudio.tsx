@@ -567,6 +567,34 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
 
   const topBar = (
     <>
+      {/* FLOATING SAVE BUTTON */}
+      <div 
+        style={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          padding: '12px 20px',
+          background: isDirty ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
+          backdropFilter: isDirty ? 'blur(10px)' : 'none',
+          borderRadius: 16,
+          boxShadow: isDirty ? '0 12px 40px rgba(227,6,19,0.2)' : 'none',
+          border: isDirty ? '1px solid rgba(227,6,19,0.1)' : 'none',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          pointerEvents: isDirty ? 'auto' : 'none',
+          opacity: isDirty ? 1 : 0,
+          transform: isDirty ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.9)'
+        }}
+      >
+        {isDirty && <span style={{ fontSize: 13, fontWeight: 700, color: '#e30613' }}>● Dəyişikliklər var</span>}
+        <button onClick={saveContent} disabled={isSaving} className="btn btn-danger fw-bold d-flex align-items-center gap-2 shadow-sm" style={{ borderRadius: 12, padding: '10px 24px', fontSize: 15 }}>
+          <Save size={18} /> {isSaving ? 'Yadda saxlanır...' : 'Dəyişiklikləri Uygula'}
+        </button>
+      </div>
+
       <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: 12 }}>
         <div className="card-body py-3 px-4 d-flex flex-wrap align-items-center gap-3">
           <div className="me-auto">
