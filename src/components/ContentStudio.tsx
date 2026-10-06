@@ -1155,7 +1155,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                       <FL label="Ad" value={sub.name} locale={editorLocale} onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.name = setText(s.name, v); } return c; })} />
                       <FL label="Açıqlama" value={sub.desc} locale={editorLocale} multiline onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.desc = setText(s.desc, v); } return c; })} />
                       <div className="col-12">
-                        <ImgField label="Alt Xidmət Şəkli" value={sub.image || ''} token={token} square onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.image = v; } return c; })} />
+                        <ImgField label="Alt Xidmət Şəkli" value={sub.image || `https://picsum.photos/seed/${sub.id}/800/800`} token={token} square onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.image = v; } return c; })} />
                       </div>
                       <div className="col-12">
                         <label style={labelStyle}>Suallar (hər sətir ayrı)</label>
