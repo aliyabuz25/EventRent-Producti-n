@@ -1,48 +1,58 @@
 services:
   eventrent-backend:
+    container_name: eventrent-backend
     build:
       context: .
       dockerfile: Dockerfile.backend
     image: eventrent-backend:latest
+    pull_policy: build
     restart: unless-stopped
     environment:
       PORT: "4320"
       NODE_ENV: "production"
       JWT_SECRET: "change_this_to_a_long_random_secret_min_32_chars"
-      DB_PATH: "data/eventrent.db"
+      DB_PATH: "/app/data/eventrent.db"
       SITE_URL: "https://erent.octotech.az"
-      ALLOWED_ORIGINS: "https://erent.octotech.az"
+      ALLOWED_ORIGINS: "https://erent.octotech.az,http://erent.octotech.az"
       OWNER_WA_PHONE: "994XXXXXXXXX"
     volumes:
       - /datastore/eventrent/uploads:/app/uploads
       - /datastore/eventrent/data:/app/data
     networks:
       - edge
+      - octobot-net
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
       - 'traefik.http.routers.eventrent-api.rule=(Host(`erent.octotech.az`)) && (PathPrefix(`/api`) || PathPrefix(`/uploads`))'
-      - 'traefik.http.routers.eventrent-api.entrypoints=web'
+      - 'traefik.http.routers.eventrent-api.entrypoints=web,websecure'
       - 'traefik.http.routers.eventrent-api.priority=100'
+      - 'traefik.http.routers.eventrent-api.tls=true'
       - 'traefik.http.services.eventrent-api.loadbalancer.server.port=4320'
 
   eventrent-frontend:
+    container_name: eventrent-frontend
     build:
       context: .
       dockerfile: Dockerfile.frontend
     image: eventrent-frontend:latest
+    pull_policy: build
     restart: unless-stopped
     volumes:
       - /datastore/eventrent/nginx-logs:/app/nginx-logs
     networks:
       - edge
+      - octobot-net
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
       - 'traefik.http.routers.eventrent.rule=Host(`erent.octotech.az`)'
-      - 'traefik.http.routers.eventrent.entrypoints=web'
+      - 'traefik.http.routers.eventrent.entrypoints=web,websecure'
+      - 'traefik.http.routers.eventrent.tls=true'
       - 'traefik.http.services.eventrent.loadbalancer.server.port=80'
 
 networks:
   edge:
+    external: true
+  octobot-net:
     external: true
