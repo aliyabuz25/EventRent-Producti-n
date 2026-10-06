@@ -1,10 +1,10 @@
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20-bullseye-slim AS builder
 
 WORKDIR /app
-COPY package*.json ./
-# Hata vermesini önlemek için --legacy-peer-deps veya npm install yerine:
-RUN npm install --legacy-peer-deps || npm cache clean --force && npm install --legacy-peer-deps
+COPY package.json ./
+# Lock faylı problemi olmaması üçün yalnız package.json-a baxaraq install edirik
+RUN npm install
 
 COPY . .
 RUN npm run build
