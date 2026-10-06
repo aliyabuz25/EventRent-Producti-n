@@ -1137,7 +1137,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                   <button type="button" className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 9, fontSize: 11 }}
                     onClick={() => {
                       const id = `sub-${Date.now()}`;
-                      upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) cat.subItems.push({ id, name: { az: 'Yeni', en: 'New', ru: 'Новый', tr: 'Yeni' }, desc: { az: '', en: '', ru: '', tr: '' }, questions: { az: [], en: [], ru: [], tr: [] } }); return c; });
+                      upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) cat.subItems.push({ id, image: '', name: { az: 'Yeni', en: 'New', ru: 'Новый', tr: 'Yeni' }, desc: { az: '', en: '', ru: '', tr: '' }, questions: { az: [], en: [], ru: [], tr: [] } }); return c; });
                     }}>
                     + Alt Əlavə Et
                   </button>
@@ -1154,6 +1154,9 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
                     <G2>
                       <FL label="Ad" value={sub.name} locale={editorLocale} onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.name = setText(s.name, v); } return c; })} />
                       <FL label="Açıqlama" value={sub.desc} locale={editorLocale} multiline onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.desc = setText(s.desc, v); } return c; })} />
+                      <div className="col-12">
+                        <ImgField label="Alt Xidmət Şəkli" value={sub.image || ''} token={token} square onChange={v => upd(c => { const cat = c.services.categories.find(x => x.id === selectedCategoryId); if (cat) { const s = cat.subItems.find(x => x.id === sub.id); if (s) s.image = v; } return c; })} />
+                      </div>
                       <div className="col-12">
                         <label style={labelStyle}>Suallar (hər sətir ayrı)</label>
                         <textarea rows={3} className={inputCls} style={{ resize: 'none', borderRadius: 8 }}

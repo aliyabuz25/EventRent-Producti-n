@@ -203,6 +203,7 @@ export interface ServiceSubItem {
   id: string;
   name: LocalizedText;
   desc: LocalizedText;
+  image?: string;
   questions: LocalizedTextArray;
 }
 

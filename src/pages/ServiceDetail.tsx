@@ -32,7 +32,7 @@ export default function ServiceDetail() {
       quantity,
       technicalAnswers: answers,
       name: t(locale, currentItem!.name),
-      image: `https://picsum.photos/seed/${currentItem!.id}/800/800`,
+      image: currentItem!.image || `https://picsum.photos/seed/${currentItem!.id}/800/800`,
       category: categoryTitle,
     } as any);
 
@@ -102,7 +102,7 @@ export default function ServiceDetail() {
               >
                 <div className="aspect-square rounded-3xl overflow-hidden mb-8 border-4 border-white/10 shadow-2xl">
                   <img
-                    src={`https://picsum.photos/seed/${item.id}/800/800`}
+                    src={item.image || `https://picsum.photos/seed/${item.id}/800/800`}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                     alt={t(locale, item.name)}
                     referrerPolicy="no-referrer"
@@ -123,7 +123,7 @@ export default function ServiceDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <div className="aspect-square rounded-[60px] overflow-hidden border-8 border-white/5 shadow-2xl sticky top-24">
               <img
-                src={`https://picsum.photos/seed/${currentItem!.id}/1000/1000`}
+                src={currentItem!.image || `https://picsum.photos/seed/${currentItem!.id}/1000/1000`}
                 className="w-full h-full object-cover"
                 alt={t(locale, currentItem!.name)}
                 referrerPolicy="no-referrer"
