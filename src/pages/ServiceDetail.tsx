@@ -98,21 +98,21 @@ export default function ServiceDetail() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="group p-8 bg-gray-50 rounded-[40px] hover:bg-black hover:text-white transition-all duration-500"
+                className="group p-8 bg-black border border-white/5 rounded-[40px] hover:border-premium-orange transition-all duration-500"
               >
-                <div className="aspect-square rounded-3xl overflow-hidden mb-8 border-4 border-white shadow-xl">
+                <div className="aspect-square rounded-3xl overflow-hidden mb-8 border-4 border-white/10 shadow-2xl">
                   <img
                     src={`https://picsum.photos/seed/${item.id}/800/800`}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                     alt={t(locale, item.name)}
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <h3 className="text-2xl font-bold tracking-tight mb-4">{t(locale, item.name)}</h3>
-                <p className="text-gray-500 group-hover:text-gray-400 font-light mb-8">{t(locale, item.desc)}</p>
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-4">{t(locale, item.name)}</h3>
+                <p className="text-white/60 font-light mb-8 min-h-[48px]">{t(locale, item.desc)}</p>
                 <Link
                   to={`/services/${category}/${item.id}`}
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest group-hover:text-white"
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-premium-orange"
                 >
                   {t(locale, p.viewDetail || { az: 'Ətraflı', en: 'Details', ru: 'Подробнее', tr: 'Detaylar' })} <CheckCircle2 className="w-4 h-4" />
                 </Link>
@@ -121,7 +121,7 @@ export default function ServiceDetail() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            <div className="aspect-square rounded-[60px] overflow-hidden border-8 border-gray-50 shadow-2xl sticky top-24">
+            <div className="aspect-square rounded-[60px] overflow-hidden border-8 border-white/5 shadow-2xl sticky top-24">
               <img
                 src={`https://picsum.photos/seed/${currentItem!.id}/1000/1000`}
                 className="w-full h-full object-cover"
@@ -131,16 +131,16 @@ export default function ServiceDetail() {
             </div>
             <div className="space-y-12">
               <div className="space-y-8">
-                <div className="inline-block px-6 py-2 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest">
+                <div className="inline-block px-6 py-2 bg-white/10 text-white rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10">
                   {categoryTitle}
                 </div>
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{t(locale, currentItem!.name)}</h2>
-                <p className="text-xl text-gray-500 font-light leading-relaxed">
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">{t(locale, currentItem!.name)}</h2>
+                <p className="text-xl text-white/60 font-light leading-relaxed">
                   {t(locale, currentItem!.desc)}
                 </p>
                 <div className="space-y-4">
                   {(p.features ? [p.features.f1, p.features.f2, p.features.f3, p.features.f4].filter(Boolean).map((f: any) => t(locale, f)) : ['Yüksək keyfiyyət', 'Peşəkar yanaşma', 'Sürətli icra', 'Sərfəli qiymət']).map((feature: string) => (
-                    <div key={feature} className="flex items-center gap-3 text-gray-900 font-bold">
+                    <div key={feature} className="flex items-center gap-3 text-white/90 font-bold">
                       <CheckCircle2 className="w-5 h-5 text-red-500" />
                       {feature}
                     </div>
@@ -151,7 +151,7 @@ export default function ServiceDetail() {
               {!isOrdering ? (
                 <button
                   onClick={() => setIsOrdering(true)}
-                  className="inline-flex items-center gap-3 bg-black text-white px-12 py-6 rounded-full font-bold text-xl hover:bg-gray-800 transition-all shadow-2xl shadow-black/20 active:scale-95"
+                  className="inline-flex items-center gap-3 bg-premium-orange text-white px-12 py-6 rounded-full font-bold text-xl hover:bg-orange-600 transition-all shadow-[0_8px_32px_rgba(227,6,19,0.3)] active:scale-95"
                 >
                   {t(locale, p.orderBtn || { az: 'Sifariş et', en: 'Order', ru: 'Заказать', tr: 'Sipariş et' })} <ShoppingCart className="w-6 h-6" />
                 </button>
@@ -159,11 +159,11 @@ export default function ServiceDetail() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-gray-50 rounded-[40px] p-10 space-y-8 border border-gray-100"
+                  className="bg-black/50 backdrop-blur-xl rounded-[40px] p-10 space-y-8 border border-white/10"
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold tracking-tight">{t(locale, p.orderDetails || { az: 'Sifariş detalları', en: 'Order details', ru: 'Детали заказа', tr: 'Sipariş detayları' })}</h3>
-                    <button onClick={() => setIsOrdering(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                    <h3 className="text-2xl font-bold tracking-tight text-white">{t(locale, p.orderDetails || { az: 'Sifariş detalları', en: 'Order details', ru: 'Детали заказа', tr: 'Sipariş detayları' })}</h3>
+                      <button onClick={() => setIsOrdering(false)} className="p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors">
                       <X className="w-6 h-6" />
                     </button>
                   </div>
@@ -172,17 +172,17 @@ export default function ServiceDetail() {
                     {/* Quantity Selector */}
                     <div className="space-y-3">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">{t(locale, p.quantityLabel || { az: 'Say', en: 'Qty', ru: 'Кол-во', tr: 'Adet' })}</label>
-                      <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-gray-100 w-fit">
+                      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 w-fit">
                         <button
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 rounded-xl transition-colors"
+                          className="w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-xl transition-colors"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
-                        <span className="text-xl font-bold w-12 text-center">{quantity}</span>
+                        <span className="text-xl font-bold w-12 text-center text-white">{quantity}</span>
                         <button
                           onClick={() => setQuantity(quantity + 1)}
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 rounded-xl transition-colors"
+                          className="w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-xl transition-colors"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -196,7 +196,7 @@ export default function ServiceDetail() {
                         <input
                           type="text"
                           placeholder={`${q}...`}
-                          className="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-red-500/5 focus:border-red-500 transition-all"
+                          className="w-full px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-premium-orange transition-all placeholder:text-white/30"
                           value={answers[q] || ''}
                           onChange={(e) => setAnswers({ ...answers, [q]: e.target.value })}
                         />
@@ -206,7 +206,7 @@ export default function ServiceDetail() {
                     <div className="pt-4">
                       <button
                         onClick={handleAddToCart}
-                        className="w-full bg-red-600 text-white py-6 rounded-3xl font-bold text-lg hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 flex items-center justify-center gap-3"
+                        className="w-full bg-premium-orange text-white py-6 rounded-3xl font-bold text-lg hover:bg-orange-600 transition-all shadow-[0_8px_32px_rgba(227,6,19,0.2)] flex items-center justify-center gap-3"
                       >
                         {t(locale, p.addToCartBtn || { az: 'Səbətə əlavə et', en: 'Add to cart', ru: 'В корзину', tr: 'Sepete ekle' })} <ShoppingCart className="w-6 h-6" />
                       </button>

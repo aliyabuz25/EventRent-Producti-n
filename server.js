@@ -1343,15 +1343,6 @@ app.post('/api/content', authMiddleware, adminOnly, async (req, res) => {
   } catch { res.status(500).json({ error: 'Content could not be saved.' }); }
 });
 
-app.post('/api/force-update-json', async (req, res) => {
-  try {
-    await ensureContentFile();
-    await backupContent();
-    await fs.writeFile(CONTENT_FILE_PATH, JSON.stringify(req.body ?? {}, null, 2), 'utf8');
-    res.json({ ok: true, msg: "Force update successful!" });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
 app.get('/api/content/backups', authMiddleware, adminOnly, async (_req, res) => {
   try {
     await fs.mkdir(BACKUP_DIR, { recursive: true });
