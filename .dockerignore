@@ -1,7 +1,6 @@
 node_modules
-dist
 .env
 .DS_Store
 .git
 *.log
-# data/ və uploads/ qovluqlarını çıxartdım, çünki backend-in Dockerfile-ında onlara ehtiyac var
+# dist/ burdan silindi ki, Dockerfile.frontend onu tapa bilsin!
