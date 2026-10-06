@@ -2,11 +2,17 @@ FROM node:20-alpine
 WORKDIR /app
 # native build tools (better-sqlite3, baileys üçün)
 RUN apk add --no-cache python3 make g++ git
+
+# Sırf backend üçün paketləri yüklə
 COPY package.backend.json ./package.json
 RUN npm install
+
+# Server faylını kopyala
 COPY server.js ./
-COPY data/ ./data/
-RUN mkdir -p uploads
+
+# Data qovluqlarını boş olaraq yarat (Volume mount olunacaq)
+RUN mkdir -p data uploads
+
 ENV HOST=0.0.0.0
 ENV PORT=4320
 EXPOSE 4320

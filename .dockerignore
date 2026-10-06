@@ -4,5 +4,4 @@ dist
 .DS_Store
 .git
 *.log
-data/
-uploads/
+# data/ və uploads/ qovluqlarını çıxartdım, çünki backend-in Dockerfile-ında onlara ehtiyac var
