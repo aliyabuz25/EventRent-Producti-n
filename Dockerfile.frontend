@@ -1,17 +1,5 @@
-# Stage 1: Build
-FROM node:20-bullseye-slim AS builder
-
-WORKDIR /app
-COPY package.json ./
-# Lock faylı problemi olmaması üçün yalnız package.json-a baxaraq install edirik
-RUN npm install
-
-COPY . .
-RUN npm run build
-
-# Stage 2: Serve
 FROM nginx:alpine
 RUN rm -f /etc/nginx/conf.d/default.conf && mkdir -p /app/nginx-logs
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY dist/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
