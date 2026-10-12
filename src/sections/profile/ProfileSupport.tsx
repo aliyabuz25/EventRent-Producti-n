@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquare, Plus, Clock, CheckCircle2, X, ChevronDown, ChevronUp, Send, AlertCircle } from 'lucide-react';
 import { useSiteContent } from '../../content.context';
 import { t } from '../../content';
-
-const TOKEN_KEY = 'er_admin_token';
+import { apiFetch, getToken } from '../../lib/apiFetch';
 
 interface Ticket {
   id: number; subject: string; message: string; status: string;
@@ -32,8 +31,7 @@ export default function ProfileSupport() {
   const [error, setError]       = useState<string | null>(null);
   const [success, setSuccess]   = useState(false);
 
-  const token = (() => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } })();
-  const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  
 
   const L = {
     title:       { az: 'Dəstək Mərkəzi',        en: 'Support Center',         ru: 'Центр поддержки',     tr: 'Destek Merkezi' },
@@ -60,8 +58,8 @@ export default function ProfileSupport() {
   const statusLabel = (s: string) => ({ open: t(locale, L.statusOpen), answered: t(locale, L.statusAnswered), closed: t(locale, L.statusClosed) }[s] || s);
 
   const loadTickets = async () => {
-    if (!token) { setLoading(false); return; }
-    const r = await fetch('/api/support/my', { headers: h });
+    if (!getToken()) { setLoading(false); return; }
+    const r = await apiFetch('/api/support/my');
     setTickets(r.ok ? await r.json() : []);
     setLoading(false);
   };
@@ -73,8 +71,8 @@ export default function ProfileSupport() {
     setError(null);
     setSubmitting(true);
     try {
-      const endpoint = token ? '/api/support' : '/api/support/guest';
-      const res = await fetch(endpoint, { method: 'POST', headers: h, body: JSON.stringify(form) });
+      const endpoint = getToken() ? '/api/support' : '/api/support/guest';
+      const res = await apiFetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Xəta baş verdi.'); return; }
       setSuccess(true);

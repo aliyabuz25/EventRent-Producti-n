@@ -7,8 +7,7 @@ import ProfileOverview from '../sections/profile/ProfileOverview';
 import ProfileOrders from '../sections/profile/ProfileOrders';
 import ProfileSettings from '../sections/profile/ProfileSettings';
 import ProfileSupport from '../sections/profile/ProfileSupport';
-
-const TOKEN_KEY = 'er_admin_token';
+import { apiFetch, TOKEN_KEY, getToken, clearSession } from '../lib/apiFetch';
 
 export interface DbUser {
   id: number;
@@ -31,13 +30,10 @@ export default function Profile() {
   const [saveMsg, setSaveMsg]     = useState<'ok' | 'err' | null>(null);
   const navigate = useNavigate();
 
-  const token = (() => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } })();
-  const authHeaders = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   /* load user from JWT */
   useEffect(() => {
-    if (!token) { navigate('/login'); return; }
-    fetch('/api/auth/me', { headers: authHeaders })
+    if (!getToken()) { navigate('/login'); return; }
+    apiFetch('/api/auth/me')
       .then(r => r.ok ? r.json() : null)
       .then(u => {
         if (!u) { navigate('/login'); return; }
@@ -50,16 +46,15 @@ export default function Profile() {
 
   /* load user's orders */
   useEffect(() => {
-    if (!token) return;
-    fetch('/api/orders', { headers: authHeaders })
+    if (!getToken()) return;
+    apiFetch('/api/orders')
       .then(r => r.ok ? r.json() : [])
       .then(data => setOrders(Array.isArray(data) ? data : []))
       .catch(() => setOrders([]));
-  }, [token]);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    window.dispatchEvent(new Event('auth-changed'));
+    clearSession();
     navigate('/');
   };
 
@@ -68,9 +63,9 @@ export default function Profile() {
     setIsSaving(true);
     setSaveMsg(null);
     try {
-      const res  = await fetch('/api/auth/profile', {
+      const res = await apiFetch('/api/auth/profile', {
         method: 'PUT',
-        headers: authHeaders,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: displayName }),
       });
       if (res.ok) {
@@ -133,8 +128,7 @@ export default function Profile() {
                   isSaving={isSaving}
                   onSubmit={handleUpdateProfile}
                   saveMsg={saveMsg}
-                  token={token}
-                />
+                  />
               )}
               {activeTab === 'support' && (
                 <ProfileSupport />

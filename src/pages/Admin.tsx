@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Lead } from '../types';
 import { ToastProvider } from '../components/Toast';
+import { apiFetch, TOKEN_KEY, getToken, clearSession as clearToken } from '../lib/apiFetch';
 
 // Lazy load heavy admin tabs — only loaded when tab is first opened
 const AdminLeads = lazy(() => import('../sections/admin/LeadsTab'));
@@ -70,11 +71,7 @@ const CONTENT_TABS: { id: Tab; section: ContentSection; label: string }[] = [
   { id: 'content-teambuilding-page',section: 'teambuilding-page',label: 'Timbildinq Səhifəsi' },
 ];
 
-const TOKEN_KEY = 'er_admin_token';
-
-function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
 function setToken(t: string) { localStorage.setItem(TOKEN_KEY, t); }
-function clearToken() { localStorage.removeItem(TOKEN_KEY); }
 
 /* ══════════════════════════════════════════
    Login Screen
@@ -202,15 +199,14 @@ export default function Admin() {
   /* Auto-login from stored token + setup check */
   useEffect(() => {
     const stored = getToken();
-    // First check if setup is needed
-    fetch('/api/setup/status')
+    fetch('/api/setup/status', { skipAuth: true } as RequestInit)
       .then(r => r.ok ? r.json() : { needsSetup: false })
-      .then(data => {
+      .then(async data => {
         if (data.needsSetup) { setNeedsSetup(true); setLoading(false); return; }
         if (!stored) { setLoading(false); return; }
-        return fetch('/api/auth/me', { headers: { Authorization: `Bearer ${stored}` } })
-          .then(r => r.ok ? r.json() : null)
-          .then(u => { if (u) { setUser(u); setTokenState(stored); } else clearToken(); });
+        const r = await apiFetch('/api/auth/me');
+        const u = r.ok ? await r.json() : null;
+        if (u) { setUser(u); setTokenState(stored); } else clearToken();
       })
       .catch(() => { if (stored) clearToken(); })
       .finally(() => setLoading(false));
@@ -218,9 +214,8 @@ export default function Admin() {
 
   /* Load leads */
   useEffect(() => {
-    const stored = getToken();
-    if (!stored) return;
-    fetch('/api/leads', { headers: { Authorization: `Bearer ${stored}` } })
+    if (!getToken()) return;
+    apiFetch('/api/leads')
       .then(r => r.ok ? r.json() : [])
       .then(setLeads)
       .catch(() => {});
@@ -249,7 +244,7 @@ export default function Admin() {
       <Suspense fallback={<div className="d-flex align-items-center justify-content-center vh-100 bg-dark"><div className="spinner-border text-danger" /></div>}>
         <AdminSetup onComplete={(t) => {
           setToken(t); setTokenState(t); setNeedsSetup(false);
-          fetch('/api/auth/me', { headers: { Authorization: `Bearer ${t}` } })
+          apiFetch('/api/auth/me')
             .then(r => r.ok ? r.json() : null)
             .then(u => { if (u) setUser(u); });
         }} />
@@ -471,7 +466,7 @@ export default function Admin() {
           <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#999', fontSize: 14 }}>Yüklənir...</div>}>
             {tab === 'dashboard'        && <DashboardTab token={token} onNavigate={(t) => setTab(t as Tab)} isAdmin={isAdmin} />}
             {tab === 'orders'           && <AdminOrders token={token} />}
-            {tab === 'leads'            && <AdminLeads leads={leads} products={[]} token={token} onReload={() => fetch('/api/leads', { headers: authHeaders }).then(r => r.json()).then(setLeads).catch(() => {})} />}
+            {tab === 'leads'            && <AdminLeads leads={leads} products={[]} token={token} onReload={() => apiFetch('/api/leads').then(r => r.json()).then(setLeads).catch(() => {})} />}
             {tab === 'products'         && <AdminProducts token={token} />}
             {tab === 'teambuilding'     && <AdminTeambuilding token={token} />}
             {tab === 'support'          && <AdminSupport token={token} />}

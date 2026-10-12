@@ -3,6 +3,7 @@ import { Save, Shield, Eye, EyeOff, Check } from 'lucide-react';
 import { DbUser } from '../../pages/Profile';
 import { useSiteContent } from '../../content.context';
 import { t } from '../../content';
+import { apiFetch } from '../../lib/apiFetch';
 
 interface ProfileSettingsProps {
   user: DbUser;
@@ -11,10 +12,9 @@ interface ProfileSettingsProps {
   isSaving: boolean;
   onSubmit: (e: React.FormEvent) => void;
   saveMsg?: 'ok' | 'err' | null;
-  token: string;
 }
 
-export default function ProfileSettings({ user, displayName, setDisplayName, isSaving, onSubmit, saveMsg = null, token }: ProfileSettingsProps) {
+export default function ProfileSettings({ user, displayName, setDisplayName, isSaving, onSubmit, saveMsg = null }: ProfileSettingsProps) {
   const { locale } = useSiteContent();
   const [curPass, setCurPass]     = useState('');
   const [newPass, setNewPass]     = useState('');
@@ -45,9 +45,9 @@ export default function ProfileSettings({ user, displayName, setDisplayName, isS
     setPassMsg(null);
     setPassSaving(true);
     try {
-      const res  = await fetch('/api/auth/change-password', {
+      const res = await apiFetch('/api/auth/change-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ current_password: curPass, new_password: newPass }),
       });
       const data = await res.json();

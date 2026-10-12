@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogIn, AlertCircle, ArrowRight, Mail, Lock, Eye, EyeOff, User, X } from 'lucide-react';
 
 import { useSiteContent } from '../content.context';
 import { t } from '../content';
-
-const TOKEN_KEY = 'er_admin_token';
+import { TOKEN_KEY } from '../lib/apiFetch';
 
 export default function Login() {
   const { locale } = useSiteContent();
@@ -27,6 +26,17 @@ export default function Login() {
   const navigate  = useNavigate();
   const location  = useLocation();
   const from      = (location.state as any)?.from?.pathname || '/profile';
+
+  const searchParams = new URLSearchParams(location.search);
+  const sessionExpiredMsg = searchParams.get('reason') === 'session_expired';
+
+  const L2 = {
+    sessionExpired: { az: 'Sessiya başa çatdı. Yenidən daxil olun.', en: 'Session expired. Please sign in again.', ru: 'Сессия истекла. Войдите снова.', tr: 'Oturum sona erdi. Tekrar giriş yapın.' },
+  };
+
+  useEffect(() => {
+    if (sessionExpiredMsg) setError(t(locale, L2.sessionExpired));
+  }, []);
 
   const L = {
     welcomeTitle:    { az: 'Xoş gəlmisiniz',       en: 'Welcome back',          ru: 'Добро пожаловать',   tr: 'Hoş geldiniz' },

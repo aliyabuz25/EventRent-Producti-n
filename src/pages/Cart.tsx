@@ -9,8 +9,7 @@ import CartSuccess from '../sections/cart/CartSuccess';
 import { useCart } from '../hooks/useCart';
 import { useSiteContent } from '../content.context';
 import { t } from '../content';
-
-const TOKEN_KEY = 'er_admin_token';
+import { apiFetch, getToken } from '../lib/apiFetch';
 const OTP_LENGTH = 6;
 
 export default function Cart() {
@@ -39,9 +38,8 @@ export default function Cart() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (!token) return;
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+    if (!getToken()) return;
+    apiFetch('/api/auth/me')
       .then(r => r.ok ? r.json() : null)
       .then(u => {
         if (!u) return;
@@ -139,11 +137,9 @@ export default function Cart() {
   // Step 2: OTP doğrulandıqdan sonra sifarişi göndər
   const submitOrder = async () => {
     setIsSubmitting(true);
-    const token = localStorage.getItem(TOKEN_KEY) || '';
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
     try {
-      const res = await fetch('/api/orders', {
+      const res = await apiFetch('/api/orders', {
         method: 'POST',
         headers,
         body: JSON.stringify({
