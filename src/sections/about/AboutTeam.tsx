@@ -14,8 +14,10 @@ export default function AboutTeam() {
       y: 16, opacity: 0, duration: 0.8, ease: 'power3.out',
       scrollTrigger: { trigger: containerRef.current, start: 'top 80%', toggleActions: 'play none none none' },
     });
-    gsap.from('.team-card', {
-      y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1,
+    gsap.fromTo('.team-card', {
+      y: 30, opacity: 0,
+    }, {
+      y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', stagger: 0.1,
       scrollTrigger: { trigger: '.team-grid', start: 'top 78%', toggleActions: 'play none none none' },
     });
   }, { scope: containerRef });

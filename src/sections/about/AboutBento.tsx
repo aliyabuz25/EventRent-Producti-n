@@ -12,12 +12,16 @@ export default function AboutBento() {
   const s = content.about.bento;
 
   useGsap(() => {
-    gsap.from('.bento-card', {
-      y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1,
+    gsap.fromTo('.bento-card', {
+      y: 30, opacity: 0,
+    }, {
+      y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', stagger: 0.1,
       scrollTrigger: { trigger: containerRef.current, start: 'top 78%', toggleActions: 'play none none none' },
     });
-    gsap.from('.bento-img', {
-      scale: 1.06, opacity: 0, duration: 1.2, ease: 'power3.out',
+    gsap.fromTo('.bento-img', {
+      scale: 1.06, opacity: 0,
+    }, {
+      scale: 1, opacity: 0.4, duration: 1.2, ease: 'power3.out',
       scrollTrigger: { trigger: containerRef.current, start: 'top 78%', toggleActions: 'play none none none' },
     });
   }, { scope: containerRef });
