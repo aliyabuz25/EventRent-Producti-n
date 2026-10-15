@@ -42,7 +42,10 @@ export default function AboutPartnerIntro() {
                 key={i}
                 className="api-stat-card group flex-1 border border-white/[0.08] hover:border-premium-orange/40 rounded-2xl p-8 md:p-10 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 flex flex-col justify-between"
               >
-                <span className="text-5xl md:text-6xl font-black tracking-tighter text-white leading-none">
+                <span
+                  className="text-5xl md:text-6xl font-black tracking-tighter text-white leading-none"
+                  style={{ textShadow: '0 0 24px rgba(255, 255, 255, 0.5), 0 0 48px rgba(255, 255, 255, 0.25)' }}
+                >
                   {stat.value}
                 </span>
                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/70 group-hover:text-white/60 transition-colors duration-400 mt-4">

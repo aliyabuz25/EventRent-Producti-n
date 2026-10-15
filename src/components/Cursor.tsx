@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue } from 'motion/react';
+import { useLocation } from 'react-router-dom';
 
 const INTERACTIVE = [
   'a[href]', 'button', 'summary', 'select', 'label',
@@ -26,6 +27,9 @@ export default function Cursor() {
   const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
   const cursorX = useSpring(mouse.x, springConfig);
   const cursorY = useSpring(mouse.y, springConfig);
+
+  const { pathname } = useLocation();
+  const isAbout = pathname.startsWith('/about');
 
   const [type, setType] = useState<CursorType>('default');
   // Throttle type changes — only setState when type actually changes
@@ -66,7 +70,7 @@ export default function Cursor() {
     <>
       {/* Dot — base 12px, use scaleX/scaleY instead of width/height */}
       <motion.div
-        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10000] bg-premium-orange"
+        className={`fixed top-0 left-0 rounded-full pointer-events-none z-[10000] ${isAbout ? 'bg-white' : 'bg-premium-orange'}`}
         style={{
           x: cursorX, y: cursorY,
           translateX: '-50%', translateY: '-50%',
@@ -84,7 +88,7 @@ export default function Cursor() {
 
       {/* Ring — base 40×40, use scale instead of width/height animation */}
       <motion.div
-        className="fixed top-0 left-0 border border-premium-orange/30 pointer-events-none z-[9999] rounded-full"
+        className={`fixed top-0 left-0 border pointer-events-none z-[9999] rounded-full ${isAbout ? 'border-white/50' : 'border-premium-orange/30'}`}
         style={{
           x: mouse.x, y: mouse.y,
           translateX: '-50%', translateY: '-50%',
@@ -98,8 +102,8 @@ export default function Cursor() {
           borderColor: isInteractive
             ? 'rgba(227, 6, 19, 0)'
             : isText
-            ? 'rgba(242, 125, 38, 0.45)'
-            : 'rgba(242, 125, 38, 0.3)',
+            ? (isAbout ? 'rgba(255, 255, 255, 0.6)' : 'rgba(242, 125, 38, 0.45)')
+            : (isAbout ? 'rgba(255, 255, 255, 0.5)' : 'rgba(242, 125, 38, 0.3)'),
         }}
         transition={{ type: 'spring', damping: 24, stiffness: 170 }}
       />
