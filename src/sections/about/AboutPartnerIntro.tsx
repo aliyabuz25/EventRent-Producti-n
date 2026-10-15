@@ -48,7 +48,7 @@ export default function AboutPartnerIntro() {
                 >
                   {stat.value}
                 </span>
-                <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/70 group-hover:text-white/60 transition-colors duration-400 mt-4">
+                <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/90 group-hover:text-white transition-colors duration-400 mt-4">
                   {t(locale, stat.label)}
                 </p>
               </div>
