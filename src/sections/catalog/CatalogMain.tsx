@@ -33,7 +33,9 @@ export default function CatalogMain({
       <div className="flex flex-col md:flex-row justify-between items-end gap-8">
         <div className="space-y-4">
           <span className="text-premium-orange text-[10px] font-black uppercase tracking-[0.4em]">{t(locale, c.hub)}</span>
-          <h2 className="text-4xl md:text-6xl font-black tracking-ultra-tight uppercase">THE <span className="text-premium-orange">{t(locale, c.collection)}</span></h2>
+          <h2 className="text-4xl md:text-6xl font-black tracking-ultra-tight uppercase">
+            <span className="text-premium-orange">{t(locale, c.collection)}</span>
+          </h2>
         </div>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <div className="relative flex-1 md:w-80">
