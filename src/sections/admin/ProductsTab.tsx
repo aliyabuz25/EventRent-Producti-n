@@ -721,10 +721,10 @@ export default function ProductsTab({ token }: { token: string }) {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20, minHeight: 0 }}>
               
               {/* Form Sahəsi (Edit və ya Yeni yaradıldıqda görünür) */}
-              <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e9ecef', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+              <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e9ecef', overflow: 'clip', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                 {/* Form Toggle Header */}
                 <div 
                   style={{ padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: tmplEditId ? '#fff5f5' : '#fff' }}
