@@ -7,7 +7,7 @@ import CatalogMain from '../sections/catalog/CatalogMain';
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'Hamısı');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +20,13 @@ export default function Catalog() {
     fetch('/api/products')
       .then(r => r.ok ? r.json() : [])
       .then((data: any) => {
-        setProducts(Array.isArray(data) ? data.filter((p: any) => p.active !== 0) : []);
+        const active = Array.isArray(data) ? data.filter((p: any) => p.active !== 0) : [];
+        setProducts(active);
+        // URL'de kategori yoksa ilk kategoriyi seç
+        if (!searchParams.get('category') && active.length > 0) {
+          const firstCat = Array.from(new Set(active.map((p: any) => p.category).filter(Boolean)))[0] as string;
+          if (firstCat) setSelectedCategory(firstCat);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -28,24 +34,24 @@ export default function Catalog() {
 
   const categories = useMemo(() => {
     const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
-    return ['Hamısı', ...cats];
+    return cats;
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
                            p.description.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = selectedCategory === 'Hamısı' || p.category === selectedCategory;
+      const matchesCategory = !selectedCategory || p.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [search, selectedCategory, products]);
 
   const handleCategorySelect = (cat: string) => {
     setSelectedCategory(cat);
-    if (cat === 'Hamısı') {
-      searchParams.delete('category');
-    } else {
+    if (cat) {
       searchParams.set('category', cat);
+    } else {
+      searchParams.delete('category');
     }
     setSearchParams(searchParams);
   };

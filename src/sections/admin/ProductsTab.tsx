@@ -433,7 +433,7 @@ export default function ProductsTab({ token }: { token: string }) {
           <button type="button" className="btn-close" onClick={closeModal} />
         </div>
 
-        <form onSubmit={handleSubmit} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <form onSubmit={handleSubmit} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
                   
                   {/* Basic Info */}

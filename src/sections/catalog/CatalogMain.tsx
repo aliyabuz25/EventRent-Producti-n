@@ -98,7 +98,7 @@ export default function CatalogMain({
               <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">{t(locale, c.noGear)}</h3>
               <p className="text-white/50 font-medium mb-10 uppercase text-xs tracking-widest">{t(locale, c.noGearSub)}</p>
               <button
-                onClick={() => { setSearch(''); onCategorySelect(t(locale, c.all)); }}
+                onClick={() => { setSearch(''); onCategorySelect(categories[0] ?? ''); }}
                 className="px-10 py-4 bg-premium-orange text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all"
               >
                 {t(locale, c.clearFilters)}
