@@ -16,13 +16,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Plus, Pencil, Trash2, Check, X, Tag, RefreshCw, Package } from 'lucide-react';
+import { GripVertical, Plus, Pencil, Trash2, Check, X, Tag, RefreshCw, Package, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
 interface Category {
   id: string;
   name: string;
   sort_order: number;
+  active: number;
 }
 
 interface SortableItemProps {
@@ -30,10 +31,14 @@ interface SortableItemProps {
   productCount: number;
   onEdit: (cat: Category) => void;
   onDelete: (cat: Category) => void;
+  onToggle: (cat: Category) => void;
+  toggling: boolean;
 }
 
-function SortableItem({ cat, productCount, onEdit, onDelete }: SortableItemProps) {
+function SortableItem({ cat, productCount, onEdit, onDelete, onToggle, toggling }: SortableItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id });
+
+  const isActive = cat.active !== 0;
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -45,37 +50,49 @@ function SortableItem({ cat, productCount, onEdit, onDelete }: SortableItemProps
   return (
     <div ref={setNodeRef} style={style}>
       <div style={{
-        background: isDragging ? '#fff8f8' : '#fff',
-        border: isDragging ? '2px dashed #e30613' : '1px solid #e9ecef',
+        background: isDragging ? '#fff8f8' : isActive ? '#fff' : '#f8f9fa',
+        border: isDragging ? '2px dashed #e30613' : isActive ? '1px solid #e9ecef' : '1px dashed #dee2e6',
         borderRadius: 12,
         padding: '12px 16px',
         display: 'flex',
         alignItems: 'center',
         gap: 12,
-        boxShadow: isDragging ? '0 8px 24px rgba(0,0,0,0.12)' : '0 2px 6px rgba(0,0,0,0.03)',
+        boxShadow: isDragging ? '0 8px 24px rgba(0,0,0,0.12)' : isActive ? '0 2px 6px rgba(0,0,0,0.03)' : 'none',
         cursor: 'default',
         userSelect: 'none',
+        transition: 'all 0.2s',
       }}>
         {/* Drag handle */}
         <div
           {...attributes}
           {...listeners}
-          style={{ cursor: 'grab', color: '#adb5bd', display: 'flex', alignItems: 'center', flexShrink: 0, touchAction: 'none' }}
+          style={{ cursor: 'grab', color: isActive ? '#adb5bd' : '#dee2e6', display: 'flex', alignItems: 'center', flexShrink: 0, touchAction: 'none' }}
           title="Sürükle"
         >
           <GripVertical size={18} />
         </div>
 
         {/* Icon */}
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: '#fff5f5', border: '1px solid #ffd6d6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <Tag size={16} color="#e30613" />
+        <div style={{
+          width: 36, height: 36, borderRadius: 10,
+          background: isActive ? '#fff5f5' : '#f1f3f5',
+          border: `1px solid ${isActive ? '#ffd6d6' : '#dee2e6'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+        }}>
+          <Tag size={16} color={isActive ? '#e30613' : '#adb5bd'} />
         </div>
 
         {/* Name + count */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: 14, color: '#212529', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.name}</div>
+          <div style={{
+            fontWeight: 700, fontSize: 14,
+            color: isActive ? '#212529' : '#adb5bd',
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+            textDecoration: isActive ? 'none' : 'line-through',
+          }}>{cat.name}</div>
           <div style={{ fontSize: 11, color: '#adb5bd', display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
             <Package size={11} /> {productCount} məhsul
+            {!isActive && <span style={{ background: '#fff3cd', color: '#856404', borderRadius: 6, padding: '0px 6px', fontSize: 10, fontWeight: 700, marginLeft: 4 }}>GİZLİ</span>}
           </div>
         </div>
 
@@ -83,6 +100,24 @@ function SortableItem({ cat, productCount, onEdit, onDelete }: SortableItemProps
         <div style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 8, padding: '2px 8px', fontSize: 11, color: '#6c757d', fontWeight: 600, flexShrink: 0 }}>
           #{cat.sort_order + 1}
         </div>
+
+        {/* Toggle active */}
+        <button
+          onClick={() => onToggle(cat)}
+          disabled={toggling}
+          style={{
+            border: 'none',
+            background: isActive ? '#d1fae5' : '#f1f3f5',
+            borderRadius: 8, width: 32, height: 32, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: '0.15s', flexShrink: 0,
+          }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          title={isActive ? 'Gizlə' : 'Göstər'}
+        >
+          {isActive ? <Eye size={14} color="#059669" /> : <EyeOff size={14} color="#adb5bd" />}
+        </button>
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
@@ -119,6 +154,7 @@ export default function CategoriesTab({ token }: { token: string }) {
   const [editId, setEditId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const toast = useToast();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
@@ -150,25 +186,28 @@ export default function CategoriesTab({ token }: { token: string }) {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-
     const oldIndex = categories.findIndex(c => c.id === active.id);
     const newIndex = categories.findIndex(c => c.id === over.id);
     const reordered = arrayMove(categories, oldIndex, newIndex);
     setCategories(reordered);
-
-    // Servere göndər
     const r = await fetch('/api/categories/reorder', {
-      method: 'PATCH',
-      headers: h,
+      method: 'PATCH', headers: h,
       body: JSON.stringify({ ids: reordered.map(c => c.id) }),
     });
-    if (r.ok) {
-      toast.success('Sıralama saxlanıldı.');
-      await load();
-    } else {
-      toast.error('Sıralama saxlanmadı.');
-      await load();
-    }
+    if (r.ok) { toast.success('Sıralama saxlanıldı.'); await load(); }
+    else { toast.error('Sıralama saxlanmadı.'); await load(); }
+  };
+
+  const handleToggle = async (cat: Category) => {
+    setTogglingId(cat.id);
+    try {
+      const r = await fetch(`/api/categories/${cat.id}/toggle`, { method: 'PATCH', headers: h });
+      if (r.ok) {
+        const updated = await r.json();
+        setCategories(prev => prev.map(c => c.id === cat.id ? updated : c));
+        toast.success(updated.active ? `"${cat.name}" aktiv edildi.` : `"${cat.name}" gizlədildi.`);
+      } else toast.error('Xəta baş verdi.');
+    } finally { setTogglingId(null); }
   };
 
   const handleAdd = async () => {
@@ -176,15 +215,8 @@ export default function CategoriesTab({ token }: { token: string }) {
     setSaving(true);
     try {
       const r = await fetch('/api/categories', { method: 'POST', headers: h, body: JSON.stringify({ name: newName.trim() }) });
-      if (r.ok) {
-        toast.success('Kateqoriya əlavə edildi.');
-        setNewName('');
-        setAdding(false);
-        await load();
-      } else {
-        const d = await r.json();
-        toast.error(d.error || 'Xəta baş verdi.');
-      }
+      if (r.ok) { toast.success('Kateqoriya əlavə edildi.'); setNewName(''); setAdding(false); await load(); }
+      else { const d = await r.json(); toast.error(d.error || 'Xəta baş verdi.'); }
     } finally { setSaving(false); }
   };
 
@@ -193,15 +225,8 @@ export default function CategoriesTab({ token }: { token: string }) {
     setSaving(true);
     try {
       const r = await fetch(`/api/categories/${id}`, { method: 'PUT', headers: h, body: JSON.stringify({ name: editName.trim() }) });
-      if (r.ok) {
-        toast.success('Kateqoriya yeniləndi.');
-        setEditId(null);
-        setEditName('');
-        await load();
-      } else {
-        const d = await r.json();
-        toast.error(d.error || 'Xəta baş verdi.');
-      }
+      if (r.ok) { toast.success('Kateqoriya yeniləndi.'); setEditId(null); setEditName(''); await load(); }
+      else { const d = await r.json(); toast.error(d.error || 'Xəta baş verdi.'); }
     } finally { setSaving(false); }
   };
 
@@ -216,14 +241,20 @@ export default function CategoriesTab({ token }: { token: string }) {
     else toast.error('Silmək alınmadı.');
   };
 
+  const activeCount = categories.filter(c => c.active !== 0).length;
+  const hiddenCount = categories.length - activeCount;
+
   return (
     <div>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
           <h5 style={{ margin: 0, fontWeight: 800 }}>Kateqoriyalar</h5>
-          <div style={{ fontSize: 12, color: '#6c757d', marginTop: 2 }}>
-            Sürükle-bırak ilə sıranı dəyişin • {categories.length} kateqoriya
+          <div style={{ fontSize: 12, color: '#6c757d', marginTop: 2, display: 'flex', gap: 8 }}>
+            <span>Sürükle-bırak ilə sıranı dəyişin</span>
+            <span style={{ color: '#dee2e6' }}>·</span>
+            <span style={{ color: '#059669', fontWeight: 600 }}>{activeCount} aktiv</span>
+            {hiddenCount > 0 && <><span style={{ color: '#dee2e6' }}>·</span><span style={{ color: '#adb5bd' }}>{hiddenCount} gizli</span></>}
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -244,9 +275,7 @@ export default function CategoriesTab({ token }: { token: string }) {
         <div style={{ background: '#fff', border: '2px solid #e30613', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
           <Tag size={16} color="#e30613" style={{ flexShrink: 0 }} />
           <input
-            autoFocus
-            value={newName}
-            onChange={e => setNewName(e.target.value)}
+            autoFocus value={newName} onChange={e => setNewName(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') { setAdding(false); setNewName(''); } }}
             placeholder="Kateqoriya adı..."
             style={{ flex: 1, border: '1px solid #dee2e6', borderRadius: 8, padding: '8px 12px', fontSize: 13, outline: 'none' }}
@@ -261,6 +290,12 @@ export default function CategoriesTab({ token }: { token: string }) {
           </button>
         </div>
       )}
+
+      {/* Legend */}
+      <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, color: '#6c757d' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Eye size={12} color="#059669" /> Aktiv — kataloquda görünür</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><EyeOff size={12} color="#adb5bd" /> Gizli — kataloquda görünmür</span>
+      </div>
 
       {/* List */}
       {loading ? (
@@ -279,13 +314,10 @@ export default function CategoriesTab({ token }: { token: string }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {categories.map(cat => (
                 editId === cat.id ? (
-                  /* inline edit */
                   <div key={cat.id} style={{ background: '#fff', border: '2px solid #e30613', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Tag size={16} color="#e30613" style={{ flexShrink: 0 }} />
                     <input
-                      autoFocus
-                      value={editName}
-                      onChange={e => setEditName(e.target.value)}
+                      autoFocus value={editName} onChange={e => setEditName(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') handleEdit(cat.id); if (e.key === 'Escape') { setEditId(null); setEditName(''); } }}
                       style={{ flex: 1, border: '1px solid #dee2e6', borderRadius: 8, padding: '7px 11px', fontSize: 13, outline: 'none' }}
                     />
@@ -305,6 +337,8 @@ export default function CategoriesTab({ token }: { token: string }) {
                     productCount={productCounts[cat.name] || 0}
                     onEdit={c => { setEditId(c.id); setEditName(c.name); setAdding(false); }}
                     onDelete={handleDelete}
+                    onToggle={handleToggle}
+                    toggling={togglingId === cat.id}
                   />
                 )
               ))}
@@ -317,7 +351,7 @@ export default function CategoriesTab({ token }: { token: string }) {
       {categories.length > 0 && (
         <div style={{ marginTop: 20, padding: '12px 16px', background: '#f8f9fa', borderRadius: 10, border: '1px solid #e9ecef', fontSize: 12, color: '#6c757d', display: 'flex', alignItems: 'center', gap: 8 }}>
           <GripVertical size={14} />
-          Sürükle-bırak ilə kateqoriyaların sırasını dəyişə bilərsiniz. Sıra dəyişiklikləri kataloqda da əks olunur.
+          Sürükle-bırak ilə kateqoriyaların sırasını dəyişə bilərsiniz. Gizli kateqoriyalar kataloquda göstərilmir.
         </div>
       )}
     </div>

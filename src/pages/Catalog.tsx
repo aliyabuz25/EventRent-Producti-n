@@ -27,6 +27,7 @@ export default function Catalog() {
         // Kategorileri API sıralamasına göre al
         const productCatSet = new Set(active.map((p: any) => p.category).filter(Boolean));
         const ordered = (Array.isArray(cats) ? cats : [])
+          .filter((c: any) => c.active !== 0) // yalnız aktiv kateqoriyalar
           .map((c: any) => c.name)
           .filter((n: string) => productCatSet.has(n));
         // API'da olmayan kategorileri sona ekle

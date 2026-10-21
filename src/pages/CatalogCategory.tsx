@@ -23,6 +23,7 @@ export default function CatalogCategory() {
         setProducts(active);
         const productCatSet = new Set(active.map((p: any) => p.category).filter(Boolean));
         const ordered = (Array.isArray(cats) ? cats : [])
+          .filter((c: any) => c.active !== 0) // yalnız aktiv kateqoriyalar
           .map((c: any) => c.name)
           .filter((n: string) => productCatSet.has(n));
         const extra = Array.from(productCatSet).filter((c: any) => !ordered.includes(c)) as string[];

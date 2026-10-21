@@ -156,9 +156,18 @@ CREATE TABLE IF NOT EXISTS leads (
       id         TEXT PRIMARY KEY,
       name       TEXT NOT NULL UNIQUE,
       sort_order INTEGER NOT NULL DEFAULT 0,
+      active     INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
    `);
+
+  // Migration: mövcud categories cədvəlinə active kolonunu əlavə et
+  try {
+    const cols = db.prepare("PRAGMA table_info(categories)").all().map((c) => c.name);
+    if (!cols.includes('active')) {
+      db.prepare("ALTER TABLE categories ADD COLUMN active INTEGER NOT NULL DEFAULT 1").run();
+    }
+  } catch {}
 
   db.prepare(`
     CREATE TABLE IF NOT EXISTS wa_logs (
@@ -1057,14 +1066,21 @@ app.delete('/api/categories/:id', authMiddleware, adminOnly, (req, res) => {
 
 // Drag-and-drop sıralama
 app.patch('/api/categories/reorder', authMiddleware, adminOnly, (req, res) => {
-  const { ids } = req.body; // sıralı id array
+  const { ids } = req.body;
   if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids array tələb olunur' });
   const update = db.prepare('UPDATE categories SET sort_order=? WHERE id=?');
-  const tx = db.transaction(() => {
-    ids.forEach((id, idx) => update.run(idx, id));
-  });
+  const tx = db.transaction(() => { ids.forEach((id, idx) => update.run(idx, id)); });
   tx();
   res.json({ ok: true });
+});
+
+// Active/inactive toggle
+app.patch('/api/categories/:id/toggle', authMiddleware, adminOnly, (req, res) => {
+  const cat = db.prepare('SELECT * FROM categories WHERE id=?').get(req.params.id);
+  if (!cat) return res.status(404).json({ error: 'Tapılmadı' });
+  const newActive = cat.active ? 0 : 1;
+  db.prepare('UPDATE categories SET active=? WHERE id=?').run(newActive, req.params.id);
+  res.json(db.prepare('SELECT * FROM categories WHERE id=?').get(req.params.id));
 });
 
 app.get('/api/products', (req, res) => {
