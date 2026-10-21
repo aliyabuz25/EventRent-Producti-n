@@ -704,10 +704,10 @@ export default function ProductsTab({ token }: { token: string }) {
       {showTemplateManager && (
         <>
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 1040 }} onClick={() => setShowTemplateManager(false)} />
-          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'clip' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px' }}>
             
             {/* Header */}
-            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
               <div>
                 <h5 style={{ margin: 0, fontWeight: 800, color: '#212529', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Tag size={18} color="#e30613" /> Metrik Şablonları
