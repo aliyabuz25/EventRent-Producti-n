@@ -41,7 +41,7 @@ export default function Teambuilding() {
   }, [typeFilter]);
 
   const filteredGames = typeFilter
-    ? games.filter(g => (g.category ?? '').toLowerCase() === typeFilter.toLowerCase())
+    ? games.filter(g => (g.category ?? '').toLocaleLowerCase('en-US') === typeFilter.toLocaleLowerCase('en-US'))
     : games;
 
   const handleGameClick = (game: any) => {

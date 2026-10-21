@@ -42,7 +42,7 @@ export default function LeadsTab({ leads, products, token = '', onReload }: Prop
 
   const filtered = (leads ?? []).filter(l => {
     const mf = filter === 'all' || l.status === filter;
-    const ms = [l.name, l.email, l.phone].join(' ').toLowerCase().includes(search.toLowerCase());
+    const ms = [l.name, l.email, l.phone].join(' ').toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US'));
     return mf && ms;
   });
 

@@ -218,11 +218,11 @@ export default function TeambuildingTab({ token }: { token: string }) {
   };
 
   const filteredGames = games.filter(g => {
-    const q = search.toLowerCase();
-    return (!q || g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)) &&
+    const q = search.toLocaleLowerCase('en-US');
+    return (!q || g.name.toLocaleLowerCase('en-US').includes(q) || g.description.toLocaleLowerCase('en-US').includes(q)) &&
            (filterCat === 'all' || g.category === filterCat);
   });
-  const filteredConcepts = concepts.filter(c => !search || c.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredConcepts = concepts.filter(c => !search || c.name.toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US')));
 
   return (
     <div>

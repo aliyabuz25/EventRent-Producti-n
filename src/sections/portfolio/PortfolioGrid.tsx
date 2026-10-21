@@ -335,8 +335,8 @@ export default function PortfolioGrid() {
   const clearAll = () => { setSelectedTags(new Set()); setSelectedCategories(new Set()); setSearch(''); };
 
   const filtered = useMemo(() => reels.filter(r => {
-    const q = search.trim().toLowerCase();
-    const matchesSearch = !q || (r.title ?? '').toLowerCase().includes(q) || (r.client ?? '').toLowerCase().includes(q) || (r.location ?? '').toLowerCase().includes(q);
+    const q = search.trim().toLocaleLowerCase('en-US');
+    const matchesSearch = !q || (r.title ?? '').toLocaleLowerCase('en-US').includes(q) || (r.client ?? '').toLocaleLowerCase('en-US').includes(q) || (r.location ?? '').toLocaleLowerCase('en-US').includes(q);
     const matchesCategory = selectedCategories.size === 0 || selectedCategories.has(r.category);
     const matchesTags = selectedTags.size === 0 || [...selectedTags].every(tag => r.tags.includes(tag));
     return matchesSearch && matchesCategory && matchesTags;

@@ -45,7 +45,7 @@ export async function loadSiteContent(): Promise<SiteContent> {
 }
 
 export function t(locale: string | undefined, value: { az: string; en: string; ru: string; tr: string }): string {
-  const normalized = (locale || DEFAULT_LOCALE).toLowerCase();
+  const normalized = (locale || DEFAULT_LOCALE).toLocaleLowerCase('en-US');
   if (normalized === 'en') return value.en;
   if (normalized === 'ru') return value.ru;
   if (normalized === 'tr') return value.tr;
@@ -53,7 +53,7 @@ export function t(locale: string | undefined, value: { az: string; en: string; r
 }
 
 export function ta(locale: string | undefined, value: { az: string[]; en: string[]; ru: string[]; tr: string[] }): string[] {
-  const normalized = (locale || DEFAULT_LOCALE).toLowerCase();
+  const normalized = (locale || DEFAULT_LOCALE).toLocaleLowerCase('en-US');
   if (normalized === 'en') return value.en;
   if (normalized === 'ru') return value.ru;
   if (normalized === 'tr') return value.tr;

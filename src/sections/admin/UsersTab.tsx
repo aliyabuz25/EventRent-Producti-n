@@ -121,7 +121,7 @@ export default function UsersTab({ token, currentUserId }: { token: string; curr
                     <td className="ps-4 align-middle">
                       <div className="d-flex align-items-center gap-2">
                         <div style={{ width: 32, height: 32, borderRadius: 9, background: '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toUpperCase()}</span>
+                          <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toLocaleUpperCase('en-US')}</span>
                         </div>
                         <div>
                           <div className="fw-semibold" style={{ fontSize: 13 }}>{user.name} {isMe && <span style={{ fontSize: 9, color: '#e30613', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginLeft: 4 }}>siz</span>}</div>

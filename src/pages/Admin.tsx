@@ -302,7 +302,7 @@ export default function Admin() {
 
   const searchResults = searchQ.trim().length > 0
     ? ALL_SEARCHABLE.filter(item =>
-        [item.label, item.desc].join(' ').toLowerCase().includes(searchQ.toLowerCase())
+        [item.label, item.desc].join(' ').toLocaleLowerCase('en-US').includes(searchQ.toLocaleLowerCase('en-US'))
       )
     : [];
 
@@ -353,7 +353,7 @@ export default function Admin() {
         {/* User */}
         <div style={{ padding: '10px 8px', borderTop: '1px solid #f1f3f5', display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: '#fff0f0', border: '1px solid #ffd6d6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toUpperCase()}</span>
+            <span style={{ color: '#e30613', fontWeight: 900, fontSize: 12 }}>{(user.name || user.email || '?')[0].toLocaleUpperCase('en-US')}</span>
           </div>
           {sideOpen && (
             <>

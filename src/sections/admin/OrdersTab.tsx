@@ -124,7 +124,7 @@ export default function OrdersTab({ token }: { token: string }) {
 
   const filtered = orders.filter(o => {
     const mf = filterStatus === 'all' || o.status === filterStatus;
-    const ms = [o.name, o.email, o.phone, o.location].join(' ').toLowerCase().includes(search.toLowerCase());
+    const ms = [o.name, o.email, o.phone, o.location].join(' ').toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US'));
     return mf && ms;
   });
 

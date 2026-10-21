@@ -232,7 +232,7 @@ export default function ProductsTab({ token }: { token: string }) {
   };
 
   const filtered = products.filter(p =>
-    [p.name, p.category, ...(p.tags||[])].join(' ').toLowerCase().includes(search.toLowerCase())
+    [p.name, p.category, ...(p.tags||[])].join(' ').toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US'))
   );
 
   const tabBtn = (id: typeof activeTab, label: string) => (
@@ -415,7 +415,7 @@ export default function ProductsTab({ token }: { token: string }) {
       <div style={{
         position: 'fixed', top: 0, right: 0, width: 580, maxWidth: '95vw', height: '100vh',
         background: '#fff', zIndex: 1045, boxShadow: '-8px 0 40px rgba(0,0,0,0.18)',
-        display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'hidden',
+        display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'clip',
         transform: showModal ? 'translateX(0)' : 'translateX(100%)',
         transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
       }}>
@@ -704,7 +704,7 @@ export default function ProductsTab({ token }: { token: string }) {
       {showTemplateManager && (
         <>
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 1040 }} onClick={() => setShowTemplateManager(false)} />
-          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'hidden' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'clip' }}>
             
             {/* Header */}
             <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

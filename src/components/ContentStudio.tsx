@@ -599,7 +599,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
         <div className="card-body py-3 px-4 d-flex flex-wrap align-items-center gap-3">
           <div className="me-auto">
             <div style={{ fontWeight: 700, fontSize: 14, color: '#212529' }}>
-              Content Studio — {section.charAt(0).toUpperCase() + section.slice(1)}
+              Content Studio — {section.charAt(0).toLocaleUpperCase('en-US') + section.slice(1)}
             </div>
             <div style={{ fontSize: 11, color: '#6c757d' }}>AZ / EN / RU / TR dillərini ayrı-ayrı redaktə edin</div>
           </div>
@@ -607,7 +607,7 @@ export default function ContentStudio({ section = 'home', className }: ContentSt
             {LANGS.map(lang => (
               <button key={lang} type="button" onClick={() => setEditorLocale(lang)}
                 style={badgeStyle(editorLocale === lang)}>
-                {lang.toUpperCase()}
+                {lang.toLocaleUpperCase('en-US')}
               </button>
             ))}
           </div>

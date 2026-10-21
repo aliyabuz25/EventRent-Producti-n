@@ -58,7 +58,7 @@ export function SiteContentProvider({ children }: { children: React.ReactNode })
     if (stored || urlLocale) return;
 
     function detectFromCountry(cc: string) {
-      const c = cc.toLowerCase();
+      const c = cc.toLocaleLowerCase('en-US');
       if (c === 'az') return 'az' as Locale;
       if (c === 'tr') return 'tr' as Locale;
       if (['ru', 'kz', 'uz', 'kg', 'tj', 'tm', 'by', 'md', 'am', 'ge'].includes(c)) return 'ru' as Locale;

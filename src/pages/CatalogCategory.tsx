@@ -32,8 +32,8 @@ export default function CatalogCategory() {
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
-      const matchesSearch = (p.name ?? '').toLowerCase().includes(search.toLowerCase()) ||
-                           (p.description ?? '').toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = (p.name ?? '').toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US')) ||
+                           (p.description ?? '').toLocaleLowerCase('en-US').includes(search.toLocaleLowerCase('en-US'));
       const matchesCategory = validCategory === 'Hamısı' || p.category === validCategory;
       return matchesSearch && matchesCategory;
     });

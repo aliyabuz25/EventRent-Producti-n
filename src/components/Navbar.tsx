@@ -171,7 +171,7 @@ export default function Navbar() {
                 )}
               >
                 <Flag code={FLAG_CODES[locale]} size={18} />
-                <span>{locale.toUpperCase()}</span>
+                <span>{locale.toLocaleUpperCase('en-US')}</span>
                 <ChevronDown
                   aria-hidden="true"
                   className={cn(
@@ -210,7 +210,7 @@ export default function Navbar() {
                         )}
                       >
                         <Flag code={FLAG_CODES[lang]} size={20} />
-                        <span className="font-black">{lang.toUpperCase()}</span>
+                        <span className="font-black">{lang.toLocaleUpperCase('en-US')}</span>
                         <span className="text-gray-500">{langLabels[lang]}</span>
                         {locale === lang && (
                           <span className="ml-auto h-1.5 w-1.5 rounded-full bg-premium-orange" />
@@ -330,7 +330,7 @@ export default function Navbar() {
                   )}
                 >
                   <Flag code={FLAG_CODES[lang]} size={18} />
-                  <span>{lang.toUpperCase()}</span>
+                  <span>{lang.toLocaleUpperCase('en-US')}</span>
                 </button>
               ))}
             </div>
