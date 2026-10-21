@@ -413,14 +413,14 @@ export default function ProductsTab({ token }: { token: string }) {
 
       {/* Product Offcanvas */}
       <div style={{
-        position: 'fixed', top: 0, right: 0, width: 580, maxWidth: '95vw', height: '100vh',
+        position: 'fixed', top: 0, right: 0, bottom: 0, width: 580, maxWidth: '95vw',
         background: '#fff', zIndex: 1045, boxShadow: '-8px 0 40px rgba(0,0,0,0.18)',
-        display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px', overflow: 'clip',
+        display: 'grid', gridTemplateRows: 'auto 1fr', borderRadius: '16px 0 0 16px',
         transform: showModal ? 'translateX(0)' : 'translateX(100%)',
         transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
       }}>
         {/* Header */}
-        <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: '16px 0 0 0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 42, height: 42, borderRadius: 12, background: editId ? '#fff3cd' : '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {editId ? <Pencil size={18} color="#664d03" /> : <Plus size={18} color="#e30613" />}
@@ -433,8 +433,8 @@ export default function ProductsTab({ token }: { token: string }) {
           <button type="button" className="btn-close" onClick={closeModal} />
         </div>
 
-        <form onSubmit={handleSubmit} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateRows: '1fr auto', minHeight: 0, overflow: 'hidden' }}>
+          <div style={{ overflowY: 'auto', padding: '20px 24px' }}>
                   
                   {/* Basic Info */}
                     <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: 12, marginBottom: 20 }}>
@@ -704,10 +704,10 @@ export default function ProductsTab({ token }: { token: string }) {
       {showTemplateManager && (
         <>
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 1040 }} onClick={() => setShowTemplateManager(false)} />
-          <div style={{ position: 'fixed', top: 0, right: 0, width: 440, height: '100vh', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', borderRadius: '16px 0 0 16px' }}>
+          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 440, maxWidth: '95vw', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', borderRadius: '16px 0 0 16px', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
             
             {/* Header */}
-            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: '16px 0 0 0' }}>
               <div>
                 <h5 style={{ margin: 0, fontWeight: 800, color: '#212529', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Tag size={18} color="#e30613" /> Metrik Şablonları
@@ -721,7 +721,7 @@ export default function ProductsTab({ token }: { token: string }) {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20, minHeight: 0 }}>
+            <div style={{ overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
               
               {/* Form Sahəsi (Edit və ya Yeni yaradıldıqda görünür) */}
               <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e9ecef', overflow: 'clip', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
