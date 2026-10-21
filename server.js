@@ -1811,6 +1811,134 @@ app.post('/api/admin/reset-db', authMiddleware, adminOnly, (req, res) => {
   }
 });
 
+/* ══════════════════════════════════════════
+   Backup / Restore API
+══════════════════════════════════════════ */
+
+// 1) DB-ni yüklə (download)
+app.get('/api/admin/backup/db', authMiddleware, adminOnly, (req, res) => {
+  try {
+    if (!existsSync(DB_PATH)) return res.status(404).json({ error: 'DB tapılmadı' });
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `eventrent_db_${ts}.db`;
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    // WAL checkpoint — DB-ni tam vəziyyətə gətir
+    try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
+    const { createReadStream } = require('node:fs');
+    createReadStream(DB_PATH).pipe(res);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 2) Uploads qovluğunu ZIP-lə yüklə
+app.get('/api/admin/backup/uploads', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const archiver = require('archiver');
+    const uploadsDir = path.resolve('uploads');
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `eventrent_uploads_${ts}.zip`;
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/zip');
+    const archive = archiver('zip', { zlib: { level: 6 } });
+    archive.on('error', err => { console.error('[backup/uploads]', err); });
+    archive.pipe(res);
+    if (existsSync(uploadsDir)) {
+      archive.directory(uploadsDir, false);
+    }
+    await archive.finalize();
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 3) Tam backup (DB + uploads + site-content) ZIP
+app.get('/api/admin/backup/full', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const archiver = require('archiver');
+    const uploadsDir = path.resolve('uploads');
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `eventrent_full_backup_${ts}.zip`;
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/zip');
+    const archive = archiver('zip', { zlib: { level: 6 } });
+    archive.on('error', err => { console.error('[backup/full]', err); });
+    archive.pipe(res);
+    // DB
+    try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
+    if (existsSync(DB_PATH)) archive.file(DB_PATH, { name: 'data/eventrent.db' });
+    // Site content
+    if (existsSync(CONTENT_FILE_PATH)) archive.file(CONTENT_FILE_PATH, { name: 'data/site-content.json' });
+    // Uploads
+    if (existsSync(uploadsDir)) archive.directory(uploadsDir, 'uploads');
+    await archive.finalize();
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 4) DB yüklə (restore) — multipart/form-data, field: "db"
+app.post('/api/admin/backup/restore-db', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const multer = require('multer');
+    const os = require('node:os');
+    const upload = multer({ dest: os.tmpdir(), limits: { fileSize: 200 * 1024 * 1024 } }).single('db');
+    upload(req, res, async (err) => {
+      if (err) return res.status(400).json({ error: err.message });
+      if (!req.file) return res.status(400).json({ error: 'Fayl tapılmadı. Field adı: "db"' });
+      try {
+        // Mövcud DB-nin backup-ını götür
+        const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const backupPath = `${DB_PATH}.bak_${ts}`;
+        const { copyFileSync, renameSync } = require('node:fs');
+        if (existsSync(DB_PATH)) copyFileSync(DB_PATH, backupPath);
+        // DB-ni bağla, faylı əvəz et, yenidən aç
+        db.close();
+        renameSync(req.file.path, DB_PATH);
+        // DB-ni yenidən başlat
+        const Database = require('better-sqlite3');
+        db = new Database(DB_PATH);
+        db.pragma('journal_mode = WAL');
+        console.log(`[restore-db] DB restored by ${req.user?.email}, backup at ${backupPath}`);
+        res.json({ ok: true, message: 'DB bərpa edildi. Köhnə DB: ' + path.basename(backupPath) });
+      } catch (e2) {
+        res.status(500).json({ error: e2.message });
+      }
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 5) Backup siyahısı — DB + content backup fayllarını listələ
+app.get('/api/admin/backup/list', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const { readdirSync, statSync } = require('node:fs');
+    const items = [];
+    // Content backupları
+    const contentBkDir = path.resolve('data/content-backups');
+    if (existsSync(contentBkDir)) {
+      for (const f of readdirSync(contentBkDir).filter(f => f.endsWith('.json'))) {
+        const fp = path.join(contentBkDir, f);
+        const st = statSync(fp);
+        items.push({ type: 'content', filename: f, size: st.size, created_at: st.mtime.toISOString() });
+      }
+    }
+    // DB backup faylları (*.bak_*)
+    const dataDir = path.dirname(DB_PATH);
+    for (const f of readdirSync(dataDir).filter(f => f.includes('.bak_'))) {
+      const fp = path.join(dataDir, f);
+      const st = statSync(fp);
+      items.push({ type: 'db', filename: f, size: st.size, created_at: st.mtime.toISOString() });
+    }
+    items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    res.json(items);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('/api/admin/db-stats', authMiddleware, adminOnly, (req, res) => {
   try {
     const stats = {

@@ -32,6 +32,7 @@
     "@whiskeysockets/baileys": "^7.0.0-rc14",
     "ag-grid-community": "^36.2.0",
     "ag-grid-react": "^36.2.0",
+    "archiver": "^8.0.0",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^13.0.3",
     "bootstrap": "^5.3.3",
