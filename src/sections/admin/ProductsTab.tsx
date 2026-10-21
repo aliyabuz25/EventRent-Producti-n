@@ -703,11 +703,14 @@ export default function ProductsTab({ token }: { token: string }) {
       {/* ── Metriklər Offcanvas ── */}
       {showTemplateManager && (
         <>
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 1040 }} onClick={() => setShowTemplateManager(false)} />
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 440, maxWidth: '95vw', background: '#f8f9fa', zIndex: 1045, boxShadow: '-4px 0 32px rgba(0,0,0,0.12)', borderRadius: '16px 0 0 16px', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
-            
+          {/* Backdrop */}
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1050 }} onClick={() => { setShowTemplateManager(false); setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); }} />
+          {/* Modal */}
+          <div style={{ position: 'fixed', inset: 0, zIndex: 1051, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={(e) => { if (e.target === e.currentTarget) { setShowTemplateManager(false); setTmplEditId(null); setTmplForm(TMPL_EMPTY); setTmplOptionInput(''); } }}>
+            <div style={{ width: '100%', maxWidth: 560, maxHeight: '90vh', background: '#f8f9fa', borderRadius: 20, boxShadow: '0 24px 64px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
             {/* Header */}
-            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: '16px 0 0 0' }}>
+            <div style={{ padding: '20px 24px', background: '#fff', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
               <div>
                 <h5 style={{ margin: 0, fontWeight: 800, color: '#212529', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Tag size={18} color="#e30613" /> Metrik Şablonları
@@ -721,7 +724,7 @@ export default function ProductsTab({ token }: { token: string }) {
               </button>
             </div>
 
-            <div style={{ overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
               
               {/* Form Sahəsi (Edit və ya Yeni yaradıldıqda görünür) */}
               <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e9ecef', overflow: 'clip', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
@@ -878,8 +881,9 @@ export default function ProductsTab({ token }: { token: string }) {
             </div>
             
             {/* Footer Summary */}
-            <div style={{ padding: '12px 24px', background: '#fff', borderTop: '1px solid #e9ecef', fontSize: 12, color: '#6c757d', fontWeight: 500, textAlign: 'center' }}>
+            <div style={{ padding: '12px 24px', background: '#fff', borderTop: '1px solid #e9ecef', fontSize: 12, color: '#6c757d', fontWeight: 500, textAlign: 'center', flexShrink: 0 }}>
               Toplam {templates.length} metrik şablonu
+            </div>
             </div>
           </div>
         </>
