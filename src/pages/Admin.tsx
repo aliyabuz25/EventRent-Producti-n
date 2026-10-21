@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import {
-  LayoutDashboard, MessageSquare, Package, Users,
+  LayoutDashboard, MessageSquare, Package, Users, Tag,
   TrendingUp, Clock, FileText, ExternalLink, Home, Info, Settings, Phone, AlignJustify,
   ChevronRight, LogOut, Menu, ShoppingCart, Mail, UserCog, Eye, EyeOff, ImageIcon, Database,
   Search, X as XIcon,
@@ -23,6 +23,7 @@ const DashboardTab = lazy(() => import('../sections/admin/DashboardTab'));
 const AdminReels = lazy(() => import('./admin/AdminReels'));
 const AdminWhatsApp = lazy(() => import('./admin/AdminWhatsApp'));
 const AdminCatering = lazy(() => import('../sections/admin/CateringTab'));
+const AdminCategories = lazy(() => import('../sections/admin/CategoriesTab'));
 const AdminSetup = lazy(() => import('../components/AdminSetup'));
 const DatabaseTab = lazy(() => import('../sections/admin/DatabaseTab'));
 
@@ -34,7 +35,7 @@ type Tab = 'dashboard' | 'orders' | 'leads' | 'products' | 'teambuilding' | 'sup
   | 'content-contact' | 'content-footer' | 'content-catering' | 'content-portfolio'
   | 'content-cart' | 'content-product' | 'content-catalog' | 'content-notfound' | 'content-gallery'
   | 'content-eventgarden' | 'content-tv' | 'content-teambuilding-page'
-  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database';
+  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database' | 'categories';
 
 type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio' | 'cart' | 'product' | 'catalog' | 'notfound' | 'gallery' | 'eventgarden' | 'tv' | 'teambuilding-page';
 
@@ -263,6 +264,7 @@ export default function Admin() {
     { id: 'orders',           label: 'Sifarişlər',   Icon: ShoppingCart },
     { id: 'leads',            label: 'Sorğular',     Icon: MessageSquare, badge: newLeads || undefined },
     { id: 'products',         label: 'Məhsullar',    Icon: Package },
+    { id: 'categories'        as Tab, label: 'Kateqoriyalar', Icon: Tag },
     { id: 'teambuilding',     label: 'Teambuilding', Icon: Users },
     { id: 'support',          label: 'Dəstək',       Icon: MessageSquare },
     { id: 'catering'          as Tab, label: 'Ketrinq',   Icon: AlignJustify },
@@ -286,6 +288,7 @@ export default function Admin() {
     { label: 'Sifarişlər', tab: 'orders' as Tab, icon: ShoppingCart, desc: 'Müştəri sifarişlərini idarə et' },
     { label: 'Sorğular', tab: 'leads' as Tab, icon: MessageSquare, desc: 'Gələn sorğular, leads' },
     { label: 'Məhsullar', tab: 'products' as Tab, icon: Package, desc: 'Kataloq məhsulları, CRUD' },
+    { label: 'Kateqoriyalar', tab: 'categories' as Tab, icon: Tag, desc: 'Kateqoriya sırası, drag-and-drop' },
     { label: 'Teambuilding', tab: 'teambuilding' as Tab, icon: Users, desc: 'Oyunlar, konsepsiyalar' },
     { label: 'Dəstək', tab: 'support' as Tab, icon: MessageSquare, desc: 'Support ticketlər, cavab ver' },
     { label: 'Portfolio / Reels', tab: 'reels' as Tab, icon: ImageIcon, desc: 'YouTube, Instagram, video, şəkil əlavə et' },
@@ -468,6 +471,7 @@ export default function Admin() {
             {tab === 'orders'           && <AdminOrders token={token} />}
             {tab === 'leads'            && <AdminLeads leads={leads} products={[]} token={token} onReload={() => apiFetch('/api/leads').then(r => r.json()).then(setLeads).catch(() => {})} />}
             {tab === 'products'         && <AdminProducts token={token} />}
+            {tab === 'categories'       && <AdminCategories token={token} />}
             {tab === 'teambuilding'     && <AdminTeambuilding token={token} />}
             {tab === 'support'          && <AdminSupport token={token} />}
             {tab === 'catering'         && <AdminCatering token={token} />}

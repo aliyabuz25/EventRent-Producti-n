@@ -152,6 +152,12 @@ CREATE TABLE IF NOT EXISTS leads (
        created_at TEXT NOT NULL DEFAULT (datetime('now')),
        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
      );
+    CREATE TABLE IF NOT EXISTS categories (
+      id         TEXT PRIMARY KEY,
+      name       TEXT NOT NULL UNIQUE,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
    `);
 
   db.prepare(`
@@ -987,6 +993,79 @@ function parseProduct(p) {
     relatedProducts:  JSON.parse(p.related_products  || '[]'),
   };
 }
+
+/* ══════════════════════════════════════════
+   Categories API
+══════════════════════════════════════════ */
+
+// Mövcud məhsullardan kateqoriyaları sync et (ilk dəfə üçün)
+function syncCategoriesFromProducts() {
+  const existing = new Set(db.prepare('SELECT name FROM categories').all().map(r => r.name));
+  const fromProducts = db.prepare("SELECT DISTINCT category FROM products WHERE category != '' ORDER BY category").all();
+  let maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM categories').get()?.m || 0;
+  for (const { category } of fromProducts) {
+    if (!existing.has(category)) {
+      db.prepare('INSERT OR IGNORE INTO categories (id, name, sort_order) VALUES (?, ?, ?)').run(
+        crypto.randomUUID(), category, ++maxOrder
+      );
+    }
+  }
+}
+
+app.get('/api/categories', (req, res) => {
+  syncCategoriesFromProducts();
+  const rows = db.prepare('SELECT * FROM categories ORDER BY sort_order ASC, name ASC').all();
+  res.json(rows);
+});
+
+app.post('/api/categories', authMiddleware, adminOnly, (req, res) => {
+  const { name } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Ad tələb olunur' });
+  const maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM categories').get()?.m || 0;
+  const id = crypto.randomUUID();
+  try {
+    db.prepare('INSERT INTO categories (id, name, sort_order) VALUES (?, ?, ?)').run(id, name.trim(), maxOrder + 1);
+    res.json(db.prepare('SELECT * FROM categories WHERE id=?').get(id));
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) return res.status(400).json({ error: 'Bu kateqoriya artıq mövcuddur' });
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.put('/api/categories/:id', authMiddleware, adminOnly, (req, res) => {
+  const { name } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Ad tələb olunur' });
+  const cat = db.prepare('SELECT * FROM categories WHERE id=?').get(req.params.id);
+  if (!cat) return res.status(404).json({ error: 'Tapılmadı' });
+  try {
+    // məhsullarda da adı yenilə
+    db.prepare("UPDATE products SET category=?, updated_at=datetime('now') WHERE category=?").run(name.trim(), cat.name);
+    db.prepare('UPDATE categories SET name=? WHERE id=?').run(name.trim(), req.params.id);
+    res.json(db.prepare('SELECT * FROM categories WHERE id=?').get(req.params.id));
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) return res.status(400).json({ error: 'Bu ad artıq mövcuddur' });
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.delete('/api/categories/:id', authMiddleware, adminOnly, (req, res) => {
+  const cat = db.prepare('SELECT * FROM categories WHERE id=?').get(req.params.id);
+  if (!cat) return res.status(404).json({ error: 'Tapılmadı' });
+  db.prepare('DELETE FROM categories WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+// Drag-and-drop sıralama
+app.patch('/api/categories/reorder', authMiddleware, adminOnly, (req, res) => {
+  const { ids } = req.body; // sıralı id array
+  if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids array tələb olunur' });
+  const update = db.prepare('UPDATE categories SET sort_order=? WHERE id=?');
+  const tx = db.transaction(() => {
+    ids.forEach((id, idx) => update.run(idx, id));
+  });
+  tx();
+  res.json({ ok: true });
+});
 
 app.get('/api/products', (req, res) => {
   const rows = db.prepare('SELECT * FROM products ORDER BY sort_order ASC, created_at ASC').all();

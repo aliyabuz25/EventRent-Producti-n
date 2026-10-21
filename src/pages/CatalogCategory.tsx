@@ -9,24 +9,32 @@ export default function CatalogCategory() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
+  const [sortedCategories, setSortedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const decodedCategory = category ? decodeURIComponent(category) : 'Hamısı';
 
   useEffect(() => {
-    fetch('/api/products')
-      .then(r => r.ok ? r.json() : [])
-      .then((data: Product[]) => {
-        setProducts(data.filter((p: any) => p.active !== 0));
+    Promise.all([
+      fetch('/api/products').then(r => r.ok ? r.json() : []),
+      fetch('/api/categories').then(r => r.ok ? r.json() : []),
+    ]).then(([data, cats]: [any, any[]]) => {
+        const active = Array.isArray(data) ? data.filter((p: any) => p.active !== 0) : [];
+        setProducts(active);
+        const productCatSet = new Set(active.map((p: any) => p.category).filter(Boolean));
+        const ordered = (Array.isArray(cats) ? cats : [])
+          .map((c: any) => c.name)
+          .filter((n: string) => productCatSet.has(n));
+        const extra = Array.from(productCatSet).filter((c: any) => !ordered.includes(c)) as string[];
+        setSortedCategories(['Hamısı', ...ordered, ...extra]);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
-    return ['Hamısı', ...cats];
-  }, [products]);
+  const categories = sortedCategories.length > 0
+    ? sortedCategories
+    : ['Hamısı', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
 
   const validCategory = categories.includes(decodedCategory) ? decodedCategory : 'Hamısı';
 
