@@ -16,10 +16,10 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
       className="group flex flex-col items-center justify-center select-none transition-all duration-400 rounded-xl"
       style={{
         width: 176, height: 100,
-        border: hovered ? '1px solid rgba(227,6,19,0.4)' : '1px solid rgba(255,255,255,0.07)',
-        background: hovered ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.02)',
-        opacity: hovered ? 1 : 0.42,
-        boxShadow: hovered ? '0 8px 32px rgba(227,6,19,0.15), 0 0 0 1px rgba(227,6,19,0.1)' : 'none',
+        border: hovered ? '1px solid rgba(227,6,19,0.5)' : '1px solid rgba(255,255,255,0.12)',
+        background: hovered ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.05)',
+        opacity: hovered ? 1 : 0.85,
+        boxShadow: hovered ? '0 8px 32px rgba(227,6,19,0.18), 0 0 0 1px rgba(227,6,19,0.12)' : 'none',
         transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
       }}
       onMouseEnter={() => setHovered(true)}
@@ -35,7 +35,7 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
             maxWidth: 140, height: 60,
             filter: hovered
               ? 'grayscale(0) brightness(1) contrast(1.1) drop-shadow(0 2px 8px rgba(227,6,19,0.2))'
-              : 'grayscale(1) brightness(1.3) contrast(0.6)',
+              : 'grayscale(0.3) brightness(1.1) contrast(0.9)',
             transform: hovered ? 'scale(1.08)' : 'scale(1)',
           }}
         />
@@ -154,60 +154,20 @@ export default function HomeClients() {
           </div>
         </div>
 
-        <div className="cl-eyebrow flex items-center gap-4 mb-16 md:mb-20">
-          <div className="h-px w-12 bg-premium-orange/60" />
-          <span className="text-[9px] font-black tracking-[0.5em] uppercase text-premium-orange">
-            {eyebrow ? t(locale, eyebrow.badge) : 'Etibar Edənlər'}
-          </span>
-          <div className="h-px flex-1 bg-white/[0.06]" />
-          <span className="text-[9px] font-black tracking-[0.4em] uppercase text-white/50">
-            {eyebrow ? t(locale, eyebrow.count) : '50+ Brend'}
-          </span>
-        </div>
+        {/* Eyebrow + brand rows gizlədildi */}
 
-        <div className="cl-row-1 flex items-baseline gap-[0.12em] overflow-hidden mb-1"
-          style={{ fontSize: 'clamp(3.2rem, 8.5vw, 9rem)', lineHeight: 0.88, letterSpacing: '-0.04em', fontWeight: 900 }}>
-          <span className="uppercase text-white">ABB</span>
-          <span className="uppercase mx-[0.18em] text-premium-orange/30 font-light text-[0.35em] self-center tracking-[0.2em]">×</span>
-          <span className="uppercase italic" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.25)', color: 'transparent' }}>SOCAR</span>
-          <span className="uppercase mx-[0.18em] text-premium-orange/30 font-light text-[0.35em] self-center tracking-[0.2em]">×</span>
-          <span className="uppercase text-premium-orange">PASHA</span>
-          <span className="uppercase text-white/45 ml-[0.08em]">Holding</span>
-        </div>
-
-        <div className="cl-row-2 flex items-baseline justify-end gap-[0.14em] overflow-hidden mb-1"
-          style={{ fontSize: 'clamp(2.4rem, 6.5vw, 7rem)', lineHeight: 0.88, letterSpacing: '-0.04em', fontWeight: 900 }}>
-          <span className="uppercase italic" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.18)', color: 'transparent' }}>Kapital</span>
-          <span className="uppercase text-white/80">Bank</span>
-          <span className="uppercase mx-[0.2em] text-premium-orange/25 font-light text-[0.32em] self-center tracking-[0.2em]">×</span>
-          <span className="uppercase" style={{ color: '#e30613' }}>Bakcell</span>
-        </div>
-
-        <div className="h-px bg-white/[0.06] my-4" />
-
-        <div className="cl-row-3 flex items-baseline flex-wrap gap-x-[0.14em] overflow-hidden mb-1"
-          style={{ fontSize: 'clamp(2rem, 5.5vw, 6rem)', lineHeight: 0.9, letterSpacing: '-0.035em', fontWeight: 900 }}>
-          <span className="uppercase text-white/90">AzərGold</span>
-          <span className="uppercase mx-[0.18em] text-premium-orange/25 font-light text-[0.32em] self-center tracking-[0.2em]">×</span>
-          <span className="uppercase italic" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)', color: 'transparent' }}>Azərenerji</span>
-          <span className="uppercase mx-[0.18em] text-premium-orange/25 font-light text-[0.32em] self-center tracking-[0.2em]">×</span>
-          <span className="uppercase text-premium-orange/80">Silk Way</span>
-        </div>
-
-        <div className="cl-row-4 flex items-baseline flex-wrap gap-x-[0.2em] overflow-hidden"
-          style={{ fontSize: 'clamp(1.2rem, 3vw, 3.2rem)', lineHeight: 0.92, letterSpacing: '-0.025em', fontWeight: 700, color: 'rgba(255,255,255,0.3)' }}>
-          {['Nar Mobile', 'Atlas Group', 'Bravo', 'İpoteka Bank'].map((n, i) => (
-            <span key={n} className="uppercase">
-              {n}{i < 3 && <span className="text-premium-orange/30 mx-[0.25em]">·</span>}
+        <div className="pt-4">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-px w-10 bg-premium-orange/60" />
+            <p className="text-xs font-black tracking-[0.4em] uppercase text-white/80">
+              {eyebrow ? t(locale, eyebrow.trustedLabel) : 'Güvənilən Brendlər'}
+            </p>
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-premium-orange/80">
+              {eyebrow ? t(locale, eyebrow.count) : '50+ Brend'}
             </span>
-          ))}
-        </div>
-
-        <div className="mt-20 pt-10 border-t border-white/[0.05]">
-          <p className="text-[9px] font-black tracking-[0.4em] uppercase text-white/50 mb-8 text-center">
-            {eyebrow ? t(locale, eyebrow.trustedLabel) : 'Güvənilən Brendlər'}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-5 md:gap-6">
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
             {LOGOS.map((l) => (
               <LogoItem key={l.name} name={l.name} sub={l.sub} img={l.img} url={l.url} />
             ))}
