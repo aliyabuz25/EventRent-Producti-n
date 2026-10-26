@@ -52,11 +52,7 @@ export default function Home() {
         </section>
       </Suspense>
 
-      <Suspense fallback={<SectionFallback />}>
-        <section id="clients-section" aria-label="Müştərilər">
-          <HomeClients />
-        </section>
-      </Suspense>
+      {/* HomeClients gizlədildi */}
 
       <Suspense fallback={<SectionFallback />}>
         <section id="portfolio-section" aria-label="Portfolio">
