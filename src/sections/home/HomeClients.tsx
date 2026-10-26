@@ -15,7 +15,7 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
       rel="noopener noreferrer"
       className="group flex flex-col items-center justify-center select-none transition-all duration-400 rounded-xl"
       style={{
-        width: 176, height: 100,
+        width: 210, height: 120,
         border: hovered ? '1px solid rgba(227,6,19,0.4)' : '1px solid rgba(255,255,255,0.15)',
         background: 'rgba(255,255,255,0.95)',
         opacity: hovered ? 1 : 0.92,
@@ -32,7 +32,7 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
           onError={() => setImgFailed(true)}
           className="w-auto object-contain transition-all duration-400"
           style={{
-            maxWidth: 140, height: 60,
+            maxWidth: 170, height: 75,
             filter: hovered
               ? 'grayscale(0) brightness(1) contrast(1.1) drop-shadow(0 2px 8px rgba(227,6,19,0.2))'
               : 'grayscale(0.2) brightness(1) contrast(1)',
@@ -167,7 +167,7 @@ export default function HomeClients() {
               {eyebrow ? t(locale, eyebrow.count) : '50+ Brend'}
             </span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-5 md:gap-7">
             {LOGOS.map((l) => (
               <LogoItem key={l.name} name={l.name} sub={l.sub} img={l.img} url={l.url} />
             ))}
