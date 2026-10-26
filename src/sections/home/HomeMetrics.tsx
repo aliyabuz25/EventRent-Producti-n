@@ -106,7 +106,7 @@ export default function Metrics() {
                   </div>
                 </div>
                 <div className="metric-label-raw">
-                  <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/70 leading-relaxed max-w-[150px]">
+                  <p className="text-sm md:text-base font-bold uppercase tracking-[0.2em] text-white/90 leading-relaxed max-w-[180px]">
                     {t(locale, stat.label)}
                   </p>
                 </div>

@@ -54,11 +54,7 @@ export default function Home() {
 
       {/* HomeClients gizlədildi */}
 
-      <Suspense fallback={<SectionFallback />}>
-        <section id="portfolio-section" aria-label="Portfolio">
-          <HomeFeaturedSetups />
-        </section>
-      </Suspense>
+      {/* HomeFeaturedSetups gizlədildi */}
 
       <Suspense fallback={<SectionFallback />}>
         <section id="contact-section" aria-label="Əlaqə">
