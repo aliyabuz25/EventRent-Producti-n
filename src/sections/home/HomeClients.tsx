@@ -16,9 +16,9 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
       className="group flex flex-col items-center justify-center select-none transition-all duration-400 rounded-xl"
       style={{
         width: 176, height: 100,
-        border: hovered ? '1px solid rgba(227,6,19,0.5)' : '1px solid rgba(255,255,255,0.12)',
-        background: hovered ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.05)',
-        opacity: hovered ? 1 : 0.85,
+        border: hovered ? '1px solid rgba(227,6,19,0.4)' : '1px solid rgba(255,255,255,0.15)',
+        background: 'rgba(255,255,255,0.95)',
+        opacity: hovered ? 1 : 0.92,
         boxShadow: hovered ? '0 8px 32px rgba(227,6,19,0.18), 0 0 0 1px rgba(227,6,19,0.12)' : 'none',
         transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
       }}
@@ -35,7 +35,7 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
             maxWidth: 140, height: 60,
             filter: hovered
               ? 'grayscale(0) brightness(1) contrast(1.1) drop-shadow(0 2px 8px rgba(227,6,19,0.2))'
-              : 'grayscale(0.3) brightness(1.1) contrast(0.9)',
+              : 'grayscale(0.2) brightness(1) contrast(1)',
             transform: hovered ? 'scale(1.08)' : 'scale(1)',
           }}
         />
@@ -43,14 +43,14 @@ function LogoItem({ name, sub, img, url }: { name: string; sub: string; img: str
         <div className="flex flex-col items-center gap-1.5">
           <span
             className="font-black tracking-tight uppercase leading-none transition-colors duration-300"
-            style={{ fontSize: 'clamp(18px, 2vw, 24px)', color: hovered ? '#e30613' : 'rgba(255,255,255,0.88)' }}
+            style={{ fontSize: 'clamp(18px, 2vw, 24px)', color: hovered ? '#e30613' : 'rgba(0,0,0,0.75)' }}
           >
             {name}
           </span>
           {sub && (
             <span
               className="text-[8px] font-bold tracking-[0.32em] uppercase leading-none transition-colors duration-300"
-              style={{ color: hovered ? 'rgba(227,6,19,0.6)' : 'rgba(255,255,255,0.28)' }}
+              style={{ color: hovered ? 'rgba(227,6,19,0.7)' : 'rgba(0,0,0,0.35)' }}
             >
               {sub}
             </span>
