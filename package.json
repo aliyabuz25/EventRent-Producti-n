@@ -28,7 +28,7 @@
     "@types/pg": "^8.23.1",
     "@types/qrcode": "^1.5.6",
     "@types/three": "^0.183.1",
-    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react": "4.3.4",
     "@whiskeysockets/baileys": "^7.0.0-rc14",
     "ag-grid-community": "^36.2.0",
     "ag-grid-react": "^36.2.0",
@@ -64,9 +64,14 @@
     "three": "^0.183.2",
     "vite": "^6.2.0"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-musl": "1.32.0",
+    "lightningcss-linux-x64-gnu": "1.32.0",
+    "lightningcss-linux-arm64-musl": "1.32.0",
+    "lightningcss-linux-arm64-gnu": "1.32.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "@rollup/rollup-darwin-arm64": "^4.63.6",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react-datepicker": "^6.2.0",

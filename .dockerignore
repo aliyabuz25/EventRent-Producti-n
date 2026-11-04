@@ -1,6 +1,9 @@
 node_modules
+dist
 .env
 .DS_Store
 .git
 *.log
-# dist/ burdan silindi ki, Dockerfile.frontend onu tapa bilsin!
+test-results
+test-shots
+tests

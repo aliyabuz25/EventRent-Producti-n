@@ -1,16 +1,18 @@
-FROM node:20-alpine
-WORKDIR /app
-# native build tools (better-sqlite3, baileys üçün)
-RUN apk add --no-cache python3 make g++ git
+FROM node:22-slim
 
-# Sırf backend üçün paketləri yüklə
+WORKDIR /app
+
+# native build tools (better-sqlite3, baileys için)
+RUN apt-get update && apt-get install -y python3 make g++ git && rm -rf /var/lib/apt/lists/*
+
+# Sadece backend paketlerini yükle
 COPY package.backend.json ./package.json
 RUN npm install
 
-# Server faylını kopyala
+# Server dosyasını kopyala
 COPY server.js ./
 
-# Data qovluqlarını boş olaraq yarat (Volume mount olunacaq)
+# Data klasörlerini boş oluştur (Volume mount edilecek)
 RUN mkdir -p data uploads
 
 ENV HOST=0.0.0.0
