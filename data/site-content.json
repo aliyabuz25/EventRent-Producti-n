@@ -20,10 +20,10 @@
         "tr": "Deneyim."
       },
       "subtitle": {
-        "az": "Tədbiriniz üçün hər şey — Operativlik və Bol çeşidin vəhdəti.",
-        "en": "Everything for your event — the unity of efficiency and vast variety.",
-        "ru": "Всё для вашего мероприятия — единство оперативности и богатого ассортимента.",
-        "tr": "Etkinliğiniz için her şey — verimlilik ve geniş çeşitlilik."
+        "az": "Eventrent olaraq tədbirinizin ideyadan həyata keçməsinə qədər bütün mərhələlərdə yanınızdayıq.\nSəhnə, səs, işıq və LED ekran sistemlərindən dekor və çap xidmətlərinə qədər ehtiyaclarınızı bir ünvanda birləşdiririk.\nSiz qonaqlarınıza və proqramınıza fokuslanın, biz tədbirinizin hazırlığını və icrasını üzərimizə götürək.",
+        "en": "At Eventrent, we’re with you at every stage of your event, from concept to execution. From staging, sound, lighting and LED screens to décor and printing services, we bring everything you need together in one place. Focus on your guests and programme, and let us take care of preparing and delivering your event.",
+        "ru": "Eventrent — рядом с вами на каждом этапе мероприятия, от идеи до реализации. Сцена, звук, свет, LED-экраны, декор и полиграфия — всё необходимое в одном месте. Сосредоточьтесь на гостях и программе, а подготовку и проведение мероприятия доверьте нам.",
+        "tr": "Eventrent olarak etkinliğinizin fikir aşamasından hayata geçirilmesine kadar her adımda yanınızdayız. Sahne, ses, ışık ve LED ekran sistemlerinden dekorasyon ve baskı hizmetlerine kadar tüm ihtiyaçlarınızı tek bir noktada buluşturuyoruz. Siz misafirlerinize ve programınıza odaklanın, etkinliğinizin hazırlığını ve uygulamasını biz üstlenelim."
       }
     },
     "partnerIntro": {
@@ -186,7 +186,7 @@
     },
     "visionMission": {
       "badge": {
-        "az": "Kimik",
+        "az": "EVENTRENT",
         "en": "Who We Are",
         "ru": "Кто мы",
         "tr": "Kimiz"
@@ -329,7 +329,7 @@
         "ru": "Команда.",
         "tr": "Ekip."
       },
-      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=900&auto=format&fit=crop"
+      "image": "/uploads/renkli-paneller---n--nde-yedi-ki--ilik-ekip-1792053033431.png"
     },
     "team": {
       "badge": {
@@ -663,7 +663,7 @@
         "tr": "TAKİP ET"
       },
       "channelTagFacebook": {
-        "az": "BƏYƏNdİ",
+        "az": "BƏYƏN",
         "en": "LIKE",
         "ru": "НРАВИТСЯ",
         "tr": "BEĞEN"
@@ -699,7 +699,7 @@
         "tr": "Event Rent"
       }
     },
-    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3039.428490102005!2d49.8712345!3d40.4012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDI0JzA0LjQiTiA0OcKwNTInMTYuNCJF!5e0!3m2!1sen!2saz!4v1620000000000!5m2!1sen!2saz",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d379.73912586573925!2d49.88902466681671!3d40.41077791711826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1saz!2saz!4v1791971625509!5m2!1saz!2saz\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
     "ctaHeroWord": {
       "az": "BURDAYIQ",
       "en": "REACH US",
@@ -890,13 +890,13 @@
         {
           "label": {
             "az": "Mükəmməllik",
-            "en": "Excellence",
+            "en": "Excellence234444432",
             "ru": "Совершенство",
             "tr": "Mükemmellik"
           },
           "value": {
             "az": "Texniki",
-            "en": "Technical",
+            "en": "Technical43533",
             "ru": "Технический",
             "tr": "Teknik"
           }
@@ -980,7 +980,7 @@
             "ru": "Решения LED высокой яркости и точности для помещений и открытых площадок.",
             "tr": "İç ve dış mekanlar için yüksek parlaklıkta ve hassas LED çözümleri."
           },
-          "image": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/zarif-kurumsal-led-video-duvar---1791963320810.png"
         },
         {
           "key": "sound",
@@ -996,7 +996,7 @@
             "ru": "Профессиональная аудиоинженерия для концертов и корпоративных мероприятий.",
             "tr": "Konser ve kurumsal etkinlikler için profesyonel ses mühendisliği."
           },
-          "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/profesyonel-ses-sistemi-ve-miks-konsolu-1791963326600.png"
         },
         {
           "key": "stage",
@@ -1012,7 +1012,7 @@
             "ru": "Безопасные, модульные и визуально мощные сценические конструкции.",
             "tr": "Güvenli, modüler ve görsel olarak güçlü sahne yapıları."
           },
-          "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/mod--ler-sahne-ve-al--minyum-truss-1791963342804.png"
         },
         {
           "key": "lighting",
@@ -1028,7 +1028,7 @@
             "ru": "Динамический светодизайн по сценарию, трансформирующий пространство.",
             "tr": "Mekanı dönüştüren dinamik ve senaryoya uygun ışık tasarımı."
           },
-          "image": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/profesyonel-etkinlik-spotlar---1791963348206.png"
         }
       ]
     },
@@ -1084,7 +1084,7 @@
             "ru": "Безупречное управление и техническое обеспечение официальных мероприятий, саммитов и конференций, требующих строгого протокола и абсолютной точности.",
             "tr": "Ciddi protokol ve mutlak hassasiyet gerektiren resmi etkinlikler, zirveler ve konferanslar için kusursuz yönetim ve teknik altyapı."
           },
-          "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/bak---de-prestijli-i---konferans---1791963765169.png"
         },
         {
           "id": "concerts",
@@ -1106,7 +1106,7 @@
             "ru": "Масштабные сцены, профессиональный звук и визуальные световые системы для создания незабываемой атмосферы.",
             "tr": "İnsanların hafızasından silinmeyecek gerçek bir atmosfer yaratmak için devasa sahne, profesyonel ses ve görsel ışık sistemleri."
           },
-          "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/bak---de-k--z--l-i----klarla-a----k-hava-festivali-1791963773490.png"
         },
         {
           "id": "weddings",
@@ -1128,7 +1128,7 @@
             "ru": "Креативные проекты вдали от шаблонов, полностью адаптированные под ваше видение, цели и характер бренда.",
             "tr": "Şablonlardan uzak, tamamen vizyonunuza, hedeflerinize ve marka karakterinize uyarlanmış yaratıcı projeler."
           },
-          "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1000"
+          "image": "/uploads/bak-----de-zarif-do--um-g--n---kutlamas---1791963785954.png"
         }
       ]
     },
@@ -1152,7 +1152,7 @@
         "tr": "Sahneler"
       },
       "viewAll": {
-        "az": "Bütün layihələr",
+        "az": "",
         "en": "Explore all projects",
         "ru": "Все проекты",
         "tr": "Tüm projeler"
@@ -1160,91 +1160,69 @@
       "projects": [
         {
           "title": {
-            "az": "Formula 1 Azərbaycan Qran Prisi",
-            "en": "Formula 1 Azerbaijan GP",
-            "ru": "Формула-1 Гран-при Азербайджана",
-            "tr": "Formula 1 Azerbaycan GP"
+            "az": "",
+            "en": "New Project",
+            "ru": "Новый проект",
+            "tr": "Yeni Proje"
           },
           "location": {
-            "az": "Bakı şəhər halqası",
-            "en": "Baku City Circuit",
-            "ru": "Бакинская городская трасса",
-            "tr": "Bakü Şehir Pisti"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
           "category": {
-            "az": "Texniki Prodakşn",
-            "en": "Technical Production",
-            "ru": "Технический продакшн",
-            "tr": "Teknik Prodüksiyon"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
-          "image": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000",
-          "year": "2025"
+          "image": "/uploads/a----k-hava-sahne-ayd--nlatma-----z--m---1793013032546.png",
+          "year": ""
         },
         {
           "title": {
-            "az": "COP29 Dünya Sammiti",
-            "en": "COP29 World Summit",
-            "ru": "Всемирный саммит COP29",
-            "tr": "COP29 Dünya Zirvesi"
+            "az": "",
+            "en": "New Project",
+            "ru": "Новый проект",
+            "tr": "Yeni Proje"
           },
           "location": {
-            "az": "Bakı Olimpiya Stadionu",
-            "en": "Baku Olympic Stadium",
-            "ru": "Бакинский олимпийский стадион",
-            "tr": "Bakü Olimpiyat Stadyumu"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
           "category": {
-            "az": "Tam Audio-Visual",
-            "en": "Full Audio-Visual",
-            "ru": "Полный аудиовизуал",
-            "tr": "Tam Audio-Visual"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
-          "image": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1000",
-          "year": "2024"
+          "image": "/uploads/pale-mavi-konser-i----k-sistemi-1793013169724.png",
+          "year": ""
         },
         {
           "title": {
-            "az": "Bakı Jazz Festivalı",
-            "en": "Baku Jazz Festival",
-            "ru": "Бакинский джазовый фестиваль",
-            "tr": "Bakü Caz Festivali"
+            "az": "",
+            "en": "New Project",
+            "ru": "Новый проект",
+            "tr": "Yeni Proje"
           },
           "location": {
-            "az": "Heydər Əliyev Mərkəzi",
-            "en": "Heydar Aliyev Center",
-            "ru": "Центр Гейдара Алиева",
-            "tr": "Haydar Aliyev Merkezi"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
           "category": {
-            "az": "İşıq dizaynı",
-            "en": "Lighting Design",
-            "ru": "Светодизайн",
-            "tr": "Işık Tasarımı"
+            "az": "",
+            "en": "",
+            "ru": "",
+            "tr": ""
           },
-          "image": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1000",
-          "year": "2024"
-        },
-        {
-          "title": {
-            "az": "Milli Gün mərasimi",
-            "en": "National Day Celebration",
-            "ru": "Празднование национального дня",
-            "tr": "Milli Gün Kutlaması"
-          },
-          "location": {
-            "az": "Milli Bulvar",
-            "en": "National Boulevard",
-            "ru": "Национальный бульвар",
-            "tr": "Milli Bulvar"
-          },
-          "category": {
-            "az": "LED sistemlər",
-            "en": "LED Wall Systems",
-            "ru": "LED системы",
-            "tr": "LED Duvar Sistemleri"
-          },
-          "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1000",
-          "year": "2025"
+          "image": "/uploads/profesyonel-r--portaj-st--dyosu-ayd--nlatma-----z--m---1793013195112.png",
+          "year": ""
         }
       ]
     },
@@ -1299,7 +1277,7 @@
             "ru": "Формируем техническую стратегию с учетом площадки, бюджета и целей.",
             "tr": "Mekan, bütçe ve hedeflere göre teknik stratejiyi belirliyoruz."
           },
-          "bg": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=1000"
+          "bg": "/uploads/kurumsal-etkinlik-plan---dan----manl-------1791966527370.png"
         },
         {
           "title": {
@@ -1314,7 +1292,7 @@
             "ru": "Снижаем риски заранее за счет 3D-визуализации и технических схем.",
             "tr": "3D görselleştirme ve teknik çizimlerle riskleri önceden yönetiyoruz."
           },
-          "bg": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=1000"
+          "bg": "/uploads/etkinlik-m--hendisli--inde-hassas-tasar--m-1791966538775.png"
         },
         {
           "title": {
@@ -1329,7 +1307,7 @@
             "ru": "Сертифицированная команда выполняет монтаж оборудования по стандартам.",
             "tr": "Sertifikalı ekibimiz kurulumu standartlara uygun tamamlar."
           },
-          "bg": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1000"
+          "bg": "/uploads/profesyonel-etkinlik-truss-montaj---1791966551012.png"
         },
         {
           "title": {
@@ -1344,7 +1322,7 @@
             "ru": "В режиме live управляем светом, звуком и визуальными переходами.",
             "tr": "Canlı yayında ışık, ses ve görsel geçişleri gerçek zamanlı yönetiyoruz."
           },
-          "bg": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000"
+          "bg": "/uploads/sahne-arkas--nda-canl---koordinasyon-1791966560803.png"
         }
       ]
     },
@@ -1372,13 +1350,13 @@
         "tr": "Güvenenler"
       },
       "count": {
-        "az": "50+ Brend",
+        "az": "40+ Brend",
         "en": "50+ Brands",
         "ru": "50+ брендов",
         "tr": "50+ Marka"
       },
       "trustedLabel": {
-        "az": "Güvənilən Brendlər",
+        "az": "Tərəfdaşlarımız",
         "en": "Trusted Brands",
         "ru": "Доверенные бренды",
         "tr": "Güvenilen Markalar"
@@ -1527,7 +1505,7 @@
           }
         }
       ],
-      "image": "https://images.unsplash.com/photo-1558403194-611308249627?auto=format&fit=crop&q=80&w=1000"
+      "image": "/uploads/profesyonel-etkinlik-ekipmanlar---katalo--u-1791966787650.png"
     },
     "finalCta": {
       "title": {
@@ -1592,149 +1570,149 @@
         {
           "name": {
             "az": "Pərvin Qasımov",
-            "en": "Parvin Gasimov",
-            "ru": "Парвин Касумов",
-            "tr": "Parvin Kasımov"
-          },
-          "role": {
-            "az": "Həmtəsisçi / Direktor",
-            "en": "Co-founder / Director",
-            "ru": "Соучредитель / Директор",
-            "tr": "Kurucu / Direktör"
-          },
-          "description": {
-            "az": "Tədbir idarəçiliyi və kreativ planlama sahəsində təcrübəli komanda lideridir. Böyükmiqyaslı layihələrin strategiyası, planlaşdırılması və icrasını idarə edir.",
-            "en": "An experienced team leader in event management and creative planning. Manages strategy, planning and execution of large-scale projects.",
-            "ru": "Опытный руководитель команды в сфере управления мероприятиями и креативного планирования. Управляет стратегией, планированием и реализацией масштабных проектов.",
-            "tr": "Etkinlik yönetimi ve yaratıcı planlama alanında deneyimli bir ekip lideridir. Büyük ölçekli projelerin stratejisini, planlamasını ve uygulanmasını yönetir."
-          },
-          "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop"
-        },
-        {
-          "name": {
-            "az": "Qalib Kazımlı",
-            "en": "Galib Kazimli",
-            "ru": "Галиб Казымлы",
-            "tr": "Galib Kazımlı"
-          },
-          "role": {
-            "az": "Həmtəsisçi / İcraçı Direktor",
-            "en": "Co-founder / Executive Director",
-            "ru": "Соучредитель / Исполнительный директор",
-            "tr": "Kurucu / İcra Direktörü"
-          },
-          "description": {
-            "az": "Satış strategiyalarının idarə olunması və biznes əlaqələrinin inkişafına rəhbərlik edir. Müştəri münasibətləri və kommersiya yanaşmasını effektiv idarə edir.",
-            "en": "Leads sales strategy management and business relationship development. Effectively manages client relations and commercial approach.",
-            "ru": "Руководит управлением стратегий продаж и развитием деловых связей. Эффективно управляет клиентскими отношениями и коммерческим подходом.",
-            "tr": "Satış stratejilerinin yönetimine ve iş ilişkilerinin gelişimine öncülük eder. Müşteri ilişkilerini ve ticari yaklaşımı etkili bir şekilde yönetir."
-          },
-          "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop"
-        },
-        {
-          "name": {
-            "az": "Malik Bağırov",
-            "en": "Malik Bagirov",
-            "ru": "Малик Багиров",
-            "tr": "Malik Bağırov"
-          },
-          "role": {
-            "az": "Kreativ Direktor",
-            "en": "Creative Director",
-            "ru": "Креативный директор",
-            "tr": "Kreatif Direktör"
-          },
-          "description": {
-            "az": "Brend ruhunu müasir trendlərlə birləşdirir. Yaradıcı baxış tərzi və innovativ yanaşması ilə layihələrin konseptual istiqamətini formalaşdırır.",
-            "en": "Combines brand spirit with modern trends. Shapes the conceptual direction of projects with a creative vision and innovative approach.",
-            "ru": "Объединяет дух бренда с современными тенденциями. Формирует концептуальное направление проектов с помощью творческого видения и инновационного подхода.",
-            "tr": "Marka ruhunu modern trendlerle birleştirir. Yaratıcı bakış açısı ve yenilikçi yaklaşımıyla projelerin kavramsal yönünü şekillendirir."
-          },
-          "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop"
-        },
-        {
-          "name": {
-            "az": "Aysel Şirinova",
-            "en": "Aysel Shirinova",
-            "ru": "Айсель Ширинова",
-            "tr": "Aysel Şirinova"
-          },
-          "role": {
-            "az": "Satış şöbəsinin müdiri",
-            "en": "Head of Sales",
-            "ru": "Руководитель отдела продаж",
-            "tr": "Satış Bölümü Müdürü"
-          },
-          "description": {
-            "az": "Satış proseslərini idarə edir. Komanda performansının artırılmasında effektiv liderlik edir.",
-            "en": "Manages sales processes. Provides effective leadership in improving team performance.",
-            "ru": "Управляет процессами продаж. Обеспечивает эффективное руководство в повышении производительности команды.",
-            "tr": "Satış süreçlerini yönetir. Ekip performansının artırılmasında etkili liderlik sağlar."
-          },
-          "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop"
-        },
-        {
-          "name": {
-            "az": "Yasin Əhmədov",
-            "en": "Yasin Ahmadov",
-            "ru": "Ясин Ахмедов",
-            "tr": "Yasin Ahmedov"
-          },
-          "role": {
-            "az": "Layihə meneceri",
-            "en": "Project Manager",
-            "ru": "Менеджер проектов",
-            "tr": "Proje Yöneticisi"
-          },
-          "description": {
-            "az": "Dinamik idarəetmə bacarığı və təşkilati yanaşması ilə müxtəlif tədbir və layihələri idarə edir.",
-            "en": "Manages various events and projects with dynamic management skills and an organizational approach.",
-            "ru": "Управляет различными мероприятиями и проектами с помощью динамичных управленческих навыков и организационного подхода.",
-            "tr": "Dinamik yönetim becerileri ve örgütsel yaklaşımıyla çeşitli etkinlik ve projeleri yönetir."
-          },
-          "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop"
-        },
-        {
-          "name": {
-            "az": "Nərmin Tarverdiyeva",
             "en": "Narmin Tarverdiyeva",
             "ru": "Нармин Тарвердиева",
             "tr": "Nermin Tarverdiyeva"
           },
           "role": {
-            "az": "Dizayner",
+            "az": "Həmtəsisçi",
             "en": "Designer",
             "ru": "Дизайнер",
             "tr": "Tasarımcı"
           },
           "description": {
-            "az": "Vizual konsept və kreativ həllərə rəhbərlik edir. Müasir və estetik yanaşması ilə layihələrə fərqlilik qatar.",
+            "az": "- \"Deadline keçən həftə idi\"",
             "en": "Leads visual concepts and creative solutions. Adds distinction to projects with a modern and aesthetic approach.",
             "ru": "Руководит визуальными концепциями и креативными решениями. Придаёт проектам уникальность современным и эстетическим подходом.",
             "tr": "Görsel konsept ve yaratıcı çözümlere öncülük eder. Modern ve estetik yaklaşımıyla projelere farklılık katar."
           },
-          "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop"
+          "image": "/uploads/kurumsal-etkinlik-sahnesinde-----k-portre-1791973133511.png"
         },
         {
           "name": {
-            "az": "Aysu Məmmədova",
-            "en": "Aysu Mammadova",
-            "ru": "Айсу Мамедова",
-            "tr": "Aysu Memmedova"
+            "az": "Qalib Kazımlı",
+            "en": "developer32423",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
           },
           "role": {
-            "az": "Ofis menecer",
-            "en": "Office Manager",
-            "ru": "Офис-менеджер",
-            "tr": "Ofis Müdürü"
+            "az": "Həmtəsisçi",
+            "en": "dev",
+            "ru": "",
+            "tr": ""
           },
           "description": {
-            "az": "Rəsmi sənədləşmə və qeydiyyat üzrə mütəxəssis. Layihələr zamanı araşdırma işlərini həyata keçirir.",
-            "en": "Specialist in official documentation and registration. Conducts research during projects.",
-            "ru": "Специалист по официальной документации и регистрации. Проводит исследования во время проектов.",
-            "tr": "Resmi belgeleme ve kayıt uzmanı. Projeler sırasında araştırma çalışmalarını yürütür."
+            "az": "- \"12-yə kimi heç kim məndən pul istəməsin\"",
+            "en": "dsaksakd",
+            "ru": "",
+            "tr": ""
           },
-          "image": "https://images.unsplash.com/photo-1580489944761-9a91e4d51ab7?q=80&w=400&auto=format&fit=crop"
+          "image": "/uploads/k--rm--z---------kl---modern-kurumsal-portre-1791976148053.png"
+        },
+        {
+          "name": {
+            "az": "Yasin Əhmədov",
+            "en": "New Member",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
+          },
+          "role": {
+            "az": "Əməliyyatlar üzrə Menecer",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "description": {
+            "az": "- \"Paşam, 19 saatdır ayaq üstəyəm\"",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "image": "/uploads/k--rm--z---vurgulu-kurumsal-etkinlik-portresi-1792045855670.png"
+        },
+        {
+          "name": {
+            "az": "Nurlan İsmayılov",
+            "en": "New Member",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
+          },
+          "role": {
+            "az": "Layihələr üzrə Menecer",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "description": {
+            "az": "- \"Aysel heç yeridi?\"",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "image": "/uploads/kravat-ve-g--zl--k-olmadan-profesyonel-portre-1792048333187.png"
+        },
+        {
+          "name": {
+            "az": "Aysel Şirinova",
+            "en": "New Member",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
+          },
+          "role": {
+            "az": "Satış şöbəsinin Rəhbəri",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "description": {
+            "az": "- \"Arkadaşlar çok mutluyum\"",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "image": "/uploads/kurumsal-etkinlikte-kendinden-emin-ayakta-portre-1792044764649.png"
+        },
+        {
+          "name": {
+            "az": "Malik Bağırov",
+            "en": "New Member",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
+          },
+          "role": {
+            "az": "Kreativ Direktor",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "description": {
+            "az": "- \"Fikrimi izah eliyə bilmirəme mən\"",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "image": "/uploads/etkinlik-fuayesinde-kurumsal-portre-1792047018609.png"
+        },
+        {
+          "name": {
+            "az": "Nərmin Tarverdiyeva",
+            "en": "New Member",
+            "ru": "Новый участник",
+            "tr": "Yeni Üye"
+          },
+          "role": {
+            "az": "Layihə Assistenti",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "description": {
+            "az": "- \"Bu gün nə yeyirik?\"",
+            "en": "",
+            "ru": "",
+            "tr": ""
+          },
+          "image": "/uploads/kurumsal-etkinlik-sahnesinde-profesyonel-portre--1--1792047060211.png"
         }
       ]
     },
@@ -1752,126 +1730,211 @@
         "tr": "Müşterilerimiz"
       },
       "subtitle": {
-        "az": "50+ brend bizə etibar edir",
+        "az": "40+ brend bizə etibar edir",
         "en": "50+ brands trust us",
         "ru": "50+ брендов доверяют нам",
         "tr": "50+ marka bize güveniyor"
       },
       "clients": [
         {
-          "name": "Heydər Əliyev Fondu",
-          "logo": null,
-          "url": "https://heydaraliyevfoundation.az"
+          "name": "",
+          "logo": "/uploads/01-abb-1793083157152.png",
+          "url": ""
         },
         {
-          "name": "Azərbaycan Turizm Agentliyi",
-          "logo": null,
-          "url": "https://tourism.gov.az"
+          "name": "",
+          "logo": "/uploads/02-merkezi-bank-1793087133568.png",
+          "url": ""
         },
         {
-          "name": "Rusiya Səfirliyi",
-          "logo": null,
-          "url": "https://azerbaijan.mid.ru"
+          "name": "",
+          "logo": "/uploads/22-azersun-1793089273680.png",
+          "url": ""
         },
         {
-          "name": "İçərişəhər Qoruğu",
-          "logo": null,
-          "url": "https://icherisheher.gov.az"
+          "name": "",
+          "logo": "/uploads/03-azerbaijan-airlines-1793089282507.png",
+          "url": ""
         },
         {
-          "name": "Azərbaycan Güləş Federasiyası",
-          "logo": null,
-          "url": "https://wrestling.az"
+          "name": "",
+          "logo": "/uploads/04-gules-federasiyasi-1793089289131.png",
+          "url": ""
         },
         {
-          "name": "Azərbaycan Badminton Federasiyası",
-          "logo": null,
-          "url": "https://badminton.az"
+          "name": "",
+          "logo": "/uploads/05-mastercard-1793089293322.png",
+          "url": ""
         },
         {
-          "name": "Azərbaycan Cüdo Federasiyası",
-          "logo": null,
-          "url": "https://judo.az"
+          "name": "",
+          "logo": "/uploads/21-qarabag-fk-1793089304742.png",
+          "url": ""
         },
         {
-          "name": "Abşeron Ticarət Mərkəzi",
-          "logo": null,
-          "url": "https://absheron.az"
+          "name": "",
+          "logo": "/uploads/12-pasa-malls-1793089321160.png",
+          "url": ""
         },
         {
-          "name": "Mərkəzi Bank",
-          "logo": null,
-          "url": "https://cba.az"
+          "name": "",
+          "logo": "/uploads/06-azpromo-1793089326949.png",
+          "url": ""
         },
         {
-          "name": "Paşa Sığorta",
-          "logo": null,
-          "url": "https://pashainsurance.az"
+          "name": "",
+          "logo": "/uploads/07-azer-sheker-1793089329960.png",
+          "url": ""
         },
         {
-          "name": "Azal",
-          "logo": null,
-          "url": "https://azal.az"
+          "name": "",
+          "logo": "/uploads/08-melissa-group-1793089333364.png",
+          "url": ""
         },
         {
-          "name": "Tabaterra",
-          "logo": null,
-          "url": "https://tabaterra.az"
+          "name": "",
+          "logo": "/uploads/09-idea-1793089335484.png",
+          "url": ""
         },
         {
-          "name": "Paşa Kapital",
-          "logo": null,
-          "url": "https://pashacapital.az"
+          "name": "",
+          "logo": "/uploads/10-abseron-ticaret-merkezi-1793089338103.png",
+          "url": ""
         },
         {
-          "name": "Azərsun",
-          "logo": null,
-          "url": "https://azersun.com"
+          "name": "",
+          "logo": "/uploads/11-birmarket-1793089341730.png",
+          "url": ""
         },
         {
-          "name": "Bazarstore",
-          "logo": null,
-          "url": "https://bazarstore.az"
+          "name": "",
+          "logo": "/uploads/15-heyder-aliyev-fondu-1793089347249.png",
+          "url": ""
         },
         {
-          "name": "Norm Sement",
-          "logo": null,
-          "url": "https://norm.az"
+          "name": "",
+          "logo": "/uploads/16-tabaterra-1793089350376.png",
+          "url": ""
         },
         {
-          "name": "Avropa İttifaqı",
-          "logo": null,
-          "url": "https://europa.eu"
+          "name": "",
+          "logo": "/uploads/17-berqa-1793089354903.png",
+          "url": ""
         },
         {
-          "name": "Q STP",
-          "logo": null,
-          "url": "https://qstp.az"
+          "name": "",
+          "logo": "/uploads/18-pmd-projects-1793089358102.png",
+          "url": ""
         },
         {
-          "name": "Bakı Dövlət Universiteti",
-          "logo": null,
-          "url": "https://bsu.edu.az"
+          "name": "",
+          "logo": "/uploads/19-kapital-bank-1793089360965.png",
+          "url": ""
         },
         {
-          "name": "Odlar Yurdu Universiteti",
-          "logo": null,
-          "url": "https://oyu.edu.az"
+          "name": "",
+          "logo": "/uploads/20-aqrar-sigorta-fondu-1793089368860.png",
+          "url": ""
         },
         {
-          "name": "Azərxalça",
-          "logo": null,
-          "url": "https://azerkhalcha.az"
+          "name": "",
+          "logo": "/uploads/23-bizim-sufre-1793089373462.png",
+          "url": ""
         },
         {
-          "name": "Paşa Mall",
-          "logo": null,
-          "url": "https://pashamall.az"
+          "name": "",
+          "logo": "/uploads/24-zeytun-baglari-1793089375660.png",
+          "url": ""
         },
         {
-          "name": "SOCAR",
-          "logo": "/logos/socar.svg",
-          "url": "https://socar.az"
+          "name": "",
+          "logo": "/uploads/25-azercay-1793089378021.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/26-emanetlerin-sigortalanmasi-fondu-1793089381245.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/30-badminton-federasiyasi-1793089406706.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/28-kontakt-1793089390685.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/29-final-tea-1793089394186.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/31-baku-city-circuit-1793089411120.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/32-cop29-1793089413753.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/33-araz-1793089415908.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/34-rossmann-1793089418313.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/35-ekologiya-nazirliyi-1793089420893.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/36-qarabag-dircelis-fondu-1793089423474.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/37-kobia-1793089426302.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/38-veyseloglu-1793089428356.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/40-fmg-1793089437668.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/41-pmd-1793089451936.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/42-kend-teserrufati-nazirliyi-1793089456092.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/14-neftcala-rih-1793089459495.png",
+          "url": ""
+        },
+        {
+          "name": "",
+          "logo": "/uploads/13-bilesuvar-rih-1793089464058.png",
+          "url": ""
         }
       ]
     }
@@ -1917,7 +1980,7 @@
             "LED Ekran",
             "Texniki Rider"
           ],
-          "image": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1000",
+          "image": "/uploads/mod--ler-sahne-ve-truss-sistemi-1791962444127.png",
           "iconKey": "stage"
         },
         {
@@ -1946,7 +2009,7 @@
             "Monitor",
             "Audio Mix"
           ],
-          "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1000",
+          "image": "/uploads/profesyonel-etkinlik-ses-sistemi-1791962445659.png",
           "iconKey": "sound"
         },
         {
@@ -1975,7 +2038,7 @@
             "Backdrop",
             "Branding"
           ],
-          "image": "https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&q=80&w=1000",
+          "image": "/uploads/premium-kurumsal-bask-----r--nleri-1791962451508.png",
           "iconKey": "printing"
         },
         {
@@ -1987,7 +2050,7 @@
             "tr": "Dekor Hizmeti"
           },
           "title": {
-            "az": "Məkanı\nMəkana Çevir",
+            "az": "Atmosferi\nMəkana\nDaşı",
             "en": "Transform\nthe Space",
             "ru": "Преобрази\nпространство",
             "tr": "Mekanı\nDönüştür"
@@ -2003,7 +2066,7 @@
             "Tematik",
             "Fərdi Konsept"
           ],
-          "image": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1000",
+          "image": "/uploads/----k-kurumsal-resepsiyon-dekoru-1791962457704.png",
           "iconKey": "decor"
         },
         {
@@ -2032,7 +2095,7 @@
             "Wash",
             "Spot"
           ],
-          "image": "https://images.unsplash.com/photo-1511578314322-d37980f25207?auto=format&fit=crop&q=80&w=1000",
+          "image": "/uploads/k--rm--z---i----kta-hareketli-sahne-projekt--rleri-1791962461201.png",
           "iconKey": "lighting"
         }
       ]
@@ -2079,7 +2142,7 @@
           "ru": "Выделите бренд с помощью качественных печатных решений.",
           "tr": "Markanızı yüksek kaliteli baskı çözümleriyle öne çıkarın."
         },
-        "image": "https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?q=80&w=1920&auto=format&fit=crop",
+        "image": "/uploads/exec-e7da4353-b4a1-48b6-9259-d1498e3724d1-1791809040765.png",
         "subItems": [
           {
             "id": "notebook",
@@ -2120,7 +2183,8 @@
                 "Kapak tipi (Sert, Yumuşak)",
                 "Renk"
               ]
-            }
+            },
+            "image": "/uploads/eventrent-logolu-ajanda-14-1791807886534.png"
           },
           {
             "id": "vinyl",
@@ -2161,7 +2225,8 @@
                 "Laminasyon",
                 "Montaj hizmeti"
               ]
-            }
+            },
+            "image": "/uploads/eventrent-logolu-esnek-vinil-rulosu-1791810224348.png"
           },
           {
             "id": "rollup",
@@ -2198,7 +2263,8 @@
                 "Malzeme kalitesi",
                 "Mekanizma tipi"
               ]
-            }
+            },
+            "image": "/uploads/eventrent-roll-up-banner---ve-sahne-------klar---1791810174407.png"
           },
           {
             "id": "pen",
@@ -2235,7 +2301,869 @@
                 "Renk",
                 "Baskı türü (Lazer, UV)"
               ]
-            }
+            },
+            "image": "/uploads/eventrent-logolu------premium-kalem-1791810231230.png"
+          },
+          {
+            "id": "sub-1791186501245",
+            "name": {
+              "az": "Banner / Brandwall",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir, təqdimat və reklam üçün geniş formatlı vizual çap həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (Fərdi ölçü / m²)",
+                "Material növü",
+                "Konstruksiya növü",
+                "Laminasiya",
+                "Montaj xidməti"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-24687aeb-bb4b-4c2b-9876-d4761f90d0f3-1791809041522.png"
+          },
+          {
+            "id": "sub-1791186503261",
+            "name": {
+              "az": "Poster",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Reklam, tədbir və məlumatlandırma üçün yüksək keyfiyyətli poster çapı",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (A3, A2, A1, A0, fərdi)",
+                "Kağız növü",
+                "Kağız qalınlığı",
+                "Laminasiya"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-e7da4353-b4a1-48b6-9259-d1498e3724d1-1791809040765.png"
+          },
+          {
+            "id": "sub-1791186503429",
+            "name": {
+              "az": "Vizitkart",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ və şəxsi istifadə üçün fərdi dizaynlı vizitkartlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Kağız növü",
+                "Kağız qalınlığı",
+                "Tək / iki tərəfli çap",
+                "Laminasiya"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-746b138b-9650-45ab-ae87-98888204c5fe-1791809046036.png"
+          },
+          {
+            "id": "sub-1791186503537",
+            "name": {
+              "az": "Flyer",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Kampaniya, tədbir və təqdimatlar üçün reklam vərəqləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (A6, A5, A4)",
+                "Kağız növü",
+                "Kağız qalınlığı",
+                "Tək / iki tərəfli çap"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-etkinlik-sahnesi-bro----rleri-1791810257266.png"
+          },
+          {
+            "id": "sub-1791186503685",
+            "name": {
+              "az": "Buklet",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Məhsul və xidmətlərin təqdimatı üçün qatlanan çap materialları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (A4, A5, fərdi)",
+                "Qatlama növü",
+                "Kağız növü",
+                "Kağız qalınlığı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-etkinlik-ekipmanlar---katalo--u-17-1791807886545.png"
+          },
+          {
+            "id": "sub-1791186503921",
+            "name": {
+              "az": "Kataloq",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Məhsul və xidmətlərin peşəkar təqdimatı üçün korporativ kataloqlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (A4, A5, fərdi)",
+                "Səhifə sayı",
+                "Kağız növü",
+                "Üz qabığı",
+                "Cildləmə növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-etkinlik-ekipmanlar---bro----r---8-1791807886622.png"
+          },
+          {
+            "id": "sub-1791186504205",
+            "name": {
+              "az": "Menyu",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Restoran, catering və tədbirlər üçün fərdi dizaynlı menyular",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material növü",
+                "Səhifə sayı",
+                "Laminasiya",
+                "Cildləmə növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/k--rm--z---siyah-eventrent-men---bask--s---11-1791807886512.png"
+          },
+          {
+            "id": "sub-1791186505161",
+            "name": {
+              "az": "Dəvətnamə",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ və özəl tədbirlər üçün fərdi dizaynlı dəvətnamələr",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Kağız növü",
+                "Kağız qalınlığı",
+                "Zərf seçimi",
+                "Xüsusi effektlər"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-markal---modern-etkinlik-davetiyesi-5-1791807886554.png"
+          },
+          {
+            "id": "sub-1791186505377",
+            "name": {
+              "az": "Sertifikat",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Təlim, tədbir və mükafatlandırma üçün fərdi sertifikat çapı",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (A4, A5)",
+                "Kağız növü",
+                "Kağız qalınlığı",
+                "Fərdiləşdirmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-e9f40a79-7a54-42a3-94cc-2f7c64f1118d-1791809039894.png"
+          },
+          {
+            "id": "sub-1791186505509",
+            "name": {
+              "az": "Zərf",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ yazışma və təqdimatlar üçün brendli zərflər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (DL, C5, C4)",
+                "Kağız növü",
+                "Rəng",
+                "Logo çapı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-markal-------k-etkinlik-ekipmanlar---15-1791807886548.png"
+          },
+          {
+            "id": "sub-1791186505905",
+            "name": {
+              "az": "Təqvim",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ və promo məqsədli fərdi dizaynlı təqvimlər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Növ (Divar, masaüstü)",
+                "Ölçü",
+                "Səhifə sayı",
+                "Kağız növü",
+                "Cildləmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-etkinlik-ekipmanlar--nda-yeni-kimlik-13-1791807886538.png"
+          },
+          {
+            "id": "sub-1791186506061",
+            "name": {
+              "az": "Kağız çanta",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Brend və tədbirlər üçün fərdi dizaynlı kağız çantalar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Kağız növü",
+                "Tutacaq növü",
+                "Rəng",
+                "Logo çapı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-k--rm--z---k------t---anta-6-1791807886595.png"
+          },
+          {
+            "id": "sub-1791186506153",
+            "name": {
+              "az": "Etiket və stiker",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Məhsul, qablaşdırma və reklam üçün fərdi etiket və stikerlər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Forma",
+                "Material növü",
+                "Mat / parlaq səth",
+                "Kontur kəsim"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent---r--nlerinde-modern-marka-yenilemesi-4-1791807886516.png"
+          },
+          {
+            "id": "sub-1791186506265",
+            "name": {
+              "az": "İsimlik / Badge",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir, konfrans və korporativ istifadə üçün fərdi isimliklər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material növü",
+                "Çap növü",
+                "Fərdiləşdirilmiş ad və məlumat",
+                "Bərkidilmə növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-da0c5305-52d6-4f8b-9bfb-c3e45dc882f7-1791809043324.png"
+          },
+          {
+            "id": "sub-1791186506505",
+            "name": {
+              "az": "İsimlik lentləri / Lanyard",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Badge və giriş kartları üçün brendli boyun lentləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "En və uzunluq",
+                "Material növü",
+                "Rəng",
+                "Logo çapı",
+                "Klips növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-profesyonel-isimlik-lentleri-18-1791807886616.png"
+          },
+          {
+            "id": "sub-1791186506633",
+            "name": {
+              "az": "Bilet və kuponlar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir, kampaniya və xüsusi girişlər üçün fərdi çap məhsulları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Kağız növü",
+                "Nömrələmə",
+                "Perforasiya",
+                "QR / barkod əlavə edilməsi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-bilet-ve-kuponlar---22-1791807886608.png"
+          },
+          {
+            "id": "sub-1791186506949",
+            "name": {
+              "az": "Fincan",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ və promo məqsədli logo və dizaynlı fincanlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Həcm",
+                "Rəng",
+                "Çap sahəsi",
+                "Logo / dizayn tətbiqi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-fincan-tasar--m---2-1791807886519.png"
+          },
+          {
+            "id": "sub-1791186507209",
+            "name": {
+              "az": "Termos",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ hədiyyə və promo üçün fərdiləşdirilmiş termoslar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Həcm",
+                "Material",
+                "Rəng",
+                "Logo tətbiqi",
+                "Gravür / çap"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/modern-termoslarda-eventrent-yeniden-markalama-9-1791807886619.png"
+          },
+          {
+            "id": "sub-1791186507353",
+            "name": {
+              "az": "Su qabları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Brend və tədbirlər üçün fərdi dizaynlı su qabları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Həcm",
+                "Material",
+                "Rəng",
+                "Logo tətbiqi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-5d4cced6-2a48-44f5-a264-9b79e4cd2d18-1791809046074.png"
+          },
+          {
+            "id": "sub-1791186507509",
+            "name": {
+              "az": "Köynək / T-shirt",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir, komanda və promo istifadə üçün fərdi çaplı köynəklər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Rəng",
+                "Material",
+                "Çap növü",
+                "Çap sahəsi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-yeniden-tasarlanm-----ti----rt-20-1791807886509.png"
+          },
+          {
+            "id": "sub-1791186507609",
+            "name": {
+              "az": "Polo köynək",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ komanda və event personalı üçün brendli polo köynəklər",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Rəng",
+                "Material",
+                "Logo tətbiqi",
+                "Çap / tikmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-87594ab2-8c0d-475a-b883-ad484e653f25-1791809040501.png"
+          },
+          {
+            "id": "sub-1791186507713",
+            "name": {
+              "az": "Kepka",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Promo və tədbirlər üçün fərdi dizaynlı brendli kepkalar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Model",
+                "Rəng",
+                "Material",
+                "Logo tətbiqi",
+                "Çap / tikmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-markal---etkinlik-ekipmanlar---16-1791807886579.png"
+          },
+          {
+            "id": "sub-1791186508117",
+            "name": {
+              "az": "Açarlıq",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ və promo məqsədli fərdi açarlıqlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Material növü",
+                "Forma",
+                "Ölçü",
+                "Logo tətbiqi",
+                "Gravür / çap"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-ile-yeniden-markalanm-------r--nler-19-1791807886525.png"
+          },
+          {
+            "id": "sub-1791186508249",
+            "name": {
+              "az": "Powerbank",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ hədiyyə və promo üçün brendli portativ enerji cihazları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Tutum (mAh)",
+                "Rəng",
+                "Model",
+                "Logo tətbiqi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-1ae89435-69f0-4e7d-a2e4-acbb9439a9c7-1791809041503.png"
+          },
+          {
+            "id": "sub-1791186508973",
+            "name": {
+              "az": "Korporativ hədiyyə qutuları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Brendə uyğun fərdiləşdirilmiş hədiyyə və təqdimat qutuları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Qutu növü",
+                "Rəng",
+                "Logo və dizayn tətbiqi",
+                "Daxili yerləşdirmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-kurumsal-hediye-kutular---1-1791807886530.png"
+          },
+          {
+            "id": "sub-1791186509097",
+            "name": {
+              "az": "Brendli kağız stəkan",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir, catering və promo istifadə üçün logo çaplı kağız stəkanlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Həcm",
+                "Stəkan növü",
+                "Rəng",
+                "Logo / dizayn çapı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-tasar--ml---etkinlik---r--nleri-12-1791807886590.png"
+          },
+          {
+            "id": "sub-1791186509185",
+            "name": {
+              "az": "Bayraq və masa bayraqları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Korporativ, dövlət və tədbir istifadəsi üçün fərdi bayraqlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Çap növü",
+                "Tək / iki tərəfli",
+                "Ayaq / dirək seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-bayrak-ve-masa-bayraklar---10-1791807886542.png"
+          },
+          {
+            "id": "sub-1791186509301",
+            "name": {
+              "az": "Forex",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Reklam, yönləndirmə və dekor üçün sərt PVC əsaslı çap lövhələri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Qalınlıq",
+                "Birbaşa çap / vinil tətbiqi",
+                "Forma",
+                "Kontur kəsim"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-logolu-etkinlik-ekipmanlar---3-1791807886522.png"
+          },
+          {
+            "id": "sub-1791186509541",
+            "name": {
+              "az": "Lazer kəsim",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Dekor, reklam və xüsusi istehsal üçün dəqiq kəsim və gravür xidməti",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Material növü",
+                "Material qalınlığı",
+                "Ölçü",
+                "Kəsim forması",
+                "Gravür seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/lazer-kesimde-eventrent-dokunu--u-23-1791807886498.png"
+          },
+          {
+            "id": "sub-1791187655988",
+            "name": {
+              "az": "Uniforma",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Event personalı və korporativ komandalar üçün brendli iş geyimləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Model",
+                "Ölçü",
+                "Rəng",
+                "Material",
+                "Logo tətbiqi",
+                "Çap / tikmə"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/eventrent-markal---etkinlik-ekipmanlar---21-1791807886612.png"
+          },
+          {
+            "id": "sub-1791187778489",
+            "name": {
+              "az": "Yelkən bayraq",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Açıq hava tədbirləri, sərgilər və reklam sahələri üçün diqqətçəkən yelkən formalı bayraqlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü (S, M, L, XL)",
+                "Forma (Feather, Drop, Blade)",
+                "Material növü",
+                "Tək / iki tərəfli çap",
+                "Ayaq / baza növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-97175f4f-37d6-4a52-9e37-519ee8b1106c-1791809041304.png"
           }
         ]
       },
@@ -2254,126 +3182,764 @@
           "ru": "Эстетичные и инновационные декор-решения для мероприятий.",
           "tr": "Etkinlikleriniz için estetik ve yenilikçi dekor çözümleri."
         },
-        "image": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1920&auto=format&fit=crop",
+        "image": "/uploads/mat-beyaz-eventrent-logo-heykeli-25-1791878619196.png",
         "subItems": [
           {
-            "id": "tents",
+            "id": "sub-1791190436407",
             "name": {
-              "az": "Çadırlar",
-              "en": "Tents",
-              "ru": "Шатры",
-              "tr": "Çadırlar"
+              "az": "Klassik tədbir çadırları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
             },
             "desc": {
-              "az": "Hər ölçüdə və dizaynda çadırların qurulması.",
-              "en": "Tent setup in any size and concept style.",
-              "ru": "Установка шатров любых размеров и стилей.",
-              "tr": "Her ölçüde ve tasarımda çadır kurulumu."
+              "az": "Açıq hava tədbirləri üçün universal və funksional çadır həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
             },
             "questions": {
               "az": [
-                "Ölçü (m²)",
-                "Qurulma yeri",
-                "Döşəmə (Xalça, Taxta)",
+                "Ölçü",
+                "Tutum",
+                "Yan divar seçimi",
+                "Döşəmə",
                 "İşıqlandırma"
               ],
-              "en": [
-                "Size (m²)",
-                "Setup location",
-                "Flooring (Carpet, Wood)",
-                "Lighting"
-              ],
-              "ru": [
-                "Размер (м²)",
-                "Место установки",
-                "Покрытие (Ковер, Дерево)",
-                "Освещение"
-              ],
-              "tr": [
-                "Boyut (m²)",
-                "Kurulum yeri",
-                "Zemin (Halı, Ahşap)",
-                "Aydınlatma"
-              ]
-            }
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/--ki-beyaz-klasik-etkinlik---ad--r---15-1791877346941.png"
           },
           {
-            "id": "tables-chairs",
+            "id": "sub-1791190436675",
             "name": {
-              "az": "Masa və Oturacaqlar",
-              "en": "Tables and Chairs",
-              "ru": "Столы и стулья",
-              "tr": "Masa ve Sandalyeler"
+              "az": "Pagoda çadırlar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
             },
             "desc": {
-              "az": "Müasir və klassik mebel icarəsi.",
-              "en": "Modern and classic furniture rental.",
-              "ru": "Аренда современной и классической мебели.",
-              "tr": "Modern ve klasik mobilya kiralama."
+              "az": "Festival, sərgi və outdoor tədbirlər üçün estetik pagoda tipli çadırlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
             },
             "questions": {
               "az": [
-                "Növ (Masa, Oturacaq)",
-                "Model",
+                "Ölçü",
                 "Rəng",
-                "Örtük növü"
+                "Yan divar seçimi",
+                "Döşəmə",
+                "Brendinq"
               ],
-              "en": [
-                "Type (Table, Chair)",
-                "Model",
-                "Color",
-                "Cover type"
-              ],
-              "ru": [
-                "Тип (Стол, Стул)",
-                "Модель",
-                "Цвет",
-                "Тип покрытия"
-              ],
-              "tr": [
-                "Tür (Masa, Sandalye)",
-                "Model",
-                "Renk",
-                "Kaplama türü"
-              ]
-            }
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/beyaz-pagoda---ad--rlar--yla-zarif-etkinlik-alan---19-1791877356985.png"
           },
           {
-            "id": "tableware",
+            "id": "sub-1791190436943",
             "name": {
-              "az": "Qab-Qacaq",
-              "en": "Tableware",
-              "ru": "Посуда",
-              "tr": "Sofra Takımı"
+              "az": "Böyük marquee çadırlar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
             },
             "desc": {
-              "az": "Premium qab-qacaq dəstləri.",
-              "en": "Premium tableware sets.",
-              "ru": "Премиальные наборы посуды.",
-              "tr": "Premium sofra takımı setleri."
+              "az": "Böyükmiqyaslı banket və korporativ tədbirlər üçün geniş çadır",
+              "en": "",
+              "ru": "",
+              "tr": ""
             },
             "questions": {
               "az": [
-                "Dəst növü",
-                "Nəfər sayı",
-                "Model"
+                "konstruksiyaları",
+                "Ölçü",
+                "Tutum",
+                "Tavan hündürlüyü",
+                "Yan divarlar",
+                "Döşəmə və daxili dekor"
               ],
-              "en": [
-                "Set type",
-                "Guest count",
-                "Model"
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/--effaf-pencereli-b--y--k-davet---ad--r---18-1791877362612.png"
+          },
+          {
+            "id": "sub-1791190437211",
+            "name": {
+              "az": "Dairəvi banket masalar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Banket, gala və korporativ tədbirlər üçün klassik dairəvi masa həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Diametr",
+                "Oturacaq sayı",
+                "Material",
+                "Masa hündürlüyü",
+                "Süfrə seçimi"
               ],
-              "ru": [
-                "Тип набора",
-                "Количество персон",
-                "Модель"
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-9ba38770-7262-48d2-851a-62e58c09c320-1791878802146.png"
+          },
+          {
+            "id": "sub-1791190437527",
+            "name": {
+              "az": "Bar masaları və stulları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Kokteyl, networking və lounge zonaları üçün hündür masa-stul dəstləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Masa ölçüsü",
+                "Stul modeli",
+                "Material",
+                "Rəng",
+                "Dəst sayı"
               ],
-              "tr": [
-                "Set türü",
-                "Kişi sayısı",
-                "Model"
-              ]
-            }
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-83b82f60-21e1-4a1e-833e-607df629f242-1791878805934.png"
+          },
+          {
+            "id": "sub-1791190437867",
+            "name": {
+              "az": "Müxtəlif model stullar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbirin üslubuna uyğun fərqli dizayn və materiallarda stullar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Model",
+                "Material",
+                "Rəng",
+                "Oturacaq növü",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/exec-c37a699a-5ba5-4e56-9c7c-e1a7e801cb05-1791878810434.png"
+          },
+          {
+            "id": "sub-1791190438187",
+            "name": {
+              "az": "Piknik masaları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Outdoor, festival və açıq hava tədbirləri üçün praktik masa dəstləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Oturacaq sayı",
+                "Rəng",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/bah--ede-iki-do--al-ah--ap-piknik-masas---1-1791877476640.png"
+          },
+          {
+            "id": "sub-1791190438475",
+            "name": {
+              "az": "Boçka masalar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Rustic, festival və tematik tədbirlər üçün dekorativ boçka tipli masalar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Üst səth növü",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/--ki-sar---varil-kokteyl-masas---1791879323136.png"
+          },
+          {
+            "id": "sub-1791190438791",
+            "name": {
+              "az": "Divanlar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Lounge, VIP və istirahət zonaları üçün rahat oturma həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Model",
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Oturacaq sayı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/ak--am-bah--esinde-----k-ba---dekoru-23-1791877607432.png"
+          },
+          {
+            "id": "sub-1791190439067",
+            "name": {
+              "az": "Puflar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Lounge və qeyri-rəsmi tədbirlər üçün kompakt oturma elementləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Forma",
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/ayd--nl--k-showroomda-d--rt-armut-puf-1791879034122.png"
+          },
+          {
+            "id": "sub-1791190439375",
+            "name": {
+              "az": "Skamyalar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Açıq və qapalı məkanlar üçün çoxnəfərlik oturma həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Oturacaq sayı",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/bah--e-teras--nda-ah--ap-etkinlik-skamyalar---2-1791877525865.png"
+          },
+          {
+            "id": "sub-1791190439991",
+            "name": {
+              "az": "VIP Lounge Mebelləri",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "VIP zonalar üçün premium divan, kreslo və masa dəstləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Dəst tərkibi",
+                "Material",
+                "Rəng",
+                "Oturacaq sayı",
+                "Məkan ölçüsünə uyğunlaşdırma"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/krem-kanepe-ve-konyak-koltuklu-vip-salonu-4-1791877588468.png"
+          },
+          {
+            "id": "sub-1791190440283",
+            "name": {
+              "az": "Hostess / Reception Desk",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Qarşılama və qeydiyyat zonaları üçün masa və desk həlləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Logo tətbiqi",
+                "İşıqlandırma seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/modern-beyaz-me--e-resepsiyon-masas---5-1791878381906.png"
+          },
+          {
+            "id": "sub-1791190440623",
+            "name": {
+              "az": "Masa dekorları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Banket və tədbir masaları üçün dekorativ tərtibat elementləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Dekor üslubu",
+                "Rəng palitrası",
+                "Güldan / şamdan seçimi",
+                "Centerpiece növü",
+                "Masa sayı"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/zarif---i--ekli-mumlu-masa-dekoru-6-1791878392749.png"
+          },
+          {
+            "id": "sub-1791190440911",
+            "name": {
+              "az": "Photozone Konstruksiyaları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Foto çəkiliş və brend aktivlikləri üçün fərdi dekor konstruksiyaları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Forma",
+                "Material",
+                "Dizayn üslubu",
+                "Brendinq və işıqlandırma"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/--i--ekli-krem-kemerli-foto--raf-alan---28-1791878420205.png"
+          },
+          {
+            "id": "sub-1791190441223",
+            "name": {
+              "az": "Dekorativ Podiumlar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Məhsul, dekor və təqdimatlar üçün müxtəlif hündürlükdə podiumlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Hündürlük",
+                "Material",
+                "Rəng",
+                "Forma"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/farkl---y--ksekliklerde-dekoratif-podyumlar-10-1791879063012.png"
+          },
+          {
+            "id": "sub-1791190441503",
+            "name": {
+              "az": "Gül divarları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Fotozona və giriş hissələri üçün dekorativ floral fonlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Canlı / süni gül",
+                "Rəng palitrası",
+                "Gül növü",
+                "Logo / yazı əlavəsi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/beyaz-ve-pudra---i--ek-duvar---7-1791878450209.png"
+          },
+          {
+            "id": "sub-1791190441815",
+            "name": {
+              "az": "Neon elementlər",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Fotozona, səhnə və dekor üçün işıqlı neon yazı və fiqurlar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Yazı / forma",
+                "Rəng",
+                "İşıq tonu",
+                "Fərdi dizayn"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/----l---neon---ember--kalp-ve---im--ek-9-1791878459933.png"
+          },
+          {
+            "id": "sub-1791190442135",
+            "name": {
+              "az": "İşıqlı hərf və rəqəmlər",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir və fotozonalar üçün böyük ölçülü işıqlı dekor elementləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Hərf / rəqəm seçimi",
+                "Rəng",
+                "İşıqlandırma tipi",
+                "Say"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/i----kl---love-ve-27-dekoru-11-1791878591539.png"
+          },
+          {
+            "id": "sub-1791190442479",
+            "name": {
+              "az": "Giriş Arkaları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir girişini vizual olaraq vurğulayan dekorativ konstruksiyalar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Forma",
+                "Material",
+                "Dekor üslubu",
+                "Brendinq"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/krem---i--ekli-giri---kemeri-12-1791878486729.png"
+          },
+          {
+            "id": "sub-1791190443091",
+            "name": {
+              "az": "Qırmızı Xalça",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "VIP girişlər və rəsmi tədbirlər üçün klassik giriş həlli",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "En",
+                "Uzunluq",
+                "Rəng",
+                "Material",
+                "Baryer / dirək seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/krom-bariyerli-k--rm--z---hal---giri--i-14-1791878506790.png"
+          },
+          {
+            "id": "sub-1791190443439",
+            "name": {
+              "az": "VIP giriş dizaynı",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Premium tədbirlər üçün xüsusi giriş və qarşılama konsepti",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Giriş ölçüsü",
+                "Dekor üslubu",
+                "Xalça",
+                "İşıqlandırma",
+                "Brend elementləri"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/zarif-vip-etkinlik-giri--i-16-1791878532141.png"
+          },
+          {
+            "id": "sub-1791190444123",
+            "name": {
+              "az": "İstiqamətləndirmə konstruksiyaları",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir daxilində qonaq axınını yönləndirmək üçün dekorativ nişan sistemləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Dizayn",
+                "Mətn / istiqamət sayı",
+                "Ayaq / bərkidilmə növü"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/etkinlik-y--nlendirme-totemleri-21-1791878543863.png"
+          },
+          {
+            "id": "sub-1791190444391",
+            "name": {
+              "az": "Outdoor lounge",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Açıq hava tədbirləri üçün rahat istirahət və networking zonaları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Sahə ölçüsü",
+                "Mebel dəsti",
+                "Oturacaq sayı",
+                "Dekor üslubu",
+                "Kölgələndirmə seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/bah--ede-----k-a----k-hava-salonu-20-1791878552261.png"
+          },
+          {
+            "id": "sub-1791191880842",
+            "name": {
+              "az": "Səhnə dekorasiyası",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbir konseptinə uyğun vizual səhnə tərtibatı",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Səhnə ölçüsü",
+                "Konsept",
+                "Material",
+                "Dekor elementləri",
+                "Logo / brend tətbiqi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/zarif-kurumsal-etkinlik-sahnesi-26-1791878607605.png"
+          },
+          {
+            "id": "sub-1791191881098",
+            "name": {
+              "az": "Dekorativ pillələr",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Səhnə, podium və fotozonalar üçün funksional dekor elementləri",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Pillə sayı",
+                "Material",
+                "Rəng",
+                "İşıqlandırma seçimi"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/fildi--i-dekoratif-basamak-ve-foto--raf-platformu-27-1791878612900.png"
+          },
+          {
+            "id": "sub-1791191881262",
+            "name": {
+              "az": "3D hərflər",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Brend, tədbir adı və mesajlar üçün həcmli dekorativ yazılar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Ölçü",
+                "Material",
+                "Rəng",
+                "Qalınlıq",
+                "İşıqlı / işıqsız"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/mat-beyaz-eventrent-logo-heykeli-25-1791878619196.png"
           }
         ]
       },
@@ -2392,7 +3958,7 @@
           "ru": "Дополнительные профессиональные услуги для полного цикла мероприятия.",
           "tr": "Etkinliğinizin eksiksiz olması için ek profesyonel hizmetler."
         },
-        "image": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1920&auto=format&fit=crop",
+        "image": "/uploads/kurumsal-galada-foto--raf-ve-video-ekibi-5-1791884845607.png",
         "subItems": [
           {
             "id": "dj",
@@ -2429,7 +3995,8 @@
                 "Süre (saat)",
                 "Ekipman gereksinimi"
               ]
-            }
+            },
+            "image": "/uploads/bak-----de-kurumsal-dj-performans---1-1791884780223.png"
           },
           {
             "id": "singer",
@@ -2466,7 +4033,8 @@
                 "Süre",
                 "Ses sistemi gereksinimi"
               ]
-            }
+            },
+            "image": "/uploads/kurumsal-gala-sahnesinde-g----l---solo-vokalist-2-1791884802556.png"
           },
           {
             "id": "host",
@@ -2499,44 +4067,8 @@
                 "Etkinlik dili",
                 "Etkinlik türü"
               ]
-            }
-          },
-          {
-            "id": "organization",
-            "name": {
-              "az": "Tədbir təşkilatı",
-              "en": "Event organization",
-              "ru": "Организация мероприятий",
-              "tr": "Etkinlik organizasyonu"
             },
-            "desc": {
-              "az": "A-dan Z-yə təşkilatçılıq xidməti.",
-              "en": "A-to-Z event organization service.",
-              "ru": "Организация мероприятий под ключ.",
-              "tr": "A’dan Z’ye etkinlik organizasyonu."
-            },
-            "questions": {
-              "az": [
-                "Tədbir növü",
-                "Qonaq sayı",
-                "Büdcə aralığı"
-              ],
-              "en": [
-                "Event type",
-                "Guest count",
-                "Budget range"
-              ],
-              "ru": [
-                "Тип мероприятия",
-                "Количество гостей",
-                "Бюджет"
-              ],
-              "tr": [
-                "Etkinlik türü",
-                "Misafir sayısı",
-                "Bütçe aralığı"
-              ]
-            }
+            "image": "/uploads/bak---de-kurumsal-etkinlik-sunucusu-3-1791884824372.png"
           },
           {
             "id": "designer",
@@ -2569,7 +4101,156 @@
                 "Tasarım türü",
                 "Süre"
               ]
-            }
+            },
+            "image": "/uploads/etkinlik-g--rsel-kimli--i-tasar--m---4-1791884839256.png"
+          },
+          {
+            "id": "sub-1791194677749",
+            "name": {
+              "az": "Foto və video çəkiliş",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbirin əsas anlarını peşəkar foto və video formatında qeydə alan çəkiliş xidməti",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Çəkiliş müddəti",
+                "Fotoqraf / videograf sayı",
+                "Foto çəkiliş",
+                "Video çəkiliş",
+                "Aftermovie",
+                "Drone çəkilişi",
+                "Montaj xidməti"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/kurumsal-galada-foto--raf-ve-video-ekibi-5-1791884845607.png"
+          },
+          {
+            "id": "sub-1791194678168",
+            "name": {
+              "az": "Canlı musiqi və qruplar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbirin formatına uyğun solo ifaçı, instrumental musiqiçi və canlı musiqi qrupları",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "İfaçı / qrup növü",
+                "Musiqi janrı",
+                "İfa müddəti",
+                "Qrup üzvlərinin sayı",
+                "Repertuar seçimi",
+                "Texniki rider tələbləri"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/kurumsal-galada-d--rt-ki--ilik-canl---orkestra-6-1791884859940.png"
+          },
+          {
+            "id": "sub-1791194678560",
+            "name": {
+              "az": "Şou və performanslar",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Tədbirin konseptinə uyğun səhnə şouları və vizual performanslar",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Performans növü",
+                "İfaçı sayı",
+                "Şou müddəti",
+                "Təkrar sayı",
+                "Məkan tipi (Indoor / Outdoor)",
+                "Texniki tələblər"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/led---emberlerle-------k-dans---7-1791884866763.png"
+          },
+          {
+            "id": "sub-1791194678968",
+            "name": {
+              "az": "Canlı yayım / Live Streaming",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Konfrans, təqdimat və tədbirlərin internet üzərindən peşəkar canlı yayımı",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Yayım müddəti",
+                "Kamera sayı",
+                "Yayım platforması",
+                "Full HD / 4K görüntü",
+                "Qrafika və titrlər",
+                "Yazının saxlanılması",
+                "Texniki heyət"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/konferans-canl---yay--n-kontrol-merkezi-9-1791884873680.png"
+          },
+          {
+            "id": "sub-1791194679336",
+            "name": {
+              "az": "AI Foto Booth / 360° Video Booth",
+              "en": "New",
+              "ru": "Новый",
+              "tr": "Yeni"
+            },
+            "desc": {
+              "az": "Qonaqlar üçün interaktiv foto və video kontent təcrübəsi",
+              "en": "",
+              "ru": "",
+              "tr": ""
+            },
+            "questions": {
+              "az": [
+                "Booth növü (AI Foto Booth / 360° Video Booth)",
+                "İstifadə müddəti",
+                "Fərdi dizayn / brendinq",
+                "Foto / video şablonu",
+                "Ani paylaşım imkanı",
+                "Operator xidməti",
+                "Rekvizitlər"
+              ],
+              "en": [],
+              "ru": [],
+              "tr": []
+            },
+            "image": "/uploads/yapay-zek---portre-kiosku-ve-360---deneyim-8-1791884877071.png"
           }
         ]
       }
@@ -2857,8 +4538,8 @@
       "tr": "Ekipman Merkezi"
     },
     "collection": {
-      "az": "KOLLEKSİYA",
-      "en": "THE COLLECTION",
+      "az": "Kataloq",
+      "en": "COLLECTION",
       "ru": "КОЛЛЕКЦИЯ",
       "tr": "KOLEKSİYON"
     },
@@ -3054,10 +4735,10 @@
         "tr": "Galeri"
       },
       "galleryImages": [
-        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600&auto=format&fit=crop"
+        "/uploads/izgara-tavuk--dana-ve-safranl---pilav-1792058844915.png",
+        "/uploads/zarif-alkols--z-i--ecek-sunumu-1792058832716.png",
+        "/uploads/zarif-so--uk-at----t--rmal--k-se--kisi-1792058835788.png",
+        "/uploads/zarif-mini-tatl--lar-se--kisi-1792058840863.png"
       ]
     },
     "request": {
