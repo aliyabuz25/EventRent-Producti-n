@@ -23,7 +23,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'ev3ntr3nt_pr0d_s3cr3t_2025';
 app.use(express.json({ limit: '4mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.resolve('uploads')));
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5050,http://localhost:5173').split(',');
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5050,http://localhost:5173,http://localhost:5052,http://127.0.0.1:5052,http://127.0.0.1:5173,http://127.0.0.1:5050').split(',');
 
 // Rate limiters
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Çox cəhd. 15 dəq sonra yenidən cəhd edin.' }, standardHeaders: true, legacyHeaders: false });
