@@ -3,7 +3,7 @@ FROM node:22-slim
 WORKDIR /app
 
 # native build tools (better-sqlite3, baileys için)
-RUN apt-get update && apt-get install -y python3 make g++ git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y python3 make g++ git unzip && rm -rf /var/lib/apt/lists/*
 
 # Sadece backend paketlerini yükle
 COPY package.backend.json ./package.json

@@ -3,7 +3,7 @@ import {
   LayoutDashboard, MessageSquare, Package, Users, Tag,
   TrendingUp, Clock, FileText, ExternalLink, Home, Info, Settings, Phone, AlignJustify,
   ChevronRight, LogOut, Menu, ShoppingCart, Mail, UserCog, Eye, EyeOff, ImageIcon, Database,
-  Search, X as XIcon,
+  Search, X as XIcon, Archive,
 } from 'lucide-react';
 import { Lead } from '../types';
 import { ToastProvider } from '../components/Toast';
@@ -26,6 +26,7 @@ const AdminCatering = lazy(() => import('../sections/admin/CateringTab'));
 const AdminCategories = lazy(() => import('../sections/admin/CategoriesTab'));
 const AdminSetup = lazy(() => import('../components/AdminSetup'));
 const DatabaseTab = lazy(() => import('../sections/admin/DatabaseTab'));
+const InstallBackupTab = lazy(() => import('../sections/admin/InstallBackupTab'));
 
 // Bootstrap loaded lazily too — only affects admin
 import('bootstrap/dist/css/bootstrap.min.css');
@@ -35,7 +36,7 @@ type Tab = 'dashboard' | 'orders' | 'leads' | 'products' | 'teambuilding' | 'sup
   | 'content-contact' | 'content-footer' | 'content-catering' | 'content-portfolio'
   | 'content-cart' | 'content-product' | 'content-catalog' | 'content-notfound' | 'content-gallery'
   | 'content-eventgarden' | 'content-tv' | 'content-teambuilding-page'
-  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database' | 'categories';
+  | 'smtp' | 'users' | 'media' | 'reels' | 'whatsapp' | 'catering' | 'database' | 'install-backup' | 'categories';
 
 type ContentSection = 'home' | 'about' | 'services' | 'contact' | 'footer' | 'catering' | 'portfolio' | 'cart' | 'product' | 'catalog' | 'notfound' | 'gallery' | 'eventgarden' | 'tv' | 'teambuilding-page';
 
@@ -276,6 +277,7 @@ export default function Admin() {
     { id: 'smtp'     as Tab, label: 'SMTP',            Icon: Mail },
     { id: 'users'    as Tab, label: 'İstifadəçilər',  Icon: UserCog },
     { id: 'database' as Tab, label: 'Verilənlər Bazası', Icon: Database },
+    { id: 'install-backup' as Tab, label: 'Install Backup', Icon: Archive },
   ];
   const NAV_ITEMS = [...DATA_NAV, ...SYSTEM_NAV];
 
@@ -301,6 +303,7 @@ export default function Admin() {
     { label: 'Media', tab: 'media' as Tab, icon: ImageIcon, desc: 'Fayl yükləmə, şəkil kitabxanası' },
     { label: 'SMTP', tab: 'smtp' as Tab, icon: Mail, desc: 'Email konfiqurasiyası, test göndər' },
     { label: 'İstifadəçilər', tab: 'users' as Tab, icon: UserCog, desc: 'Hesab idarəetmə, rol, aktiv/deaktiv' },
+    { label: 'Install Backup', tab: 'install-backup' as Tab, icon: Archive, desc: 'Tam ZIP backup bərpa və quraşdırma (Baza + Şəkillər)' },
   ];
 
   const searchResults = searchQ.trim().length > 0
@@ -480,6 +483,7 @@ export default function Admin() {
             {tab === 'media'    && isAdmin && <AdminMedia token={token} />}
             {tab === 'smtp'     && isAdmin && <AdminSmtp token={token} />}
             {tab === 'database' && isAdmin && <DatabaseTab token={token} />}
+            {tab === 'install-backup' && isAdmin && <InstallBackupTab token={token} />}
             {tab === 'users'   && isAdmin && <AdminUsers token={token} currentUserId={user.id} />}
             {contentSection   && !!token  && <AdminContent section={contentSection} />}
           </Suspense>

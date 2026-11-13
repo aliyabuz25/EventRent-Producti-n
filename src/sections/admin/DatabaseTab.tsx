@@ -52,9 +52,11 @@ export default function DatabaseTab({ token }: { token: string }) {
   const [backupLoading, setBackupLoading] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(false);
+  const [restoringZip, setRestoringZip] = useState(false);
   const [restoreResult, setRestoreResult] = useState<{ ok: boolean; msg: string } | null>(null);
   const [showBackupHistory, setShowBackupHistory] = useState(false);
   const dbFileRef = useRef<HTMLInputElement>(null);
+  const zipFileRef = useRef<HTMLInputElement>(null);
 
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   const ah = { Authorization: `Bearer ${token}` };
@@ -119,6 +121,40 @@ export default function DatabaseTab({ token }: { token: string }) {
       setRestoreResult({ ok: false, msg: err.message });
     } finally {
       setRestoring(false);
+      e.target.value = '';
+    }
+  };
+
+  // Full backup zip restore
+  const handleRestoreFullZip = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.zip')) { alert('Yalnız .zip faylı qəbul edilir'); return; }
+    if (!window.confirm(`"${file.name}" adlı tam backup arxivini quraşdırmaq istəyirsiniz? Baza (.db), bütün şəkillər (/uploads) və sayt məzmunu arxivdəki ilə əvəzlənəcək. Cari DB əvvəlcə avtomatik arxivlənəcək.`)) {
+      e.target.value = '';
+      return;
+    }
+    setRestoringZip(true);
+    setRestoreResult(null);
+    try {
+      const fd = new FormData();
+      fd.append('backup', file);
+      const r = await fetch('/api/admin/backup/install-backup', { method: 'POST', headers: ah, body: fd });
+      const d = await r.json();
+      if (r.ok) {
+        setRestoreResult({
+          ok: true,
+          msg: `${d.message || 'Uğurlu!'} (${d.details?.uploads_count ?? 0} şəkil, DB və məzmun bərpa edildi)`
+        });
+        fetchStats();
+        fetchBackupList();
+      } else {
+        setRestoreResult({ ok: false, msg: d.error || 'Quraşdırma xətası' });
+      }
+    } catch (err: any) {
+      setRestoreResult({ ok: false, msg: err.message });
+    } finally {
+      setRestoringZip(false);
       e.target.value = '';
     }
   };
@@ -264,6 +300,30 @@ export default function DatabaseTab({ token }: { token: string }) {
             <span style={{ fontSize: 13, fontWeight: 600, color: restoreResult.ok ? '#065f46' : '#991b1b' }}>{restoreResult.msg}</span>
           </div>
         )}
+
+        {/* Full ZIP Backup Restore */}
+        <div style={{ background: '#fff5f5', borderRadius: 12, padding: '16px', border: '1.5px solid #fecaca', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <Archive size={16} color="#e30613" />
+            <span style={{ fontWeight: 800, fontSize: 13, color: '#991b1b' }}>Tam Backup Quraşdır (Install Backup ZIP)</span>
+          </div>
+          <div style={{ fontSize: 11, color: '#6c757d', marginBottom: 12 }}>
+            ZIP arxivindən bütöv sistemi quraşdırın: <strong>SQLite DB</strong>, <strong>bütün şəkillər (/uploads)</strong> və <strong>sayt məzmunu</strong> bərpa edilir. Cari DB əvvəlcə arxivlənəcək.
+          </div>
+          <div className="d-flex align-items-center gap-3 flex-wrap">
+            <input ref={zipFileRef} type="file" accept=".zip" style={{ display: 'none' }} onChange={handleRestoreFullZip} />
+            <button
+              onClick={() => zipFileRef.current?.click()}
+              disabled={restoringZip}
+              className="btn btn-sm fw-bold d-flex align-items-center gap-2"
+              style={{ borderRadius: 9, background: '#e30613', color: '#fff', border: 'none', padding: '7px 16px' }}>
+              {restoringZip
+                ? <><div className="spinner-border spinner-border-sm" /> Tam backup quraşdırılır...</>
+                : <><Upload size={14} /> ZIP Arxivi Seç və Tam Quraşdır</>}
+            </button>
+            <span style={{ fontSize: 11, color: '#dc2626', fontWeight: 600 }}>Tövsiyə olunur: eventrent_full_backup_*.zip</span>
+          </div>
+        </div>
 
         {/* DB Restore */}
         <div style={{ background: '#f8f9fa', borderRadius: 12, padding: '16px', border: '1px solid #e9ecef' }}>

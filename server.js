@@ -1927,6 +1927,215 @@ app.post('/api/admin/backup/restore-db', authMiddleware, adminOnly, (req, res) =
   }
 });
 
+// 4.1) Tam Backup Quraşdır (Install Backup ZIP) — DB + uploads + site-content
+const handleInstallBackup = (req, res) => {
+  try {
+    const multer = require('multer');
+    const os = require('node:os');
+    const { existsSync, mkdirSync, copyFileSync, rmSync, readdirSync, statSync } = require('node:fs');
+
+    const upload = multer({
+      dest: os.tmpdir(),
+      limits: { fileSize: 2 * 1024 * 1024 * 1024 } // 2 GB limit
+    }).single('backup');
+
+    upload(req, res, async (err) => {
+      if (err) return res.status(400).json({ error: 'Fayl yükləmə xətası: ' + err.message });
+      if (!req.file) return res.status(400).json({ error: 'ZIP faylı tapılmadı. Field adı: "backup"' });
+
+      const zipPath = req.file.path;
+      const tempExtractDir = path.join(os.tmpdir(), `eventrent_install_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`);
+
+      try {
+        mkdirSync(tempExtractDir, { recursive: true });
+
+        // ZIP çıxarışı: AdmZip və ya fallback (python3 / unzip)
+        let extracted = false;
+        try {
+          const AdmZip = require('adm-zip');
+          const zip = new AdmZip(zipPath);
+          zip.extractAllTo(tempExtractDir, true);
+          extracted = true;
+        } catch (zipErr) {
+          console.warn('[install-backup] AdmZip çıxarışında xəta, fallback yoxlanılır:', zipErr?.message);
+        }
+
+        if (!extracted) {
+          const { execSync } = require('node:child_process');
+          try {
+            execSync(`python3 -m zipfile -e "${zipPath}" "${tempExtractDir}"`);
+            extracted = true;
+          } catch (pyErr) {
+            try {
+              execSync(`unzip -o -q "${zipPath}" -d "${tempExtractDir}"`);
+              extracted = true;
+            } catch (unzipErr) {
+              throw new Error('ZIP faylı açıla bilmədi: ' + (unzipErr?.message || pyErr?.message));
+            }
+          }
+        }
+
+        // Qovluqda axtarış (rekursiv)
+        function findFilesRecursively(dir, fileList = []) {
+          if (!existsSync(dir)) return fileList;
+          const items = readdirSync(dir);
+          for (const item of items) {
+            const fullPath = path.join(dir, item);
+            try {
+              const st = statSync(fullPath);
+              if (st.isDirectory()) {
+                findFilesRecursively(fullPath, fileList);
+              } else {
+                fileList.push(fullPath);
+              }
+            } catch {}
+          }
+          return fileList;
+        }
+
+        const allExtractedFiles = findFilesRecursively(tempExtractDir);
+
+        // 1. SQLite DB faylını tap
+        let targetDbFile = null;
+        if (existsSync(path.join(tempExtractDir, 'data', 'eventrent.db'))) {
+          targetDbFile = path.join(tempExtractDir, 'data', 'eventrent.db');
+        } else if (existsSync(path.join(tempExtractDir, 'eventrent.db'))) {
+          targetDbFile = path.join(tempExtractDir, 'eventrent.db');
+        } else {
+          targetDbFile = allExtractedFiles.find(f => f.endsWith('.db') && !f.includes('.bak_'));
+        }
+
+        // 2. Sayt kontent faylını tap
+        let targetContentFile = null;
+        if (existsSync(path.join(tempExtractDir, 'data', 'site-content.json'))) {
+          targetContentFile = path.join(tempExtractDir, 'data', 'site-content.json');
+        } else if (existsSync(path.join(tempExtractDir, 'site-content.json'))) {
+          targetContentFile = path.join(tempExtractDir, 'site-content.json');
+        } else {
+          targetContentFile = allExtractedFiles.find(f => path.basename(f) === 'site-content.json');
+        }
+
+        // 3. Uploads qovluğunu tap
+        let targetUploadsDir = null;
+        if (existsSync(path.join(tempExtractDir, 'uploads'))) {
+          targetUploadsDir = path.join(tempExtractDir, 'uploads');
+        } else {
+          const items = readdirSync(tempExtractDir);
+          for (const it of items) {
+            const p = path.join(tempExtractDir, it);
+            try {
+              if (it === 'uploads' && statSync(p).isDirectory()) {
+                targetUploadsDir = p;
+                break;
+              }
+            } catch {}
+          }
+        }
+
+        if (!targetDbFile && !targetContentFile && !targetUploadsDir) {
+          throw new Error('ZIP arxivi içərisində nə verilənlər bazası (.db), nə məzmun (site-content.json), nə də şəkillər (uploads/) tapılmadı.');
+        }
+
+        const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        let backupDbName = null;
+
+        // DB bərpa et
+        if (targetDbFile) {
+          const backupDbPath = `${DB_PATH}.bak_${ts}`;
+          if (existsSync(DB_PATH)) {
+            copyFileSync(DB_PATH, backupDbPath);
+            backupDbName = path.basename(backupDbPath);
+          }
+          db.close();
+          const targetDir = path.dirname(DB_PATH);
+          if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true });
+          copyFileSync(targetDbFile, DB_PATH);
+
+          const Database = require('better-sqlite3');
+          db = new Database(DB_PATH);
+          db.pragma('journal_mode = WAL');
+          console.log(`[install-backup] DB bərpa edildi, əvvəlki DB: ${backupDbName}`);
+        }
+
+        // Kontent bərpa et
+        let contentRestored = false;
+        if (targetContentFile) {
+          await backupContent();
+          const contentDir = path.dirname(CONTENT_FILE_PATH);
+          if (!existsSync(contentDir)) mkdirSync(contentDir, { recursive: true });
+          copyFileSync(targetContentFile, CONTENT_FILE_PATH);
+          contentRestored = true;
+          console.log(`[install-backup] Sayt kontenti (site-content.json) bərpa edildi.`);
+        }
+
+        // Uploads bərpa et
+        let uploadsRestoredCount = 0;
+        if (targetUploadsDir) {
+          const uploadsDest = path.resolve('uploads');
+          if (!existsSync(uploadsDest)) mkdirSync(uploadsDest, { recursive: true });
+          const uploadFiles = readdirSync(targetUploadsDir);
+          for (const uf of uploadFiles) {
+            const srcF = path.join(targetUploadsDir, uf);
+            const dstF = path.join(uploadsDest, uf);
+            try {
+              if (statSync(srcF).isFile()) {
+                copyFileSync(srcF, dstF);
+                uploadsRestoredCount++;
+              }
+            } catch {}
+          }
+          console.log(`[install-backup] Uploads bərpa edildi: ${uploadsRestoredCount} fayl.`);
+        }
+
+        // Baza statistikasını oxu
+        let stats = null;
+        try {
+          stats = {
+            orders:          db.prepare('SELECT COUNT(*) as c FROM orders').get().c,
+            leads:           db.prepare('SELECT COUNT(*) as c FROM leads').get().c,
+            users:           db.prepare('SELECT COUNT(*) as c FROM users').get().c,
+            products:        db.prepare('SELECT COUNT(*) as c FROM products').get().c,
+            categories:      db.prepare('SELECT COUNT(*) as c FROM categories').get().c,
+            catering_orders: db.prepare('SELECT COUNT(*) as c FROM catering_orders').get().c,
+            tb_applications: db.prepare('SELECT COUNT(*) as c FROM tb_applications').get().c,
+            spec_templates:  db.prepare('SELECT COUNT(*) as c FROM spec_templates').get().c,
+          };
+        } catch (stErr) {
+          console.warn('[install-backup] Stat oxunarkən xəta:', stErr?.message);
+        }
+
+        // Təmizlik
+        try { rmSync(tempExtractDir, { recursive: true, force: true }); } catch {}
+        try { rmSync(zipPath, { force: true }); } catch {}
+
+        res.json({
+          ok: true,
+          message: 'Tam backup uğurla quraşdırıldı!',
+          details: {
+            db_restored: !!targetDbFile,
+            content_restored: contentRestored,
+            uploads_restored: uploadsRestoredCount > 0,
+            uploads_count: uploadsRestoredCount,
+            old_db_backup: backupDbName,
+            stats: stats,
+            installed_at: new Date().toISOString()
+          }
+        });
+      } catch (innerErr) {
+        try { rmSync(tempExtractDir, { recursive: true, force: true }); } catch {}
+        try { rmSync(zipPath, { force: true }); } catch {}
+        console.error('[install-backup] Xəta:', innerErr);
+        res.status(500).json({ error: innerErr.message || 'Backup quraşdırılarkən xəta baş verdi.' });
+      }
+    });
+  } catch (outerErr) {
+    res.status(500).json({ error: outerErr.message });
+  }
+};
+
+app.post('/api/admin/backup/install-backup', authMiddleware, adminOnly, handleInstallBackup);
+app.post('/api/admin/backup/restore-full', authMiddleware, adminOnly, handleInstallBackup);
+
 // 5) Backup siyahısı — DB + content backup fayllarını listələ
 app.get('/api/admin/backup/list', authMiddleware, adminOnly, async (req, res) => {
   try {
